@@ -346,3 +346,10 @@
   will-change: transform;
   backface-visibility: hidden;
 }
+
+.version {
+  padding: 4px 16px;
+  font-size: calc(11px * var(--font-scale));
+  color: var(--placeholder-color);
+  text-align: center;
+}

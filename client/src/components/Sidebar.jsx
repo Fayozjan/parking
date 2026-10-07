@@ -99,6 +99,8 @@ const Sidebar = ({ menuData }) => {
 
         <ul className={styles.menuWrapper}>{renderedMenuItems}</ul>
 
+        {isOpen && (<span className={styles.version}>v{__APP_VERSION__}</span>)}
+
         {<Profile type={!isOpen && "mini"} />}
       </div>
     </>

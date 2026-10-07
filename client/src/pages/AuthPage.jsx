@@ -155,6 +155,8 @@ const AuthPage = () => {
           </button>
         </form>
       </div>
+
+      <span className={styles.version}>v{__APP_VERSION__}</span>
     </div>
   );
 };
