@@ -1,0 +1,135 @@
+﻿.section {
+  margin-top: 16px;
+  padding: 0 8px 8px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: var(--font-small);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.addBtn {
+  background: none;
+  border: 1px solid var(--third-color);
+  color: var(--third-color);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: var(--font-small);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--third-color);
+    color: #fff;
+  }
+}
+
+.newRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+
+  select,
+  input[type="date"] {
+    flex: 1;
+    height: 30px;
+    padding: 4px 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: var(--font-small);
+    font-weight: 500;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: var(--third-color);
+    }
+  }
+}
+
+.empty {
+  font-size: var(--font-small);
+  color: var(--placeholder-color);
+  text-align: center;
+  margin: 8px 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-small);
+
+  th {
+    text-align: left;
+    padding: 4px 6px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 500;
+  }
+
+  td {
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+
+    select,
+    input[type="date"] {
+      width: 100%;
+      height: 28px;
+      padding: 2px 4px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: var(--font-small);
+      font-weight: 500;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        border-color: var(--third-color);
+      }
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.saveBtn,
+.cancelBtn,
+.editBtn,
+.deleteBtn {
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: calc(11px * var(--font-scale));
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.saveBtn {
+  background: var(--third-color);
+  color: #fff;
+}
+
+.cancelBtn {
+  background: var(--bg-light);
+  color: var(--text-secondary);
+}
+
+.editBtn {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.deleteBtn {
+  background: #fee2e2;
+  color: #dc2626;
+}

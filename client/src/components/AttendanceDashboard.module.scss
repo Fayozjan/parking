@@ -1,0 +1,7 @@
+.cardWrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 7px;
+  padding: 6px 5px 3px;
+  flex-shrink: 0;
+}

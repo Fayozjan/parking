@@ -1,0 +1,165 @@
+﻿.profileSettings {
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  text-align: left;
+  box-sizing: border-box;
+
+  .error {
+    color: red;
+    font-size: var(--font-small);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .flex {
+    display: flex;
+    gap: 20px;
+  }
+
+  .form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .inputGroup {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    label {
+      font-weight: 600;
+      margin-bottom: 5px;
+      font-size: var(--font-small);
+    }
+
+    input,
+    select {
+      font-size: var(--font-small);
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    select {
+      cursor: pointer;
+    }
+
+    .togglePassword {
+      position: absolute;
+      right: 10px;
+      top: 70%;
+      transform: translateY(-50%);
+      background-color: transparent;
+      border: none;
+      font-size: var(--font-small);
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--placeholder-color);
+      padding: 5px;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #3052d8;
+      box-shadow: 0 0 5px rgba(48, 82, 216, 0.4);
+    }
+  }
+
+  .avatarSection {
+    display: flex;
+    justify-content: center;
+  }
+
+  .avatarWrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    overflow: hidden;
+    background: var(--third-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover .avatarOverlay {
+      opacity: 1;
+    }
+  }
+
+  .avatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatarInitial {
+    font-size: calc(28px * var(--font-scale));
+    font-weight: 600;
+    color: var(--button-text);
+    text-transform: uppercase;
+  }
+
+  .avatarOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+    color: #fff;
+  }
+
+  .fontSizeGroup {
+    display: flex;
+    gap: 8px;
+  }
+
+  .fontSizeBtn {
+    flex: 1;
+    padding: 8px 4px;
+    font-size: var(--font-small);
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+      border-color: var(--third-color);
+      color: var(--third-color);
+    }
+  }
+
+  .fontSizeBtnActive {
+    background: var(--third-color);
+    border-color: var(--third-color);
+    color: #fff;
+  }
+
+  .saveButton {
+    color: var(--button-text);
+    padding: 10px;
+    font-weight: 600;
+    font-size: var(--font-small);
+    background: var(--third-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.01);
+    }
+  }
+}

@@ -1,0 +1,1048 @@
+﻿// ─── Page ────────────────────────────────────────────────────────────────────
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: calc(
+      var(--tg-safe-area-inset-top, 0px) +
+        var(--tg-content-safe-area-inset-top, 0px) + 12px
+    )
+    10px
+    calc(
+      env(safe-area-inset-bottom, 0px) + var(--tg-safe-area-inset-bottom, 0px) +
+        80px
+    );
+  background: var(--tg-bg);
+  min-height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(
+    var(--tg-safe-area-inset-top, 0px) +
+      var(--tg-content-safe-area-inset-top, 0px)
+  );
+  z-index: 200;
+  pointer-events: none;
+  background: var(--tg-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+// ─── Card ────────────────────────────────────────────────────────────────────
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 14px;
+  border: 0.5px solid var(--tg-separator);
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+// ─── Section label ───────────────────────────────────────────────────────────
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: calc(10px * var(--font-scale));
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 4px;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    color: var(--text-secondary);
+  }
+}
+
+.shiftMainRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ─── Check-in / Check-out two-column block ────────────────────────────────────
+.checkInOutRow {
+  display: flex;
+  gap: 24px;
+}
+
+.checkCol {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.checkColLabel {
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+.checkColSched {
+  font-size: calc(11px * var(--font-scale));
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+// ─── Row ─────────────────────────────────────────────────────────────────────
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+}
+
+.rowLabel {
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-secondary);
+}
+
+.rowValue {
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: right;
+}
+
+.rowValueSched {
+  color: var(--tg-badge-green-color);
+}
+
+.timeBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.timeBlockRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timeBlockSched {
+  font-size: calc(11px * var(--font-scale));
+  color: var(--tg-badge-green-color);
+}
+
+.divider {
+  height: 0.5px;
+  background: var(--tg-separator);
+  margin: 2px 0;
+}
+
+// ─── Badges ──────────────────────────────────────────────────────────────────
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badgeGreen {
+  background: var(--tg-badge-green-bg);
+  color: var(--tg-badge-green-color);
+  border: 1px solid var(--tg-badge-green-border);
+}
+.badgeAmber {
+  background: var(--tg-badge-amber-bg);
+  color: var(--tg-badge-amber-color);
+  border: 1px solid var(--tg-badge-amber-border);
+}
+.badgeBlue {
+  background: var(--tg-badge-blue-bg);
+  color: var(--tg-badge-blue-color);
+  border: 1px solid var(--tg-badge-blue-border);
+}
+.badgeRed {
+  background: var(--tg-badge-red-bg);
+  color: var(--tg-badge-red-color);
+  border: 1px solid var(--tg-badge-red-border);
+}
+.badgePurple {
+  background: var(--tg-badge-purple-bg);
+  color: var(--tg-badge-purple-color);
+  border: 1px solid var(--tg-badge-purple-border);
+}
+.badgePink {
+  background: var(--tg-badge-pink-bg);
+  color: var(--tg-badge-pink-color);
+  border: 1px solid var(--tg-badge-pink-border);
+}
+.badgeGray {
+  background: var(--tg-badge-gray-bg);
+  color: var(--tg-badge-gray-color);
+  border: 1px solid var(--tg-badge-gray-border);
+}
+
+// pulse dot for "inside" status
+.pulseDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tg-badge-green-color);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+// ─── Card header row (title + right element) ─────────────────────────────────
+.cardHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ─── Employee ─────────────────────────────────────────────────────────────────
+.empHead {
+  display: flex;
+  gap: 12px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--tg-badge-blue-bg);
+  border: 1.5px solid var(--tg-badge-blue-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(15px * var(--font-scale));
+  font-weight: 700;
+  color: var(--tg-badge-blue-color);
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
+
+  .avatarImage {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+.empInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.empName {
+  font-size: calc(18px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+.empPosition {
+  font-size: calc(12px * var(--font-scale));
+  color: var(--text-secondary);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ─── Current shift big time ───────────────────────────────────────────────────
+.bigTime {
+  font-size: calc(30px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: -0.4px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.bigTimeSub {
+  font-weight: 500;
+  font-size: calc(10px * var(--font-scale));
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+// ─── Month nav ────────────────────────────────────────────────────────────────
+.monthNav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.monthBtn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--tg-surface);
+  border: 0.5px solid var(--tg-separator);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  padding: 0;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    color: var(--text-secondary);
+  }
+
+  &:active {
+    background: var(--tg-hover);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+}
+
+.monthLabel {
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 600;
+  color: var(--text-color);
+  min-width: 64px;
+  text-align: center;
+}
+
+// ─── Month stat row ───────────────────────────────────────────────────────────
+.statRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+}
+
+.statRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+// ─── Branch card ──────────────────────────────────────────────────────────────
+.branchHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.branchIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--tg-badge-blue-bg);
+  border: 0.5px solid var(--tg-badge-blue-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: var(--tg-badge-blue-color);
+  }
+}
+
+.branchInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.branchName {
+  font-size: calc(16px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.branchAddr {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: calc(11px * var(--font-scale));
+  color: var(--text-secondary);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+    color: var(--text-secondary);
+  }
+}
+
+// ─── Date label ───────────────────────────────────────────────────────────────
+.dateLabel {
+  font-size: calc(11px * var(--font-scale));
+  color: var(--text-secondary);
+}
+
+// ─── Total banner ─────────────────────────────────────────────────────────────
+.totalBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--tg-surface);
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 0.5px solid var(--tg-separator);
+}
+
+.totalNum {
+  font-size: calc(30px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1;
+}
+
+.totalLabel {
+  font-size: calc(10px * var(--font-scale));
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+.totalBar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--tg-bar-track);
+  display: flex;
+  overflow: hidden;
+}
+
+.totalBarSegment {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+// ─── Status list ──────────────────────────────────────────────────────────────
+.statusList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--tg-surface);
+  border-radius: 10px;
+  padding: 9px 12px;
+  border: 0.5px solid var(--tg-separator);
+}
+
+.statusLeft {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.statusDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusName {
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-secondary);
+}
+
+.statusRight {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.statusCount {
+  font-size: calc(15px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+  min-width: 24px;
+  text-align: right;
+}
+
+.statusPct {
+  font-size: calc(11px * var(--font-scale));
+  min-width: 30px;
+  text-align: right;
+}
+
+// ─── Department bars ──────────────────────────────────────────────────────────
+.deptList {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.deptRow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.deptLabel {
+  font-size: calc(11px * var(--font-scale));
+  color: var(--text-secondary);
+  width: 65%;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deptBarWrap {
+  flex: 1;
+}
+
+.deptBarBg {
+  height: 6px;
+  background: var(--tg-bar-track);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.deptBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.deptNums {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.deptPresent {
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+}
+
+.deptTotal {
+  font-size: calc(10px * var(--font-scale));
+  color: var(--tg-present-total-color);
+}
+
+// ─── Clickable card ───────────────────────────────────────────────────────────
+.cardClickable {
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:active {
+    background: var(--tg-hover);
+  }
+}
+
+// ─── Clickable row ─────────────────────────────────────────────────────────────
+.rowClickable {
+  cursor: pointer;
+  border-radius: 8px;
+  margin: 0 -4px;
+  padding: 0 4px;
+  transition: background 0.15s;
+
+  &:active {
+    background: var(--tg-hover);
+  }
+}
+
+.rowChevron {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  opacity: 0.4;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    stroke: var(--text-color);
+  }
+}
+
+// ─── Clickable status row ─────────────────────────────────────────────────────
+.statusRowClickable {
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:active {
+    background: var(--tg-hover);
+  }
+}
+
+.statusChevron {
+  display: flex;
+  align-items: center;
+  opacity: 0.35;
+
+  svg {
+    width: 13px;
+    height: 13px;
+    stroke: var(--text-color);
+  }
+}
+
+// ─── Back button ──────────────────────────────────────────────────────────────
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--tg-badge-blue-color);
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+// ─── Employee list panel ──────────────────────────────────────────────────────
+.panelOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 300;
+  display: flex;
+  align-items: flex-end;
+}
+
+.panel {
+  width: 100%;
+  min-height: 50dvh;
+  max-height: 75dvh;
+  background: var(--card-bg);
+  border-radius: 20px 20px 0 0;
+  border-top: 0.5px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: calc(
+    env(safe-area-inset-bottom, 0px) + var(--tg-safe-area-inset-bottom, 0px)
+  );
+}
+
+.panelHandle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-color);
+  margin: 10px auto 6px;
+  flex-shrink: 0;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 16px 10px;
+  border-bottom: 0.5px solid var(--tg-separator);
+  flex-shrink: 0;
+}
+
+.panelTitle {
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.panelCloseBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--tg-surface);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: var(--text-secondary);
+  }
+
+  &:active {
+    background: var(--tg-hover);
+  }
+}
+
+.panelList {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 0 0;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::after {
+    content: "";
+    display: block;
+    height: 28px;
+  }
+}
+
+.panelEmpRow {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 16px;
+
+  &:active {
+    background: var(--tg-hover);
+  }
+}
+
+.panelAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--tg-badge-blue-bg);
+  border: 1px solid var(--tg-badge-blue-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 700;
+  color: var(--tg-badge-blue-color);
+  flex-shrink: 0;
+}
+
+.panelAvatarImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.panelEmpInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.panelEmpName {
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panelEmpSub {
+  font-size: calc(11px * var(--font-scale));
+  color: var(--text-secondary);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panelEmpty {
+  text-align: center;
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-secondary);
+  padding: 24px 0;
+}
+
+// ─── Panel search ─────────────────────────────────────────────────────────────
+.panelSearch {
+  padding: 6px 16px 8px;
+  flex-shrink: 0;
+}
+
+.panelSearchInput {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--tg-surface);
+  border: 0.5px solid var(--tg-separator);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-color);
+  outline: none;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+
+  &::placeholder {
+    color: var(--placeholder-color);
+  }
+
+  &:focus {
+    border-color: rgba(96, 165, 250, 0.4);
+    background: var(--tg-hover);
+  }
+}
+
+// ─── Time badges inside panel rows ───────────────────────────────────────────
+.panelTimeBadges {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
+.panelTimeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 600;
+  border: 0.5px solid;
+  white-space: nowrap;
+}
+
+.panelPulseDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--tg-badge-green-color);
+  animation: pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+// ─── All branch chevron ───────────────────────────────────────────────────────
+.allBranchChevron {
+  display: flex;
+  align-items: center;
+  opacity: 0.35;
+  margin-left: 4px;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--text-color);
+  }
+}
+
+// ─── Branch selector (branch mode, multiple branches) ─────────────────────────
+.branchSelector {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 4px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.branchPill {
+  flex-shrink: 0;
+  padding: 5px 13px;
+  border-radius: 20px;
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 600;
+  background: var(--tg-surface);
+  border: 0.5px solid var(--tg-separator);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+
+  &:active {
+    background: var(--tg-hover);
+  }
+}
+
+.branchPillActive {
+  background: var(--tg-badge-blue-bg);
+  border-color: var(--tg-badge-blue-border);
+  color: var(--tg-badge-blue-color);
+}
+
+// ─── Loading text ─────────────────────────────────────────────────────────────
+.loadingText {
+  font-size: calc(13px * var(--font-scale));
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 12px 0;
+}
+
+// ─── All Branches (absolute mode) ────────────────────────────────────────────
+.allBranchSummaryRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.allBranchSummaryItem {
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 600;
+}
+
+.allBranchCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.allBranchIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 0.5px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.allBranchNameBlock {
+  flex: 1;
+  min-width: 0;
+}
+
+.allBranchName {
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.allBranchAddr {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: calc(10px * var(--font-scale));
+  color: var(--text-secondary);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  svg {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    color: var(--text-secondary);
+  }
+}
+
+.allBranchCountBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.allBranchPresent {
+  color: var(--tg-present-color);
+  font-size: calc(18px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1;
+}
+
+.allBranchTotal {
+  font-size: calc(12px * var(--font-scale));
+  color: var(--tg-present-total-color);
+}
+
+.allBranchBarBg {
+  height: 5px;
+  background: var(--tg-bar-track);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.allBranchBarFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.allBranchMiniStats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.allBranchMiniStat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.allBranchMiniDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.allBranchMiniLabel {
+  font-size: calc(11px * var(--font-scale));
+  color: var(--text-secondary);
+}

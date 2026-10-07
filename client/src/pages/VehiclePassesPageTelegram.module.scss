@@ -1,0 +1,934 @@
+﻿// ─── Page layout ──────────────────────────────────────────────────────────────
+
+.page {
+  position: relative;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: var(--tg-bg);
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(
+    var(--tg-safe-area-inset-top, 0px) +
+      var(--tg-content-safe-area-inset-top, 0px)
+  );
+  z-index: 200;
+  pointer-events: none;
+  background: var(--tg-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.25s ease, backdrop-filter 0.25s ease;
+}
+
+.main {
+  width: 100%;
+  height: 100%;
+  background: var(--tg-bg);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// ─── Stats row ───────────────────────────────────────────────────────────────
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  padding: calc(
+      var(--tg-safe-area-inset-top, 0px) +
+        var(--tg-content-safe-area-inset-top, 0px) + 8px
+    )
+    10px 0;
+}
+
+.statWidget {
+  background: var(--card-bg);
+  border: 0.5px solid var(--tg-separator);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  transition: box-shadow 0.18s;
+}
+
+.statWidgetIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statWidgetContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.statWidgetLabel {
+  font-size: calc(10px * var(--font-scale));
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statWidgetValue {
+  font-size: calc(14px * var(--font-scale));
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+// ─── Sticky controls (presets + search + active filters) ────────────────────
+
+.stickyControls {
+  position: sticky;
+  top: calc(
+    var(--tg-safe-area-inset-top, 0px) +
+      var(--tg-content-safe-area-inset-top, 0px)
+  );
+  z-index: 100;
+  background: var(--tg-bg);
+}
+
+// ─── Presets row ─────────────────────────────────────────────────────────────
+
+.presetsRow {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.presetBtn {
+  flex-shrink: 0;
+  height: 30px;
+  padding: 0 12px;
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 500;
+  border-radius: 8px;
+  border: 0.5px solid var(--tg-separator);
+  background: var(--card-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &:active {
+    opacity: 0.8;
+  }
+}
+
+.presetActive {
+  background: var(--third-color, #4a90e2);
+  border-color: var(--third-color, #4a90e2);
+  color: #fff;
+}
+
+// ─── Search + filter row ──────────────────────────────────────────────────────
+
+.searchFilterRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px;
+  background: var(--tg-bg);
+}
+
+.searchBox {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--card-bg);
+  border: 0.5px solid var(--tg-separator);
+  border-radius: 10px;
+  padding: 0 10px;
+  height: 36px;
+}
+
+.searchIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.searchBox input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: calc(14px * var(--font-scale));
+  color: var(--text-color);
+  min-width: 0;
+
+  &::placeholder {
+    color: var(--placeholder-color);
+  }
+}
+
+.clearBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.filterBtn {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 0.5px solid var(--tg-separator);
+  background: var(--card-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+
+  svg {
+    color: var(--text-secondary);
+    width: 18px;
+    height: 18px;
+  }
+
+  &:active {
+    background: var(--tg-hover);
+  }
+}
+
+.filterBtnActive {
+  background: rgba(36, 129, 204, 0.18);
+  border-color: rgba(36, 129, 204, 0.4);
+}
+
+.filterBadge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  background: #ff3b30;
+  border-radius: 50%;
+  border: 1px solid var(--bg-color);
+}
+
+// ─── Active filters bar ───────────────────────────────────────────────────────
+
+.activeFiltersBar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0px 10px 5px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+  background: var(--tg-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.activeFiltersBar:empty {
+  display: none;
+}
+
+.activeFilterTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 8px 0 9px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: var(--tg-surface);
+  color: var(--text-secondary);
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    opacity: 0.7;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 2px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.55;
+    transition: opacity 0.15s;
+
+    &:active {
+      opacity: 1;
+    }
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}
+
+// ─── Card grid ───────────────────────────────────────────────────────────────
+
+.cardList {
+  flex: 1;
+  padding: 8px 10px 90px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  align-content: start;
+  -webkit-overflow-scrolling: touch;
+}
+
+.centerLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  height: 100vh;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: 40px;
+  font-size: calc(14px * var(--font-scale));
+}
+
+// ─── Bottom loader (dots) ─────────────────────────────────────────────────────
+
+.bottomLoader {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 0 4px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.bottomLoaderDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--third-color, #4a90e2);
+  opacity: 0.3;
+  animation: dotPulse 1.2s ease-in-out infinite;
+
+  &:nth-child(1) { animation-delay: 0s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.4s; }
+}
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+// ─── Vehicle card (vertical, Web-style) ──────────────────────────────────────
+
+.card {
+  position: relative;
+  background: var(--card-bg);
+  border: 0.5px solid var(--tg-separator);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+}
+
+// ─── Card photo ──────────────────────────────────────────────────────────────
+
+.cardPhoto {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #f3f3f4;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.cardPhotoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(162, 161, 168, 0.6);
+  background: linear-gradient(135deg, #f5f5f6 0%, #ecebed 100%);
+}
+
+.cardDirectionBadge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  z-index: 2;
+  font-size: calc(10px * var(--font-scale));
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.dirIn {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.dirOut {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.dirDefault {
+  background: #c1c1c1;
+  color: rgb(36, 36, 36);
+}
+
+// ─── Card photo actions (edit/delete) ────────────────────────────────────────
+
+.cardPhotoActions {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.cardPhotoDeleteBtn:only-child {
+  margin-left: auto;
+}
+
+.cardPhotoEditBtn,
+.cardPhotoDeleteBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  transition: opacity 0.15s;
+
+  &:active {
+    opacity: 0.75;
+  }
+}
+
+.cardPhotoEditBtn {
+  background: rgba(99, 102, 241, 0.72);
+
+  &:hover {
+    background: #6366f1;
+  }
+}
+
+.cardPhotoDeleteBtn {
+  background: rgba(220, 38, 38, 0.75);
+}
+
+// ─── Plate inline edit ────────────────────────────────────────────────────────
+
+.plateEditWrap {
+  margin: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.plateInput {
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  padding: 0 6px;
+  border-radius: 6px;
+  border: 1px solid var(--tg-separator);
+  background: var(--tg-bg);
+  color: var(--text-color);
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  outline: none;
+
+  &:focus {
+    border-color: var(--third-color, #4a90e2);
+  }
+}
+
+.savePlateBtn,
+.cancelPlateBtn {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.savePlateBtn {
+  background: rgba(22, 163, 74, 0.15);
+  color: #16a34a;
+}
+
+.cancelPlateBtn {
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+}
+
+// ─── License plate (styled) ─────────────────────────────────────────────────
+
+.cardPlate {
+  margin: 5px 0;
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  background: var(--card-bg);
+  border: 2px solid #222;
+  border-radius: 5px;
+  padding: 0 6px;
+  height: 22px;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.plateDivider {
+  width: 1px;
+  height: 100%;
+  background: #222;
+  margin: 0 3px;
+}
+
+.plateRegion {
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+  text-align: center;
+  padding-right: 1px;
+  line-height: 1;
+}
+
+.plateSeries,
+.plateSuffix {
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 1px;
+}
+
+.plateNumber {
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1;
+}
+
+.plateUzBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding-left: 4px;
+}
+
+.plateFlag {
+  width: 9px;
+  height: 5px;
+  border-radius: 1px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.flagBlue {
+  flex: 1;
+  background: #1eb5e4;
+}
+
+.flagWhite {
+  height: 1.5px;
+  background: var(--card-bg);
+}
+
+.flagGreen {
+  flex: 1;
+  background: #1aa04a;
+}
+
+.plateUz {
+  font-size: calc(8px * var(--font-scale));
+  font-weight: 700;
+  color: #1a7c3e;
+  line-height: 1;
+}
+
+// ─── Card details ───────────────────────────────────────────────────────────
+
+.cardDetails {
+  padding: 4px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardDetailRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: calc(11px * var(--font-scale));
+
+  svg {
+    flex-shrink: 0;
+    color: rgba(162, 161, 168, 0.7);
+  }
+}
+
+.cardDetailLabel {
+  color: rgba(100, 100, 110, 0.7);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cardDetailValue {
+  color: var(--text-color);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  text-align: right;
+}
+
+// ─── Filter screen ────────────────────────────────────────────────────────────
+
+.filterPage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--tg-bg);
+  color: var(--text-color);
+
+  .filterHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: calc(
+        var(--tg-safe-area-inset-top, 0px) +
+          var(--tg-content-safe-area-inset-top, 0px) + 6px
+      )
+      16px 6px;
+  }
+
+  .filterTitle {
+    font-size: calc(18px * var(--font-scale));
+    font-weight: 700;
+    color: var(--text-color);
+  }
+
+  .resetBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: calc(13px * var(--font-scale));
+    font-weight: 500;
+    color: var(--third-color, #4a90e2);
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.15s;
+
+    &:active {
+      background: var(--tg-hover);
+    }
+  }
+
+  .filterBody {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filterCard {
+    background: var(--card-bg);
+    border: 0.5px solid var(--tg-separator);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filterCardHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: calc(14px * var(--font-scale));
+    font-weight: 600;
+    color: var(--text-color);
+
+    svg {
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+  }
+
+  .filterRow {
+    display: flex;
+    gap: 8px;
+  }
+
+  .filterField {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .fieldLabel {
+    font-size: calc(11px * var(--font-scale));
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding-left: 2px;
+  }
+
+  .dateInput {
+    height: 40px;
+    width: 100%;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 1px solid var(--tg-separator);
+    font-size: calc(13px * var(--font-scale));
+    font-weight: 500;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--tg-bg);
+    color: var(--text-color);
+    appearance: none;
+    -webkit-appearance: none;
+
+    &:focus {
+      outline: none;
+      border-color: var(--third-color, #4a90e2);
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.12);
+    }
+  }
+
+  .chipGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid var(--tg-separator);
+    background: var(--tg-bg);
+    color: var(--text-color);
+    font-size: calc(13px * var(--font-scale));
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+
+  .chipActive {
+    border-color: var(--third-color, #4a90e2);
+    background: rgba(74, 144, 226, 0.12);
+    color: var(--third-color, #4a90e2);
+    font-weight: 600;
+
+    svg {
+      color: var(--third-color, #4a90e2);
+    }
+  }
+
+  .directionGroup {
+    display: flex;
+    gap: 8px;
+  }
+
+  .dirBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--tg-separator);
+    background: var(--tg-bg);
+    color: var(--text-secondary);
+    font-size: calc(13px * var(--font-scale));
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+
+  .dirBtnActive {
+    border-color: var(--third-color, #4a90e2);
+    background: rgba(74, 144, 226, 0.12);
+    color: var(--third-color, #4a90e2);
+    font-weight: 600;
+  }
+
+  .filterFooter {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    padding-bottom: calc(
+      env(safe-area-inset-bottom) + var(--tg-safe-area-inset-bottom, 0px) + 50px
+    );
+  }
+
+  .applyBtn {
+    width: 100%;
+    height: 48px;
+    border-radius: 12px;
+    border: none;
+    background: var(--third-color, #4a90e2);
+    color: #fff;
+    font-size: calc(15px * var(--font-scale));
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+
+    &:active {
+      opacity: 0.9;
+      transform: scale(0.98);
+    }
+  }
+}
+
+// ─── Stack Navigator ──────────────────────────────────────────────────────────
+
+.stackRoot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.screenActive {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.screenBehind {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.screenHidden {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}

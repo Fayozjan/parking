@@ -1,0 +1,223 @@
+.form {
+  position: relative;
+  padding-bottom: 8px;
+
+  .header {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+
+    h2 {
+      margin: 0;
+      padding: 0;
+      font-size: calc(var(--font-small) + 2px);
+    }
+  }
+
+  .row {
+    margin-top: 10px;
+    padding: 0 8px 8px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    > div {
+      flex: 1;
+    }
+
+    .fullWidth {
+      flex: 1 1 100%;
+    }
+  }
+
+  label {
+    display: block;
+    font-size: var(--font-small);
+    margin-bottom: 2px;
+    color: var(--text-secondary);
+  }
+
+  input,
+  select {
+    font-weight: 500;
+    width: 100%;
+    height: 30px;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: var(--font-small);
+    box-sizing: border-box;
+  }
+
+  .hiddenInput {
+    display: none;
+  }
+
+  // ── Зона загрузки ──────────────────────────────
+  .dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px 12px;
+    border: 1.5px dashed rgba(162, 161, 168, 0.5);
+    border-radius: 10px;
+    background: var(--bg-light);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.18s ease, background 0.18s ease,
+      transform 0.18s ease;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--third-color);
+      background: var(--card-bg);
+      outline: none;
+    }
+
+    &:hover .dropzoneIcon {
+      transform: translateY(-2px);
+      color: var(--third-color);
+    }
+  }
+
+  .dropzoneActive {
+    border-color: var(--third-color);
+    border-style: solid;
+    background: var(--card-bg);
+    transform: scale(1.01);
+
+    .dropzoneIcon {
+      color: var(--third-color);
+      transform: translateY(-2px);
+    }
+  }
+
+  .dropzoneIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.12);
+    color: #6366f1;
+    transition: transform 0.18s ease, color 0.18s ease;
+  }
+
+  .dropzoneTitle {
+    font-size: var(--font-small);
+    font-weight: 500;
+    color: var(--text-color);
+  }
+
+  .dropzoneHint {
+    font-size: calc(10px * var(--font-scale));
+    color: var(--placeholder-color);
+    letter-spacing: 0.04em;
+  }
+
+  // ── Карточка выбранного фото ───────────────────
+  .photoCard {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--card-bg);
+    animation: photoIn 0.22s ease;
+  }
+
+  .photoThumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 190px;
+    background: var(--bg-light);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    &:hover .photoOverlay {
+      opacity: 1;
+    }
+  }
+
+  .photoOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(17, 17, 27, 0.45);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .overlayBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #1f2937;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      transform: scale(1.08);
+      background: #fff;
+    }
+  }
+
+  .overlayBtnDanger:hover {
+    background: #dc2626;
+    color: #fff;
+  }
+
+  .photoMeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 10px;
+    border-top: 1px solid var(--border-color);
+    font-size: calc(11px * var(--font-scale));
+  }
+
+  .photoName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+
+  .photoSize {
+    flex-shrink: 0;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  @keyframes photoIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

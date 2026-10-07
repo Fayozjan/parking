@@ -1,0 +1,100 @@
+﻿.calendar_container {
+  max-width: 700px;
+  margin: 10px auto;
+  text-align: center;
+
+  @media (max-width: 1440px) {
+    max-width: 900px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+}
+
+.summary {
+  background: var(--table-header);
+  padding: 5px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 1440px) {
+    max-width: 900px;
+    text-align: start;
+    height: 100%;
+  }
+
+  h3 {
+    font-size: calc(18px * var(--font-scale));
+    margin: 0;
+  }
+
+  p {
+    margin: 5px 0;
+    font-size: calc(14px * var(--font-scale));
+  }
+
+  strong {
+    color: var(--text-color);
+  }
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-top: 10px;
+
+  @media (max-width: 1440px) {
+    margin-top: 0px;
+  }
+
+  .day {
+    background: var(--table-header);
+    border-radius: 8px;
+    padding: 5px;
+    min-height: 40px;
+    width: 80px;
+    position: relative;
+    font-size: calc(14px * var(--font-scale));
+    text-align: center;
+
+    @media (max-width: 600px) {
+      font-size: calc(12px * var(--font-scale));
+    }
+
+    @media (max-width: 1024px) {
+      font-size: calc(14px * var(--font-scale));
+    }
+
+    .day_number {
+      font-weight: bold;
+    }
+
+    .holiday {
+      background: #ffeb99;
+    }
+
+    .holiday_icon {
+      font-size: calc(14px * var(--font-scale));
+      position: absolute;
+      top: 1px;
+      right: 2px;
+      cursor: help;
+    }
+
+    .intervals {
+      font-size: calc(12px * var(--font-scale));
+    }
+
+    .total_hours {
+      font-size: calc(12px * var(--font-scale));
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .no_data {
+      color: var(--placeholder-color);
+    }
+  }
+}

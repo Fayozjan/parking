@@ -1,0 +1,263 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../prisma-clients/public"
+}
+
+enum NotificationSourceType {
+  anpr_pass
+  anpr_camera_offline
+  anpr_camera_online
+}
+
+model notifications_outbox {
+  id          Int                    @id @default(autoincrement())
+  source_type NotificationSourceType
+  event_date  DateTime               @db.Timestamptz(6)
+  chat_id     String                 @db.VarChar(255)
+  payload     Json
+  status      String                 @default("pending") @db.VarChar(50)
+  error       String?                @db.Text
+  retry_count Int                    @default(0)
+  created_at  DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime               @updatedAt @db.Timestamptz(6)
+
+  @@index([status, event_date])
+}
+
+model sessions {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  refresh_token String
+  ip_address    String?
+  user_agent    String?
+  added_at      DateTime  @default(now()) @db.Timestamptz(6)
+  expires_at    DateTime? @db.Timestamptz(6)
+  user_id       Int
+  user          users     @relation(fields: [user_id], references: [id])
+}
+
+model users {
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  password    String
+  telegram_id String?  @unique @db.VarChar(60)
+  first_name  String?  @db.VarChar(255)
+  last_name   String?  @db.VarChar(255)
+  avatar      String?  @db.VarChar(255)
+  status      Boolean  @default(true)
+  language    String   @default("ru")
+  theme       String   @default("light")
+  sidebar     String   @default("opened")
+  settings    Json?
+
+  // Доступ к просмотру парковок в ожидании (без выезда)
+  can_view_open_parkings Boolean @default(false)
+
+  // Часы (без даты), когда логину разрешён вход. Оба null = вход разрешён всегда.
+  access_from  DateTime? @db.Time(6)
+  access_until DateTime? @db.Time(6)
+
+  added_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  menuAccess            user_menu_access[]
+  sessions              sessions[]
+  auditLogs             audit_logs[]
+  locationTariffs       location_tariffs[]
+  locationTariffHistory location_tariff_history[]
+  vehicleWhitelist      vehicle_whitelist[]
+
+  @@index([telegram_id])
+}
+
+model menus {
+  id         Int    @id @default(autoincrement())
+  name       String @unique @db.VarChar(100)
+  path       String? @db.VarChar(255)
+  parent_id  Int?
+  parent     menus?  @relation("MenuHierarchy", fields: [parent_id], references: [id], onDelete: Cascade)
+  children   menus[] @relation("MenuHierarchy")
+  sort_order Int     @default(0)
+  module     String? @db.VarChar(50)
+
+  access user_menu_access[]
+}
+
+model user_menu_access {
+  id         Int     @id @default(autoincrement())
+  user_id    Int
+  menu_id    Int
+  can_view   Boolean @default(false)
+  can_add    Boolean @default(false)
+  can_update Boolean @default(false)
+  can_delete Boolean @default(false)
+
+  user users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  menu menus @relation(fields: [menu_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, menu_id])
+}
+
+model locations {
+  id                Int      @id @default(autoincrement())
+  name              String?  @db.VarChar(100)
+  telegram_chat_ids String[] @default([]) @db.VarChar(20)
+  status            Boolean? @default(true)
+  total_spots       Int?
+  free_period       Int?
+  shift_start       String?  @db.VarChar(5)
+  shift_end         String?  @db.VarChar(5)
+  latitude          Float?
+  longitude         Float?
+  added_at          DateTime @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime @default(now()) @db.Timestamptz(6)
+
+  cameras               anpr_cameras[]
+  vehiclePasses         vehicle_passes[]
+  locationTariffHistory location_tariff_history[]
+}
+
+model anpr_cameras {
+  id          Int      @id @default(autoincrement())
+  name        String?  @db.VarChar(100)
+  location_id Int
+  camera_ip   String   @unique @db.VarChar(50)
+  mac_address String?  @unique @db.VarChar(17)
+  port        Int?     @default(80)
+  direction   String?  @db.VarChar(10)
+  username    String?  @db.VarChar(50)
+  password    String?  @db.VarChar(100)
+  serial_number String?  @db.VarChar(100)
+  is_local      Boolean? @default(true)
+  min_confidence Int?    @default(50)
+  movement_direction String? @db.VarChar(10)
+  status        Boolean? @default(true)
+  is_online     Boolean? @default(true)
+  last_seen_at  DateTime? @db.Timestamptz(6)
+  added_at      DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  location      locations       @relation(fields: [location_id], references: [id], onDelete: Cascade)
+  vehiclePasses vehicle_passes[]
+}
+
+model vehicle_passes {
+  id             Int      @id @default(autoincrement())
+  location_id    Int
+  camera_id      Int?
+  plate_number   String   @db.VarChar(20)
+  direction      String?  @db.VarChar(10)
+  photo          String?
+  date           DateTime @db.Timestamptz(6)
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+  is_whitelisted Boolean  @default(false)
+  is_hidden      Boolean  @default(false)
+
+  location locations      @relation(fields: [location_id], references: [id])
+  camera   anpr_cameras?  @relation(fields: [camera_id], references: [id])
+}
+
+model whitelist_folders {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(100)
+  sort_order Int      @default(0)
+  added_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  entries vehicle_whitelist[]
+}
+
+model vehicle_whitelist {
+  id           Int      @id @default(autoincrement())
+  pattern      String   @db.VarChar(50)
+  mode         String   @db.VarChar(20)
+  description  String?  @db.VarChar(255)
+  location_ids Int[]    @default([])
+  folder_id    Int?
+  status       Boolean  @default(true)
+  added_at     DateTime @default(now()) @db.Timestamptz(6)
+  added_by     Int
+  addedBy      users              @relation(fields: [added_by], references: [id])
+  folder       whitelist_folders? @relation(fields: [folder_id], references: [id], onDelete: SetNull)
+
+  @@index([folder_id])
+}
+
+model camera_logs {
+  id               Int      @id @default(autoincrement())
+  mac_address      String   @db.VarChar(17)
+  license_plate    String   @db.VarChar(30)
+  confidence_level Int
+  event_date       DateTime @db.Timestamptz(6)
+  camera_id        Int?
+  camera_name      String?  @db.VarChar(100)
+  location_id      Int?
+  photo            String?
+  was_processed    Boolean  @default(false)
+  skip_reason      String?  @db.VarChar(50)
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([mac_address])
+  @@index([camera_id])
+  @@index([location_id])
+  @@index([created_at])
+}
+
+model audit_logs {
+  id        Int      @id @default(autoincrement())
+  entity    String   @db.VarChar(100)
+  record_id Int?
+  action    String   @db.VarChar(20)
+  old_data  Json?
+  new_data  Json?
+  user_id   Int?
+  added_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  user users? @relation(fields: [user_id], references: [id])
+
+  @@index([entity])
+  @@index([user_id])
+  @@index([added_at])
+}
+
+model location_tariffs {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(255)
+  price_type     String   @db.VarChar(20)
+  base_price     Decimal? @db.Decimal(12, 2)
+  effective_from DateTime @db.Date
+  is_active      Boolean  @default(true)
+  added_at       DateTime @default(now()) @db.Timestamptz(6)
+  added_by       Int
+
+  slots                 location_tariff_slots[]
+  locationTariffHistory location_tariff_history[]
+  addedBy               users @relation(fields: [added_by], references: [id])
+}
+
+model location_tariff_slots {
+  id          Int     @id @default(autoincrement())
+  tariff_id   Int
+  day_of_week Int?
+  hour_from   Int?
+  hour_to     Int?
+  price       Decimal @db.Decimal(12, 2)
+
+  tariff location_tariffs @relation(fields: [tariff_id], references: [id], onDelete: Cascade)
+}
+
+model location_tariff_history {
+  id          Int      @id @default(autoincrement())
+  location_id Int
+  tariff_id   Int
+  assigned_at DateTime @default(now()) @db.Date
+  added_by    Int
+
+  location locations         @relation(fields: [location_id], references: [id], onDelete: Cascade)
+  tariff   location_tariffs  @relation(fields: [tariff_id], references: [id])
+  addedBy  users             @relation(fields: [added_by], references: [id])
+
+  @@index([location_id, assigned_at])
+}

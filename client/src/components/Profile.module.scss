@@ -1,0 +1,238 @@
+﻿.profileWrapper {
+  padding: 10px;
+  border-top: 1px solid var(--border-subtle);
+  position: relative;
+
+  &:hover,
+  &.active {
+    background: var(--bg-light);
+  }
+
+  .profile {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.1s;
+    user-select: none;
+  }
+
+  // ─── Попап ────────────────────────────────────────────────
+  .popup {
+    width: 240px;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 10px;
+    right: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    box-shadow:
+      0 8px 30px rgba(0, 0, 0, 0.12),
+      0 2px 8px rgba(0, 0, 0, 0.06);
+    z-index: 100;
+
+    // Анимация появления снизу вверх
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+    pointer-events: none;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+
+    &.popupVisible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: all;
+    }
+  }
+
+  .popupHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .popupAvatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: var(--font-small);
+    color: #4f46e5;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  .popupUserInfo {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .popupName {
+    font-size: var(--font-small);
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .popupPosition {
+    font-size: calc(var(--font-small) - 1px);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+  }
+
+  .popupDivider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 0;
+  }
+
+  .popupMenu {
+    padding: 6px;
+  }
+
+  .popupItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: calc(13px * var(--font-scale));
+    color: var(--text-color);
+    text-align: left;
+    transition: background 0.1s;
+
+    svg {
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: var(--bg-light);
+    }
+
+    &.popupItemDanger {
+      color: #dc2626;
+
+      svg {
+        color: #dc2626;
+      }
+
+      &:hover {
+        background: #fef2f2;
+      }
+    }
+  }
+
+  // ─── Аватар и инфо (триггер) ──────────────────────────────
+  .profileAvatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: calc(13px * var(--font-scale));
+    color: #4f46e5;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  .profileInfo {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+
+    .profileName {
+      font-size: var(--font-small);
+      font-weight: 600;
+      color: var(--text-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profileRole {
+      font-size: calc(var(--font-small) - 1px);
+      color: var(--placeholder-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // ─── Top режим (в верхней панели, без сайдбара) ────────────
+  &.top {
+    padding: 4px 8px;
+    border-top: none;
+    border-radius: 8px;
+
+    // Попап открывается вниз от аватара
+    .popup {
+      top: calc(100% + 8px);
+      bottom: auto;
+      left: auto;
+      right: 0;
+    }
+
+    .profileInfo {
+      display: none;
+    }
+  }
+
+  // ─── Mini режим ───────────────────────────────────────────
+  &.mini {
+    .profile {
+      gap: 0;
+    }
+
+    .profileInfo {
+      display: none;
+    }
+
+    .profileAvatar {
+      width: 36px;
+      height: 36px;
+    }
+
+    // В mini попап выравниваем по левому краю аватара
+    .popup {
+      left: 10px;
+      right: 8px;
+      width: 240px;
+    }
+  }
+}

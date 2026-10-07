@@ -1,0 +1,16 @@
+﻿.dashboard {
+  h1 {
+    font-size: calc(20px * var(--font-scale));
+    margin: 0 10px;
+    color: #3052d8;
+
+    @media (min-width: 1280px) {
+      font-size: calc(18px * var(--font-scale));
+    }
+  }
+
+  .linechart {
+    margin: 20px;
+    width: 600px;
+  }
+}

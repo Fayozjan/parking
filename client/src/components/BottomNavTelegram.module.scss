@@ -1,0 +1,81 @@
+.bottomNav {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 20px calc(env(safe-area-inset-bottom, 0px) + 8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  background: var(--tg-bg);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+  border-top: 0.5px solid var(--tg-separator);
+}
+
+// ─── Nav items ───────────────────────────────────────────────────────────────
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 2px 16px;
+  min-width: 0;
+  flex: 1;
+  max-width: 120px;
+  z-index: 101;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  &.active {
+    color: var(--text-color);
+
+    .label {
+      font-weight: 700;
+    }
+
+    .icon {
+      transform: scale(1.1) translateY(-1px);
+    }
+  }
+
+  &:active .icon {
+    transform: scale(0.9);
+  }
+}
+
+.icon {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  svg {
+    width: 26px;
+    height: 26px;
+    fill: currentColor;
+    transition: fill 0.2s ease;
+  }
+}
+
+.label {
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 72px;
+  transition: font-weight 0.2s;
+}

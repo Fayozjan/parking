@@ -1,0 +1,12 @@
+﻿.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: calc(env(safe-area-inset-top) + 12px);
+
+  .title {
+    color: var(--text-color);
+    font-size: calc(16px * var(--font-scale));
+    font-weight: 600;
+  }
+}

@@ -1,0 +1,94 @@
+﻿.tableContainer {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+
+  @media (max-width: 1400px) {
+    overflow-x: auto;
+  }
+}
+
+.table {
+  width: 100%;
+  min-width: 1300px;
+  border-collapse: collapse;
+  font-size: var(--font-small);
+
+  thead {
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    z-index: 10;
+  }
+
+  .headerContent {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: calc(11px * var(--font-scale));
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  th,
+  td {
+    padding: 2px;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+  }
+
+  .employee {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .actions svg {
+    margin-left: 5px;
+    cursor: pointer;
+    transition: 0.1s;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* Просрочен */
+  .expired {
+    background: rgba(220, 38, 38, 0.12);
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+    font-size: calc(12px * var(--font-scale));
+  }
+
+  .today {
+    background: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    font-size: calc(12px * var(--font-scale));
+  }
+
+  /* Скоро — оранжевый */
+  .soon {
+    background: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    font-size: calc(12px * var(--font-scale));
+  }
+}

@@ -1,0 +1,404 @@
+.vehiclePassesPages {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+
+  .main {
+    padding: 2px;
+    background-color: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+
+    // ── Stats ──────────────────────────────────────
+    .statsGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 7px;
+      padding: 6px 5px 3px;
+      flex-shrink: 0;
+    }
+
+    .statWidget {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 8px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      transition: box-shadow 0.18s, transform 0.18s;
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+    }
+
+    .statWidgetInner {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .statWidgetIcon {
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .statWidgetContent {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .statWidgetLabel {
+      font-size: var(--font-widget-label);
+      color: var(--text-secondary);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .statWidgetValue {
+      font-size: var(--font-widget-value);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+    }
+
+    .statWidgetSub {
+      font-size: var(--font-widget-sub);
+      font-weight: 500;
+      color: var(--placeholder-color);
+    }
+
+    .statWidgetProgressTrack {
+      height: 3px;
+      background: var(--bg-light);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .statWidgetProgressFill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    // ── Controls bar ───────────────────────────────
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 5px;
+      flex-shrink: 0;
+      border-bottom: 1px solid rgba(162, 161, 168, 0.15);
+
+      .leftControls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .rightControls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .presetSelectWrap {
+        position: relative;
+
+        &::after {
+          content: "▾";
+          position: absolute;
+          right: 9px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+          color: var(--text-secondary);
+          font-size: var(--font-small);
+        }
+
+        .presetSelect {
+          -webkit-appearance: none;
+          appearance: none;
+          height: 30px;
+          padding: 0 26px 0 10px;
+          border-radius: 4px;
+          border: 1px solid rgba(162, 161, 168, 0.4);
+          background: var(--card-bg);
+          color: var(--text-color);
+          font-size: var(--font-small);
+          font-weight: 500;
+          font-family: inherit;
+          cursor: pointer;
+          min-width: 120px;
+          transition: border-color 0.15s;
+
+          &:hover,
+          &:focus {
+            border-color: var(--third-color);
+            outline: none;
+          }
+        }
+      }
+
+      .filterGroup {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: nowrap;
+      }
+
+      .locationGroup {
+        min-width: 190px;
+        max-width: 260px;
+      }
+
+      .dirSelectWrap {
+        position: relative;
+
+        &::after {
+          content: "▾";
+          position: absolute;
+          right: 9px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+          color: var(--text-secondary);
+          font-size: var(--font-small);
+        }
+
+        .dirSelect {
+          -webkit-appearance: none;
+          appearance: none;
+          height: 30px;
+          padding: 0 28px 0 10px;
+          border-radius: 4px;
+          border: 1px solid rgba(162, 161, 168, 0.4);
+          background: var(--card-bg);
+          color: var(--text-color);
+          font-size: var(--font-small);
+          font-family: inherit;
+          cursor: pointer;
+          min-width: 130px;
+          transition: border-color 0.15s;
+
+          &:hover,
+          &:focus {
+            border-color: var(--third-color);
+            outline: none;
+          }
+        }
+      }
+
+      .dateSep {
+        color: var(--text-secondary);
+        font-size: var(--font-small);
+      }
+
+      .dateInput {
+        height: 30px;
+        padding: 0 6px;
+        font-size: var(--font-small);
+        border-radius: 4px;
+        border: 1px solid rgba(162, 161, 168, 0.4);
+        background: var(--card-bg);
+        color: var(--text-color);
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: border-color 0.15s;
+
+        &:hover,
+        &:focus {
+          outline: none;
+          border-color: var(--third-color);
+        }
+      }
+
+      .applyBtn {
+        height: 30px;
+        padding: 0 14px;
+        font-size: var(--font-small);
+        font-weight: 600;
+        border-radius: 4px;
+        border: none;
+        background: var(--third-color);
+        color: #fff;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: opacity 0.15s;
+
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+
+      .refreshBtn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 4px;
+        border: 1px solid rgba(162, 161, 168, 0.4);
+        background: var(--card-bg);
+        cursor: pointer;
+        color: var(--text-secondary);
+        transition: border-color 0.15s, color 0.15s;
+
+        &:hover {
+          border-color: var(--third-color);
+          color: var(--third-color);
+        }
+      }
+    }
+
+    // ── Table sub-header ───────────────────────────
+    .tableSubHeader {
+      display: flex;
+      align-items: center;
+      padding: 4px 5px;
+      flex-shrink: 0;
+      gap: 10px;
+    }
+
+    .tableSubHeaderSpacer {
+      flex: 1;
+    }
+
+    .tableSubHeaderRight {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    // ── View dropdown ──────────────────────────────
+    .customDropdown {
+      position: relative;
+      display: inline-block;
+      width: 120px;
+
+      button {
+        width: 100%;
+        height: 30px;
+        padding: 0 6px;
+        font-size: var(--font-small);
+        font-weight: 500;
+        border-radius: 4px;
+        border: 1px solid rgba(162, 161, 168, 0.4);
+        background-color: var(--card-bg);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        gap: 8px;
+
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      ul {
+        font-size: var(--font-small);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        margin: 4px 0 0 0;
+        padding: 4px 0;
+        list-style: none;
+        background-color: var(--card-bg);
+        border: 1px solid rgba(162, 161, 168, 0.4);
+        border-radius: 4px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+
+        li {
+          padding: 6px 10px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          transition: background 0.2s;
+
+          &:hover {
+            background-color: var(--select-hover-color);
+          }
+
+          svg {
+            margin-right: 6px;
+            width: 16px;
+            height: 16px;
+          }
+        }
+      }
+    }
+
+    // ── Search input ───────────────────────────────
+    .searchInput {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 220px;
+      width: 250px;
+      max-width: 280px;
+      border-radius: 4px;
+      border: 1px solid rgba(162, 161, 168, 0.4);
+      height: 30px;
+      padding: 0 10px;
+      font-weight: 600;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+
+      input {
+        width: 100%;
+        height: 90%;
+        font-size: var(--font-small);
+      }
+
+      svg {
+        cursor: pointer;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+
+      &:hover,
+      &:focus-within {
+        border: 1px solid var(--third-color);
+      }
+
+      .clearBtn {
+        position: absolute;
+        right: 2px;
+      }
+    }
+  }
+}

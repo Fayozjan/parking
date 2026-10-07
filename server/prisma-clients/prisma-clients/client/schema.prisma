@@ -1,0 +1,799 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("CLIENT_DATABASE_URL") // динамически подставляем schema клиента
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../prisma-clients/client" // отдельный клиент
+}
+
+model branches {
+  id           Int     @id @default(autoincrement())
+  name         String  @unique @db.VarChar(255)
+  status       Boolean @default(true)
+  director_id  Int?
+  region       String? @db.VarChar(255)
+  address      String? @db.VarChar(500)
+  bank_name    String? @db.VarChar(255)
+  bank_account String? @db.VarChar(255)
+  inn          String? @db.VarChar(50)
+  mfo          String? @db.VarChar(10)
+
+  added_at DateTime @default(now()) @db.Timestamptz(6)
+  added_by Int
+
+  director         employees?          @relation("BranchDirector", fields: [director_id], references: [id])
+  employmentOrders employment_orders[]
+  employees        employees[]
+  gates            gates[]
+  vehiclePasses    vehicle_passes[]
+  departments      departments[]
+  doors            doors[]
+  addedBy          users               @relation(fields: [added_by], references: [id])
+  warehouses       warehouses[]
+}
+
+model departments {
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(255)
+  status    Boolean  @default(true)
+  branch_id Int
+  added_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  employmentOrders  employment_orders[]
+  employees         employees[]
+  branch            branches            @relation(fields: [branch_id], references: [id])
+  staffingPositions staffing_position[]
+}
+
+model employment_orders {
+  id            Int       @id @default(autoincrement())
+  employee_id   Int?
+  type          String?   @db.VarChar(50)
+  date          DateTime? @db.Date
+  branch_id     Int?
+  department_id Int?
+  position_id   Int?
+  order_number  String?   @db.VarChar(100)
+  note          String?
+  added_at      DateTime  @default(now()) @db.Timestamptz(6)
+
+  branch     branches?    @relation(fields: [branch_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  department departments? @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  position   positions?   @relation(fields: [position_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee   employees?   @relation(fields: [employee_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model employees {
+  id                   Int       @id @default(autoincrement())
+  employee_number      String?   @unique
+  last_name            String?
+  first_name           String?
+  middle_name          String?   @db.VarChar(255)
+  date_of_birth        DateTime? @db.Date
+  gender               String?   @db.VarChar(255)
+  passport             String?   @db.VarChar(255)
+  passport_expiry_date DateTime? @db.Date
+  pinfl                String?   @unique @db.VarChar(255)
+  education            String?   @db.VarChar(255)
+  phone                String?   @db.VarChar(255)
+  email                String?   @db.VarChar(255)
+  address              String?   @db.VarChar(255)
+  status               Boolean?  @default(true)
+  photo                String?   @db.VarChar(255)
+  branch_id            Int?
+  department_id        Int?
+  position_id          Int?
+  work_schedule_id     Int?
+  education_specialty  String?   @db.VarChar(500)
+  added_at             DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  branch                  branches?                   @relation(fields: [branch_id], references: [id])
+  department              departments?                @relation(fields: [department_id], references: [id])
+  position                positions?                  @relation(fields: [position_id], references: [id])
+  workSchedule            work_schedules?             @relation(fields: [work_schedule_id], references: [id])
+  employeeScheduleHistory employee_schedule_history[]
+  employeeSalaryHistory   employee_salary_history[]
+  employmentOrders        employment_orders[]
+  employeeTimeOffs        time_off[]                  @relation("employeeTimeOffs")
+  facePasses              face_passes[]
+  doors                   doors[]
+  user                    users?
+  directedBranches        branches[]                  @relation("BranchDirector")
+  payrollSheetItems       payroll_sheet_items[]
+  salaryAdvances          salary_advances[]
+
+  @@index([branch_id])
+  @@index([department_id])
+}
+
+model face_passes {
+  id              Int      @id @default(autoincrement())
+  date            DateTime @db.Timestamptz(6)
+  identifier      String   @unique @db.VarChar(50)
+  photo           String?  @db.VarChar(255)
+  employee_id     Int
+  door_id         Int?
+  face_devices_id Int?
+  direction       String?  @db.VarChar(10)
+  source          String?  @db.VarChar(20)
+  latitude        Float?
+  longitude       Float?
+  added_at        DateTime @default(now()) @db.Timestamptz(6)
+
+  employee   employees     @relation(fields: [employee_id], references: [id])
+  faceDevice face_devices? @relation(fields: [face_devices_id], references: [id])
+  door       doors?        @relation(fields: [door_id], references: [id])
+
+  @@index([employee_id, date])
+}
+
+model holidays {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  date_from DateTime @db.Date
+  date_to   DateTime @db.Date
+  added_by  Int
+  added_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  addedBy users @relation(fields: [added_by], references: [id])
+}
+
+model positions {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique @db.VarChar(255)
+  status   Boolean  @default(true)
+  added_at DateTime @default(now()) @db.Timestamptz(6)
+
+  employmentOrders  employment_orders[]
+  employees         employees[]
+  staffingPositions staffing_position[]
+}
+
+model sessions {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  refresh_token String
+  ip_address    String?
+  user_agent    String?
+  added_at      DateTime  @default(now()) @db.Timestamptz(6)
+  expires_at    DateTime? @db.Timestamptz(6)
+  user_id       Int
+  user          users     @relation(fields: [user_id], references: [id])
+}
+
+model telegram_bots {
+  id                        Int      @id @default(autoincrement())
+  name                      String?  @unique @db.VarChar(255)
+  chat_id                   String?  @unique @db.VarChar(255)
+  selectedEmployeeIds       Int[]
+  receive_late_report       Boolean?
+  receive_event_alerts      Boolean?
+  receive_attendance_report Boolean?
+  status                    Boolean? @default(true)
+  added_at                  DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model time_off {
+  id              Int      @id @default(autoincrement())
+  employee_id     Int
+  reason          String
+  date_from       DateTime @db.Timestamptz(6)
+  date_to         DateTime @db.Timestamptz(6)
+  added_by        Int
+  added_at        DateTime @default(now()) @db.Timestamptz(6)
+  is_company_paid Boolean  @default(false)
+  type            String   @default("hour") @db.VarChar(10)
+  credited_hours  Int?     @default(0)
+
+  addedBy  users     @relation(fields: [added_by], references: [id])
+  employee employees @relation("employeeTimeOffs", fields: [employee_id], references: [id])
+}
+
+model timesheet {
+  id           Int      @id @default(autoincrement())
+  month        Int
+  year         Int
+  day          Int?
+  worked_hours String?  @db.VarChar
+  intervals    String[]
+  user_id      Int
+}
+
+model users {
+  id                Int      @id @default(autoincrement())
+  username          String   @unique
+  password          String
+  telegram_id       String?  @unique @db.VarChar(60)
+  employee_id       Int?
+  status            Boolean  @default(true)
+  access_level      String?
+  branch_access     Int[]
+  department_access Int[]
+  language          String   @default("ru")
+  theme             String   @default("light")
+  sidebar           String   @default("opened")
+  view_mode         String   @default("branch")
+  personal_menus    String[] @default([])
+  active_branch_id  Int?
+  ignore_gps_check  Boolean  @default(false)
+  settings          Json?
+  added_at          DateTime @default(now()) @db.Timestamptz(6)
+
+  employee                   employees?                  @relation(fields: [employee_id], references: [id])
+  menuAccess                 user_menu_access[]
+  sessions                   sessions[]
+  holidays                   holidays[]
+  branches                   branches[]
+  timeOff                    time_off[]
+  employeeScheduleHistory    employee_schedule_history[]
+  employeeSalaryHistory      employee_salary_history[]
+  payrollSheetsAdded         payroll_sheets[]            @relation("PayrollAddedBy")
+  payrollSheetsApproved      payroll_sheets[]            @relation("PayrollApprovedBy")
+  salaryAdvancesGiven        salary_advances[]           @relation("AdvancesGivenBy")
+  stock_pickings_added       stock_pickings[]
+  manufacturing_orders_added manufacturing_orders[]
+
+  @@unique([employee_id], map: "unique_employee_per_user")
+  @@index([employee_id])
+  @@index([telegram_id])
+}
+
+model menus {
+  id         Int     @id @default(autoincrement())
+  name       String  @unique @db.VarChar(100)
+  path       String? @db.VarChar(255)
+  parent_id  Int?
+  parent     menus?  @relation("MenuHierarchy", fields: [parent_id], references: [id], onDelete: Cascade)
+  children   menus[] @relation("MenuHierarchy")
+  sort_order Int     @default(0)
+  module     String? @db.VarChar(50) // null = всегда видно (home, settings)
+
+  access user_menu_access[]
+}
+
+model user_menu_access {
+  id         Int     @id @default(autoincrement())
+  user_id    Int
+  menu_id    Int
+  can_view   Boolean @default(false)
+  can_add    Boolean @default(false)
+  can_update Boolean @default(false)
+  can_delete Boolean @default(false)
+
+  user users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  menu menus @relation(fields: [menu_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, menu_id])
+}
+
+model work_schedules {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(255)
+  type         String?  @db.VarChar // fixed | shift | flexible
+  weekly_days  Int? // только для fixed
+  weekly_hours Int?
+  work_days    Json? // массив объектов для fixed
+  shifts       Json? // массив объектов для shift
+  added_at     DateTime @default(now()) @db.Timestamptz(6)
+  status       Boolean? @default(true)
+
+  // Допустимые окна опоздания/ухода (минуты)
+  late_tolerance_minutes        Int? @default(0)
+  early_leave_tolerance_minutes Int? @default(0)
+  late_leave_tolerance_minutes  Int? @default(0)
+
+  // Метод расчёта отработанного времени для fixed/remote
+  // by_period  — сумма всех пар вход/выход
+  // first_last — от первого входа до последнего выхода
+  time_calc_method String? @default("by_period") @db.VarChar
+
+  employees               employees[]
+  employeeScheduleHistory employee_schedule_history[]
+}
+
+model employee_schedule_history {
+  id               Int       @id @default(autoincrement())
+  employee_id      Int
+  work_schedule_id Int
+  date_from        DateTime  @db.Date
+  date_to          DateTime? @db.Date
+  added_at         DateTime  @default(now())
+  added_by         Int
+
+  // relations
+  employee     employees      @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  workSchedule work_schedules @relation(fields: [work_schedule_id], references: [id])
+  addedBy      users          @relation(fields: [added_by], references: [id])
+
+  @@index([employee_id, date_from])
+  @@index([employee_id, date_to])
+}
+
+model employee_salary_history {
+  id          Int       @id @default(autoincrement())
+  employee_id Int
+  salary_type String    @db.VarChar(20) // monthly | hourly | piecework
+  amount      Decimal   @db.Decimal(15, 2)
+  date_from   DateTime  @db.Date
+  date_to     DateTime? @db.Date
+  note        String?
+  added_at    DateTime  @default(now()) @db.Timestamptz(6)
+  added_by    Int
+
+  employee employees @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  addedBy  users     @relation(fields: [added_by], references: [id])
+
+  @@index([employee_id, date_from])
+}
+
+model doors {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(255)
+  status    Boolean  @default(true)
+  branch_id Int?
+  latitude  Float?
+  longitude Float?
+  added_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  branch      branches?      @relation(fields: [branch_id], references: [id], onDelete: SetNull)
+  employees   employees[]
+  faceDevices face_devices[]
+  facePasses  face_passes[]
+}
+
+model face_devices {
+  id            Int      @id @default(autoincrement())
+  name          String?  @db.VarChar(100)
+  door_id       Int
+  device_ip     String   @unique @db.VarChar(50)
+  serial_number String?  @db.VarChar(50)
+  port          Int?     @default(80)
+  direction     String?  @db.VarChar(10)
+  password      String?  @db.VarChar(100)
+  status        Boolean? @default(true)
+  is_local      Boolean  @default(false)
+  added_at      DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  door       doors         @relation(fields: [door_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  facePasses face_passes[]
+}
+
+model gates {
+  id                Int      @id @default(autoincrement())
+  name              String?  @db.VarChar(100)
+  branch_id         Int?
+  telegram_chat_ids String[] @default([]) @db.VarChar(20)
+  status            Boolean? @default(true)
+
+  added_at   DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  branch        branches?        @relation(fields: [branch_id], references: [id], onDelete: Cascade)
+  cameras       anpr_cameras[]
+  vehiclePasses vehicle_passes[]
+}
+
+model anpr_cameras {
+  id          Int     @id @default(autoincrement())
+  name        String? @db.VarChar(100)
+  gate_id     Int
+  camera_ip   String  @unique @db.VarChar(50)
+  mac_address String? @unique @db.VarChar(17)
+  port        Int?    @default(80)
+  direction   String? @db.VarChar(10)
+  username    String? @db.VarChar(50)
+  password    String? @db.VarChar(100)
+
+  status Boolean? @default(true)
+
+  added_at   DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  gate gates @relation(fields: [gate_id], references: [id], onDelete: Cascade)
+
+  vehiclePasses vehicle_passes[]
+}
+
+model vehicle_passes {
+  id           Int     @id @default(autoincrement())
+  branch_id    Int?
+  gate_id      Int
+  camera_id    Int?
+  plate_number String  @db.VarChar(20)
+  direction    String? @db.VarChar(10)
+  photo        String?
+
+  date       DateTime @db.Timestamptz(6)
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  branch branches?     @relation(fields: [branch_id], references: [id])
+  gate   gates         @relation(fields: [gate_id], references: [id])
+  camera anpr_cameras? @relation(fields: [camera_id], references: [id])
+}
+
+model payroll_sheets {
+  id          Int       @id @default(autoincrement())
+  month       Int
+  year        Int
+  status      String    @default("draft") @db.VarChar(20)
+  added_by    Int
+  added_at    DateTime  @default(now()) @db.Timestamptz(6)
+  approved_by Int?
+  approved_at DateTime? @db.Timestamptz(6)
+
+  items      payroll_sheet_items[]
+  addedBy    users                 @relation("PayrollAddedBy", fields: [added_by], references: [id])
+  approvedBy users?                @relation("PayrollApprovedBy", fields: [approved_by], references: [id])
+
+  @@unique([month, year])
+}
+
+model payroll_sheet_items {
+  id                 Int     @id @default(autoincrement())
+  sheet_id           Int
+  employee_id        Int
+  base_salary        Decimal @db.Decimal(15, 2)
+  salary_type        String  @db.VarChar(20)
+  worked_days        Int     @default(0)
+  total_work_days    Int     @default(0)
+  worked_hours       String? @db.VarChar(10)
+  total_work_hours   String? @db.VarChar(10)
+  accrued            Decimal @db.Decimal(15, 2)
+  debt_balance       Decimal @default(0) @db.Decimal(15, 2)
+  debt_deduction     Decimal @default(0) @db.Decimal(15, 2)
+  debt_mode          String  @default("skip") @db.VarChar(20)
+  debt_comment       String?
+  manual_adjustment  Decimal @default(0) @db.Decimal(15, 2)
+  adjustment_comment String?
+  late_minutes       Int     @default(0)
+  overtime_minutes   Int     @default(0)
+  apply_late         Boolean @default(false)
+  apply_overtime     Boolean @default(false)
+  late_amount        Decimal @default(0) @db.Decimal(15, 2)
+  overtime_amount    Decimal @default(0) @db.Decimal(15, 2)
+  advance_total      Decimal @default(0) @db.Decimal(15, 2)
+  net                Decimal @db.Decimal(15, 2)
+  salary_balance     Decimal @default(0) @db.Decimal(15, 2)
+  paid_amount        Decimal @default(0) @db.Decimal(15, 2)
+  status             String  @default("draft") @db.VarChar(20)
+  payout_status      String  @default("unpaid") @db.VarChar(20)
+
+  sheet       payroll_sheets         @relation(fields: [sheet_id], references: [id], onDelete: Cascade)
+  employee    employees              @relation(fields: [employee_id], references: [id])
+  paymentLogs payroll_payment_logs[]
+
+  @@unique([sheet_id, employee_id])
+  @@index([sheet_id])
+}
+
+model payroll_payment_logs {
+  id           Int      @id @default(autoincrement())
+  item_id      Int
+  amount       Decimal  @db.Decimal(15, 2)
+  payment_date DateTime @db.Date
+  note         String?
+  added_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  item payroll_sheet_items @relation(fields: [item_id], references: [id], onDelete: Cascade)
+
+  @@index([item_id])
+}
+
+model salary_advances {
+  id           Int      @id @default(autoincrement())
+  employee_id  Int
+  amount       Decimal  @db.Decimal(15, 2)
+  advance_date DateTime @db.Date
+  note         String?
+  given_by     Int
+  added_at     DateTime @default(now()) @db.Timestamptz(6)
+
+  employee employees @relation(fields: [employee_id], references: [id])
+  givenBy  users     @relation("AdvancesGivenBy", fields: [given_by], references: [id])
+
+  @@index([employee_id])
+  @@index([advance_date])
+}
+
+model product_categories {
+  id        Int     @id @default(autoincrement())
+  parent_id Int?
+  name      String  @db.VarChar(255)
+  status    Boolean @default(true)
+
+  parent   product_categories?  @relation("CategoryParent", fields: [parent_id], references: [id])
+  children product_categories[] @relation("CategoryParent")
+  products products[]
+}
+
+model products {
+  id          Int      @id @default(autoincrement())
+  category_id Int?
+  name        String   @db.VarChar(255)
+  sku         String?  @db.VarChar(100)
+  barcode     String?  @db.VarChar(100)
+  description String?
+  min_stock   Int?     @default(0)
+  status      Boolean  @default(true)
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  category             product_categories?    @relation(fields: [category_id], references: [id])
+  stock_moves          stock_moves[]
+  stock_lots           stock_lots[]
+  stock_quants         stock_quants[]
+  bill_of_materials    bill_of_materials[]
+  bom_lines            bom_lines[]
+  manufacturing_orders manufacturing_orders[]
+}
+
+model stock_locations {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(255)
+  usage        String   @db.VarChar(20)
+  warehouse_id Int?
+  is_system    Boolean  @default(false)
+  note         String?
+  status       Boolean  @default(true)
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  warehouse             warehouses?            @relation("LocationWarehouse", fields: [warehouse_id], references: [id], onDelete: SetNull)
+  src_moves             stock_moves[]          @relation("MoveSrc")
+  dest_moves            stock_moves[]          @relation("MoveDest")
+  quants                stock_quants[]
+  mo_src_locations      manufacturing_orders[] @relation("MOSrc")
+  mo_dest_locations     manufacturing_orders[] @relation("MODest")
+  partner_supplier_locs partners[]             @relation("PartnerSupplierLoc")
+  partner_customer_locs partners[]             @relation("PartnerCustomerLoc")
+}
+
+model stock_lots {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  product_id  Int
+  ref         String?   @db.VarChar(255)
+  expiry_date DateTime? @db.Date
+  note        String?
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+
+  product              products               @relation(fields: [product_id], references: [id])
+  moves                stock_moves[]
+  quants               stock_quants[]
+  manufacturing_orders manufacturing_orders[]
+}
+
+model stock_picking_types {
+  id                Int      @id @default(autoincrement())
+  name              String   @db.VarChar(255)
+  code              String   @db.VarChar(50)
+  sequence_prefix   String?  @db.VarChar(10)
+  src_entity_type   String?  @db.VarChar(50)
+  dest_entity_type  String?  @db.VarChar(50)
+  use_create_lots   Boolean  @default(false)
+  use_existing_lots Boolean  @default(false)
+  status            Boolean  @default(true)
+  created_at        DateTime @default(now()) @db.Timestamptz(6)
+
+  pickings stock_pickings[]
+}
+
+model stock_pickings {
+  id                Int       @id @default(autoincrement())
+  name              String?   @db.VarChar(100)
+  type_id           Int
+  partner_id        Int?
+  src_partner_id    Int?
+  dest_partner_id   Int?
+  src_warehouse_id  Int?
+  dest_warehouse_id Int?
+  origin            String?   @db.VarChar(500)
+  state             String    @default("draft") @db.VarChar(20)
+  scheduled_date    DateTime? @db.Timestamptz(6)
+  date_done         DateTime? @db.Timestamptz(6)
+  note              String?
+  added_by          Int?
+  created_at        DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime  @updatedAt @db.Timestamptz(6)
+
+  picking_type   stock_picking_types @relation(fields: [type_id], references: [id])
+  partner        partners?           @relation(fields: [partner_id], references: [id])
+  src_partner    partners?           @relation("PickingSrcPartner", fields: [src_partner_id], references: [id])
+  dest_partner   partners?           @relation("PickingDestPartner", fields: [dest_partner_id], references: [id])
+  src_warehouse  warehouses?         @relation("PickingSrcWarehouse", fields: [src_warehouse_id], references: [id])
+  dest_warehouse warehouses?         @relation("PickingDestWarehouse", fields: [dest_warehouse_id], references: [id])
+  added_by_user  users?              @relation(fields: [added_by], references: [id])
+  moves          stock_moves[]
+
+  @@index([state])
+  @@index([type_id])
+}
+
+model stock_moves {
+  id               Int      @id @default(autoincrement())
+  picking_id       Int?
+  product_id       Int
+  lot_id           Int?
+  unit_id          Int?
+  qty_demand       Decimal  @db.Decimal(15, 4)
+  qty_done         Decimal  @default(0) @db.Decimal(15, 4)
+  location_src_id  Int
+  location_dest_id Int
+  state            String   @default("draft") @db.VarChar(20)
+  price_unit       Decimal? @db.Decimal(15, 4)
+  reference        String?  @db.VarChar(255)
+  date             DateTime @default(now()) @db.Timestamptz(6)
+  note             String?
+  added_by         Int?
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+
+  picking                stock_pickings?       @relation(fields: [picking_id], references: [id])
+  product                products              @relation(fields: [product_id], references: [id])
+  lot                    stock_lots?           @relation(fields: [lot_id], references: [id])
+  unit                   units?                @relation(fields: [unit_id], references: [id])
+  location_src           stock_locations       @relation("MoveSrc", fields: [location_src_id], references: [id])
+  location_dest          stock_locations       @relation("MoveDest", fields: [location_dest_id], references: [id])
+  manufacturing_order    manufacturing_orders? @relation(fields: [manufacturing_order_id], references: [id])
+  manufacturing_order_id Int?
+
+  @@index([product_id])
+  @@index([picking_id])
+  @@index([date])
+  @@index([state])
+}
+
+model stock_quants {
+  id           Int      @id @default(autoincrement())
+  product_id   Int
+  location_id  Int
+  lot_id       Int?
+  unit_id      Int?
+  qty          Decimal  @default(0) @db.Decimal(15, 4)
+  reserved_qty Decimal  @default(0) @db.Decimal(15, 4)
+  price_unit   Decimal? @db.Decimal(15, 4)
+  updated_at   DateTime @updatedAt @db.Timestamptz(6)
+
+  product  products        @relation(fields: [product_id], references: [id])
+  location stock_locations @relation(fields: [location_id], references: [id])
+  lot      stock_lots?     @relation(fields: [lot_id], references: [id])
+  unit     units?          @relation(fields: [unit_id], references: [id])
+
+  @@index([product_id])
+  @@index([location_id])
+  @@index([product_id, location_id, lot_id])
+}
+
+model bill_of_materials {
+  id         Int      @id @default(autoincrement())
+  product_id Int
+  unit_id    Int?
+  qty        Decimal  @default(1) @db.Decimal(15, 4)
+  type       String   @default("manufacture") @db.VarChar(20)
+  note       String?
+  status     Boolean  @default(true)
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  product              products               @relation(fields: [product_id], references: [id])
+  unit                 units?                 @relation(fields: [unit_id], references: [id])
+  lines                bom_lines[]
+  manufacturing_orders manufacturing_orders[]
+}
+
+model bom_lines {
+  id         Int     @id @default(autoincrement())
+  bom_id     Int
+  product_id Int
+  unit_id    Int?
+  qty        Decimal @db.Decimal(15, 4)
+
+  bom     bill_of_materials @relation(fields: [bom_id], references: [id])
+  product products          @relation(fields: [product_id], references: [id])
+  unit    units?            @relation(fields: [unit_id], references: [id])
+}
+
+model manufacturing_orders {
+  id               Int       @id @default(autoincrement())
+  name             String?   @db.VarChar(100)
+  product_id       Int
+  bom_id           Int?
+  lot_id           Int?
+  unit_id          Int?
+  qty_planned      Decimal   @db.Decimal(15, 4)
+  qty_produced     Decimal   @default(0) @db.Decimal(15, 4)
+  location_src_id  Int?
+  location_dest_id Int?
+  state            String    @default("draft") @db.VarChar(20)
+  scheduled_date   DateTime? @db.Timestamptz(6)
+  date_start       DateTime? @db.Timestamptz(6)
+  date_finish      DateTime? @db.Timestamptz(6)
+  origin           String?   @db.VarChar(500)
+  note             String?
+  added_by         Int?
+  created_at       DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime  @updatedAt @db.Timestamptz(6)
+
+  product       products           @relation(fields: [product_id], references: [id])
+  bom           bill_of_materials? @relation(fields: [bom_id], references: [id])
+  lot           stock_lots?        @relation(fields: [lot_id], references: [id])
+  unit          units?             @relation(fields: [unit_id], references: [id])
+  location_src  stock_locations?   @relation("MOSrc", fields: [location_src_id], references: [id])
+  location_dest stock_locations?   @relation("MODest", fields: [location_dest_id], references: [id])
+  added_by_user users?             @relation(fields: [added_by], references: [id])
+  moves         stock_moves[]
+
+  @@index([state])
+  @@index([product_id])
+}
+
+model units {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(255)
+  short_name String?  @db.VarChar(50)
+  status     Boolean  @default(true)
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  stock_moves          stock_moves[]
+  stock_quants         stock_quants[]
+  bill_of_materials    bill_of_materials[]
+  bom_lines            bom_lines[]
+  manufacturing_orders manufacturing_orders[]
+}
+
+model partner_categories {
+  id         Int        @id @default(autoincrement())
+  name       String     @db.VarChar(255)
+  status     Boolean    @default(true)
+  created_at DateTime   @default(now()) @db.Timestamptz(6)
+  partners   partners[]
+}
+
+model partners {
+  id                   Int                 @id @default(autoincrement())
+  category_id          Int?
+  type                 String              @db.VarChar(20)
+  name                 String              @db.VarChar(255)
+  code                 String?             @db.VarChar(100)
+  tax_number           String?             @unique @db.VarChar(100)
+  contact_person       String?             @db.VarChar(255)
+  phone                String?             @db.VarChar(50)
+  email                String?             @db.VarChar(255)
+  address              String?             @db.VarChar(500)
+  note                 String?
+  supplier_location_id Int?
+  customer_location_id Int?
+  status               Boolean             @default(true)
+  created_at           DateTime            @default(now()) @db.Timestamptz(6)
+  category             partner_categories? @relation(fields: [category_id], references: [id])
+  supplier_location    stock_locations?    @relation("PartnerSupplierLoc", fields: [supplier_location_id], references: [id])
+  customer_location    stock_locations?    @relation("PartnerCustomerLoc", fields: [customer_location_id], references: [id])
+  stock_pickings       stock_pickings[]
+  src_pickings         stock_pickings[]    @relation("PickingSrcPartner")
+  dest_pickings        stock_pickings[]    @relation("PickingDestPartner")
+}
+
+model warehouses {
+  id            Int               @id @default(autoincrement())
+  name          String            @db.VarChar(100)
+  branch_id     Int?
+  note          String?           @db.Text
+  status        Boolean           @default(true)
+  created_at    DateTime          @default(now()) @db.Timestamptz(6)
+  branch        branches?         @relation(fields: [branch_id], references: [id])
+  locations     stock_locations[] @relation("LocationWarehouse")
+  src_pickings  stock_pickings[]  @relation("PickingSrcWarehouse")
+  dest_pickings stock_pickings[]  @relation("PickingDestWarehouse")
+}
+
+model staffing_position {
+  id            Int      @id @default(autoincrement())
+  department_id Int
+  position_id   Int
+  headcount     Int      @default(1)
+  added_at      DateTime @default(now()) @db.Timestamptz(6)
+
+  department departments @relation(fields: [department_id], references: [id], onDelete: Cascade)
+  position   positions   @relation(fields: [position_id], references: [id])
+
+  @@unique([department_id, position_id])
+}

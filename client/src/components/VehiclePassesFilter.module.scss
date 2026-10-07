@@ -1,0 +1,166 @@
+.filterInline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  font-size: var(--font-small);
+
+  .presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .presetBtn {
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(162, 161, 168, 0.4);
+    background: var(--bg-light);
+    color: var(--text-secondary);
+    font-size: var(--font-small);
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+
+    &:hover {
+      border-color: var(--third-color);
+      color: var(--third-color);
+      background: var(--card-bg);
+    }
+  }
+
+  .dateGroup {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dateSep {
+    color: var(--text-secondary);
+    font-size: var(--font-small);
+  }
+
+  .date {
+    height: 28px;
+    width: 148px;
+    padding: 0 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(162, 161, 168, 0.4);
+    font-weight: 500;
+    font-size: var(--font-small);
+    box-sizing: border-box;
+    cursor: pointer;
+    background: var(--card-bg);
+    color: var(--text-color);
+
+    &:hover,
+    &:focus {
+      border-color: var(--third-color);
+      outline: none;
+    }
+  }
+
+  .locationGroup {
+    min-width: 150px;
+    max-width: 200px;
+  }
+
+  .segmentedGroup {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .segmentedLabel {
+    font-size: calc(10px * var(--font-scale));
+    font-weight: 600;
+    color: var(--placeholder-color);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .segmentedTrack {
+    display: flex;
+    background: var(--bg-light);
+    border-radius: 6px;
+    padding: 2px;
+    position: relative;
+  }
+
+  .segmentedSlider {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    border-radius: 4px;
+    background: var(--card-bg);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .segmentedBtn {
+    flex: 1;
+    height: 24px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: calc(11px * var(--font-scale));
+    font-weight: 400;
+    color: var(--text-secondary);
+    z-index: 2;
+    position: relative;
+    transition: color 0.2s;
+    white-space: nowrap;
+    padding: 0 10px;
+    font-family: inherit;
+
+    &.segmentedBtnActive {
+      font-weight: 600;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+
+    button {
+      height: 28px;
+      padding: 0 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(162, 161, 168, 0.4);
+      font-size: var(--font-small);
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      background: var(--card-bg);
+      transition: all 0.15s ease;
+    }
+
+    button[type="button"] {
+      color: #dc2626;
+
+      &:hover {
+        border-color: #dc2626;
+      }
+    }
+
+    button[type="submit"] {
+      color: var(--third-color);
+
+      &:hover {
+        border-color: var(--third-color);
+      }
+    }
+  }
+}

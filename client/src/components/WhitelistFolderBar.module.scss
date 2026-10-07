@@ -1,0 +1,196 @@
+.folderBar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+  }
+}
+
+.divider {
+  width: 1px;
+  height: 16px;
+  background: var(--border-color);
+  flex-shrink: 0;
+  margin: 0 2px;
+}
+
+.chipWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+
+  &:hover .chipActions {
+    display: inline-flex;
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  max-width: 190px;
+  padding: 0 9px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle, rgba(162, 161, 168, 0.4));
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font-size: var(--font-small);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: var(--text-color);
+    border-color: var(--third-color);
+  }
+}
+
+.chipActive {
+  color: var(--text-color);
+  border-color: var(--third-color);
+  background: var(--bg-light);
+}
+
+.chipName {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chipCount {
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--bg-light);
+  color: var(--text-secondary);
+  font-size: calc(10px * var(--font-scale));
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.chipActive .chipCount {
+  background: var(--card-bg);
+}
+
+.chipActions {
+  display: none;
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  align-items: center;
+  gap: 1px;
+  padding: 0 1px;
+  border-radius: 10px;
+  background: var(--card-bg);
+  box-shadow: -7px 0 7px 2px var(--card-bg);
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 21px;
+    height: 21px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--bg-light);
+      color: var(--third-color);
+    }
+  }
+
+  .danger:hover {
+    color: #ef4444;
+  }
+}
+
+.addChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  border: 1px dashed var(--border-subtle, rgba(162, 161, 168, 0.5));
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--font-small);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: var(--third-color);
+    border-color: var(--third-color);
+  }
+}
+
+.editor {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 6px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  border: 1px solid var(--third-color);
+  background: var(--card-bg);
+
+  input {
+    width: 140px;
+    height: 22px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text-color);
+    font-size: var(--font-small);
+    font-weight: 600;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 6px;
+    background: var(--bg-light);
+    cursor: pointer;
+    transition: filter 0.15s ease;
+
+    &:hover {
+      filter: brightness(0.94);
+    }
+  }
+}
+
+.iconOk {
+  color: #10b981;
+}
+
+.iconCancel {
+  color: #ef4444;
+}

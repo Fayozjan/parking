@@ -1,0 +1,160 @@
+.filterToggle {
+  font-size: var(--font-small);
+  position: relative;
+
+  .toggleBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-width: 50px;
+    height: 32px;
+    padding: 0 10px;
+    font-weight: 600;
+    border-radius: 4px;
+    border: 1px solid rgba(162, 161, 168, 0.4);
+    cursor: pointer;
+    box-sizing: border-box;
+    background-color: var(--card-bg);
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .badge {
+      color: var(--third-color);
+      margin-left: 6px;
+    }
+
+    &:hover {
+      border: 1px solid var(--third-color);
+    }
+  }
+
+  .active {
+    border: 1px solid var(--third-color);
+  }
+
+  .filterContent {
+    position: absolute;
+    z-index: 99999;
+    background-color: var(--card-bg);
+    margin-top: 4px;
+    left: 0;
+    min-width: 280px;
+    padding: 12px 14px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(162, 161, 168, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      h2 {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--placeholder-color);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .checkboxGroup {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+
+      .checkboxLabel {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 11px;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: var(--font-small);
+        font-weight: 500;
+        color: var(--text-color);
+        transition: all 0.15s ease;
+        user-select: none;
+
+        input[type="checkbox"] {
+          display: none;
+        }
+
+        &::before {
+          flex-shrink: 0;
+          line-height: 1;
+        }
+
+        &[data-status="all"]::before {
+          content: "●";
+          color: #9ca3af;
+          font-size: 8px;
+        }
+
+        &[data-status="active"]::before {
+          content: "✓";
+          color: #10b981;
+          font-size: 13px;
+          font-weight: 700;
+        }
+
+        &[data-status="inactive"]::before {
+          content: "✕";
+          color: #ef4444;
+          font-size: 13px;
+          font-weight: 700;
+        }
+
+        &:hover {
+          border-color: var(--third-color);
+          color: var(--third-color);
+        }
+
+        &:has(input:checked) {
+          border-color: var(--third-color);
+          background-color: rgba(59, 130, 246, 0.08);
+          color: var(--third-color);
+        }
+      }
+
+      .actions {
+        margin-top: 6px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(162, 161, 168, 0.2);
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        button {
+          font-size: var(--font-small);
+          background: none;
+          border: none;
+          padding: 5px 10px;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.1ms ease;
+
+          &:hover {
+            font-weight: 700;
+          }
+        }
+
+        button[type="button"] {
+          color: #ef4444;
+        }
+
+        button[type="submit"] {
+          color: var(--third-color);
+        }
+      }
+    }
+  }
+}
