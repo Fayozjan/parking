@@ -110,15 +110,13 @@ ANPR-камеры, привязанные к парковкам.
 | mac_address | String? unique | MAC адрес |
 | port | Int? | HTTP порт (default: 80) |
 | direction | String? | Направление: `in` / `out` |
-| movement_direction | String? | Фильтр направления движения: `forward` / `reverse`, null — без фильтра |
+| movement_direction | String? | УСТАРЕЛО, не используется: события принимаются все; колонка осталась в БД |
 | username / password | String? | Кредентиалы камеры |
 | status | Boolean? | Активна? |
 | added_at / updated_at | Timestamptz | |
 
-`movement_direction` фильтрует входящие события камеры по направлению движения транспорта
-(из `<direction>` либо `<vehicleHead>` в XML Hikvision). Не совпало — фиксация не создаётся,
-событие пишется в `camera_logs` со `skip_reason = direction_mismatch`. События без
-распознанного направления проходят фильтр.
+События камеры не фильтруются по направлению движения: принимается каждое, а въезд/выезд определяют
+данные камеры и анализ AI (см. `docs/api-endpoints.md`, «Камеры ворот работают командой»).
 
 При удалении парковки — камеры каскадно удаляются (`onDelete: Cascade`).
 
@@ -138,8 +136,19 @@ ANPR-камеры, привязанные к парковкам.
 | photo | String? | Путь к файлу фото |
 | date | Timestamptz | Время события (от камеры) |
 | created_at | Timestamptz | Время сохранения в БД |
+| plate_original | String(20)? | Номер камеры до исправления по AI (null — не менялся) |
+| plate_conflict | Boolean | Камера и AI прочитали разные номера, решить не удалось — нужна проверка вручную |
+| direction_source | String(10)? | Откуда направление: `camera` / `ai` / `default` (камера не сообщила движение) |
+| direction_original | String(10)? | Направление до исправления по AI (null — не менялось) |
+| history_conflict | Boolean | Выезд без въезда или повторный въезд в истории номера — проверить вручную |
 
 Фото хранится по пути: `uploads/vehicle-passes/{year}/{month}/`
+
+### Сверка с AI (camera_logs)
+
+После сохранения проезда кадр сверяется с ai-service в фоне; результат пишется в `camera_logs`:
+`ai_plate`, `ai_confidence`, `ai_direction`, `plate_consensus` (`agree` | `camera` | `ai` | `known` | `conflict` | `ai_no_plate` | `ai_unavailable`),
+`direction_consensus` (`agree` | `camera` | `ai` | `none`). Правила — `server/utils/plateConsensus.js`.
 
 ---
 

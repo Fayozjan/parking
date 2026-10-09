@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 import { notificationsOutboxService } from "../notificationsOutbox/notificationsOutbox.service.js";
 import { createAuditLog } from "../../utils/auditLog.js";
 import { parseTashkentDateTime } from "../../utils/date.js";
+import { GateConfirmationService } from "../gates/gateConfirmation.service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,6 +47,18 @@ function mapVehiclePass(record) {
     photo: record.photo,
     date: record.date,
     created_at: record.created_at,
+
+    confidence: record.confidence ?? null,
+    gate_confirmed: record.gate_confirmed ?? false,
+    score: record.score ?? null,
+
+    // Командная работа камер ворот и сверка с AI (см. ai-service/README.md)
+    inferred: record.inferred ?? false, // камера записала проезд против своего направления — помогла партнёру
+    direction_source: record.direction_source ?? null, // camera | ai | default
+    direction_original: record.direction_original ?? null, // направление до исправления по AI
+    plate_original: record.plate_original ?? null, // номер камеры до исправления по AI
+    plate_conflict: record.plate_conflict ?? false, // камера и AI прочитали разные номера
+    history_conflict: record.history_conflict ?? false, // выезд без въезда / повторный въезд
   };
 }
 
@@ -100,7 +113,7 @@ async function storePhoto(imageBuffer, date) {
 }
 
 // удаляем файл только внутри uploads/vehicle-passes
-async function removeStoredPhoto(relativePath) {
+export async function removeStoredPhoto(relativePath) {
   if (!relativePath) return;
 
   const uploadsRoot = path.resolve(__dirname, "../..", "uploads", "vehicle-passes");
@@ -116,6 +129,17 @@ async function removeStoredPhoto(relativePath) {
   if (usedByLog > 0) return;
 
   await fs.promises.unlink(filePath).catch(() => {});
+}
+
+// Уведомление в Telegram о новой фиксации (пропускаем номера из белого списка)
+async function notifyAnprPass(camera, pass, licensePlate) {
+  const chats = camera.location?.telegram_chat_ids || [];
+  if (chats.length === 0) return;
+
+  const whitelistMatch = await findMatchingEntry(licensePlate, camera.location_id);
+  if (!whitelistMatch) {
+    await notificationsOutboxService.create("anpr_pass", pass, chats);
+  }
 }
 
 export const VehiclePassesService = {
@@ -243,8 +267,11 @@ export const VehiclePassesService = {
       search,
     } = filters;
 
-    // --- получаем пользователя ---
-    const user = await UserModel.getById(Number(userId));
+    // --- пользователь и скрытые номера белого списка — независимые запросы ---
+    const [user, hiddenExclusion] = await Promise.all([
+      UserModel.getById(Number(userId)),
+      buildHiddenPlateExclusion(),
+    ]);
     if (!user) throw new Error("Пользователь не найден");
 
     // --- access фильтр ---
@@ -257,9 +284,6 @@ export const VehiclePassesService = {
     ) {
       accessWhere.branch_id = { in: user.department_access };
     }
-
-    // --- исключить скрытые номера из белого списка ---
-    const hiddenExclusion = await buildHiddenPlateExclusion();
 
     // --- формируем условия запроса ---
     const where = { ...accessWhere, ...hiddenExclusion };
@@ -291,21 +315,26 @@ export const VehiclePassesService = {
 
     // --- пагинация ---
     const currentPage = Math.max(parseInt(page) || 1, 1);
-    const size = Math.max(parseInt(pageSize) || 50, 1);
+    // потолок = максимум в селекторе «на стр.» на клиенте
+    const size = Math.min(Math.max(parseInt(pageSize) || 50, 1), 500);
     const skip = (currentPage - 1) * size;
 
     const prisma = prismaContext.get();
     const { direction: _dir, ...whereForStats } = where;
 
-    const [{ records, total }, totalEntries, totalExits] = await Promise.all([
+    // въезды/выезды одним запросом вместо двух count
+    const [{ records, total }, byDirection] = await Promise.all([
       VehiclePassesModel.find({ where, skip, take: size }),
-      prisma.vehicle_passes.count({
-        where: { ...whereForStats, direction: "entry" },
-      }),
-      prisma.vehicle_passes.count({
-        where: { ...whereForStats, direction: "exit" },
+      prisma.vehicle_passes.groupBy({
+        by: ["direction"],
+        where: whereForStats,
+        _count: { _all: true },
       }),
     ]);
+    const countOf = (dir) =>
+      byDirection.find((r) => r.direction === dir)?._count._all ?? 0;
+    const totalEntries = countOf("entry");
+    const totalExits = countOf("exit");
 
     return {
       data: formatDates(records.map(mapVehiclePass)),
@@ -471,8 +500,19 @@ export const VehiclePassesService = {
     return deleted;
   },
 
+  // true — такой же номер (±1 символ) уже зафиксирован этой камерой в окне windowSec
+  isDuplicateEvent: async (cameraId, plate, eventDate, windowSec, isSamePlate) => {
+    const ms = windowSec * 1000;
+    const recent = await VehiclePassesModel.findRecentByCamera(
+      cameraId,
+      new Date(eventDate.getTime() - ms),
+      new Date(eventDate.getTime() + ms),
+    );
+    return recent.some((p) => isSamePlate(p.plate_number, plate));
+  },
+
   createFromDeviceEvent: async (
-    { licensePlate, dateTime, macAddress, tenant },
+    { licensePlate, dateTime, macAddress, tenant, confidence, direction, directionSource },
     imageBuffer,
   ) => {
     const camera = await AnprCamerasModel.findByMacAddress(macAddress);
@@ -484,27 +524,54 @@ export const VehiclePassesService = {
       ? await saveUploadedPhoto(imageBuffer, dateTime, tenant)
       : null;
 
-    const resolvedDirection = camera.direction || null;
+    // Направление проезда определяет вызывающий (по движению транспорта); иначе — направление камеры
+    const resolvedDirection = direction ?? camera.direction ?? null;
 
+    const date = new Date(dateTime);
     const data = {
-      date: new Date(dateTime),
+      date,
       plate_number: licensePlate,
       camera_id: camera.id,
       location_id: camera.location_id ?? null,
       direction: resolvedDirection,
+      direction_source: directionSource ?? null,
+      // Камера записала проезд в направлении, противоположном своему, — помогла партнёру по воротам.
+      // Когда партнёр подтвердит его своим событием, пометка снимается (GateConfirmationService.confirmSurvivor)
+      inferred: Boolean(camera.direction && resolvedDirection && resolvedDirection !== camera.direction),
       photo: photoPath,
+      ...(await GateConfirmationService.buildScore(camera, licensePlate, date, confidence)),
     };
 
     const newPass = await VehiclePassesModel.create(data);
+    await GateConfirmationService.confirmPartnerPasses(camera, newPass);
 
-    const chats = camera.location?.telegram_chat_ids || [];
+    await notifyAnprPass(camera, newPass, licensePlate);
 
-    if (chats.length > 0) {
-      const whitelistMatch = await findMatchingEntry(licensePlate, camera.location_id);
-      if (!whitelistMatch) {
-        await notificationsOutboxService.create("anpr_pass", newPass, chats);
-      }
-    }
+    return newPass;
+  },
+
+  // Проезд, подтверждённый совместной работой камер ворот: событие пришло с камеры, которая
+  // видела машину в обратную сторону, а «своя» камера проезд не зафиксировала
+  createInferredPass: async ({ cameraId, plate, date, direction, photo, confidence }) => {
+    const camera = await AnprCamerasModel.findById(cameraId);
+    if (!camera) throw new Error(`Камера ${cameraId} не найдена`);
+
+    const newPass = await VehiclePassesModel.create({
+      date,
+      plate_number: plate,
+      camera_id: camera.id,
+      location_id: camera.location_id ?? null,
+      direction,
+      photo,
+      inferred: true,
+      ...(await GateConfirmationService.buildScore(camera, plate, date, confidence)),
+    });
+    await GateConfirmationService.confirmPartnerPasses(camera, newPass);
+
+    const location = await prismaContext
+      .get()
+      .locations.findUnique({ where: { id: camera.location_id }, select: { telegram_chat_ids: true } });
+    await notifyAnprPass({ ...camera, location }, newPass, plate);
 
     return newPass;
   },

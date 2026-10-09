@@ -10,9 +10,7 @@ import { useAuthStore } from "../stores/authStore";
 
 import { getUserMenu } from "../api";
 
-import Sidebar from "../components/Sidebar";
-import Profile from "../components/Profile";
-import { PAGE_HEADER_SLOT_ID } from "../components/PageHeader";
+import TopNav from "../components/TopNav";
 import Loading from "../components/Loading";
 
 import styles from "./WebLayout.module.scss";
@@ -68,7 +66,7 @@ export default function WebLayout() {
   useEffect(() => {
     const fetchUserMenu = async () => {
       try {
-        const res = await getUserMenu();
+        const res = await getUserMenu({ force: true });
         setMenuData(res);
       } catch (error) {
         console.error("Ошибка получения меню:", error);
@@ -119,7 +117,7 @@ export default function WebLayout() {
   const isAllowedPath = useMemo(() => {
     if (menuLoading || !menuData.length) return true;
     const pathname = location.pathname;
-    if (pathname === "/home") return true;
+    if (pathname === "/home" || pathname.startsWith("/home/")) return true;
     for (const menu of menuData) {
       if (menu.path === pathname) return !!menu.permissions?.view;
       if (menu.children?.length) {
@@ -140,7 +138,11 @@ export default function WebLayout() {
     return <Navigate to="/" replace />;
   }
 
-  if (singleMenu && location.pathname !== singleMenu.path) {
+  if (
+    singleMenu &&
+    location.pathname !== singleMenu.path &&
+    !location.pathname.startsWith(`${singleMenu.path}/`)
+  ) {
     return <Navigate to={singleMenu.path} replace />;
   }
 
@@ -149,26 +151,8 @@ export default function WebLayout() {
   }
 
   return (
-    <div
-      className={`${styles.layout} ${singleMenu ? styles.layoutSolo : ""}`}
-    >
-      {singleMenu ? (
-        <header className={styles.topBar}>
-          <div className={styles.topBarBrand}>
-            <img src="/logo.png" alt="" className={styles.topBarLogo} />
-            <span>OnBase</span>
-          </div>
-
-          <span className={styles.topBarDivider} />
-
-          {/* Сюда страница портирует свой PageHeader */}
-          <div id={PAGE_HEADER_SLOT_ID} className={styles.topBarHeaderSlot} />
-
-          <Profile type="top" />
-        </header>
-      ) : (
-        <Sidebar menuData={menuData} />
-      )}
+    <div className={`${styles.layout} ${styles.layoutSolo}`}>
+      <TopNav menuData={menuData} />
 
       <AnimatePresence mode="wait">
         <motion.main

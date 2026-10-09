@@ -13,20 +13,13 @@ const normalizeConfidence = (value) => {
   return Math.min(100, Math.max(0, Math.round(num)));
 };
 
-// Фильтр по направлению движения транспорта: "forward" (на камеру) / "reverse" (от камеры).
-// null = фильтр выключен, в фиксации попадают события в обе стороны.
-export const MOVEMENT_DIRECTIONS = ["forward", "reverse"];
-
-const normalizeMovementFilter = (value) =>
-  MOVEMENT_DIRECTIONS.includes(value) ? value : null;
-
 export const AnprCamerasService = {
   get: async ({ page, pageSize, filters = {} }) => {
     const currentPage = Math.max(parseInt(page || 1), 1);
     const limit = Math.max(parseInt(pageSize || 50), 1);
     const skip = (currentPage - 1) * limit;
 
-    const { location_id, search, direction, movement_direction, status } = filters;
+    const { location_id, gate_id, search, direction, status } = filters;
 
     let AND = [];
     let OR = [];
@@ -48,9 +41,8 @@ export const AnprCamerasService = {
     }
 
     if (location_id) AND.push({ location_id: Number(location_id) });
+    if (gate_id) AND.push({ gate_id: Number(gate_id) });
     if (direction === "entry" || direction === "exit") AND.push({ direction });
-    if (normalizeMovementFilter(movement_direction))
-      AND.push({ movement_direction });
     if (status !== undefined && status !== "")
       AND.push({ status: status === "true" });
 
@@ -68,6 +60,8 @@ export const AnprCamerasService = {
       name: item.name,
       location_id: item.location_id,
       parking_name: item.location?.name || null,
+      gate_id: item.gate_id,
+      gate_name: item.gate?.name || null,
       camera_ip: item.camera_ip,
       mac_address: item.mac_address,
       port: item.port,
@@ -75,7 +69,6 @@ export const AnprCamerasService = {
       status: item.status,
       is_local: item.is_local,
       min_confidence: item.min_confidence,
-      movement_direction: item.movement_direction,
       is_online: item.is_online,
       added_at: item.added_at,
       updated_at: item.updated_at,
@@ -105,7 +98,8 @@ export const AnprCamerasService = {
   },
 
   create: async (data, userId) => {
-    const { id: _newId, location, location_id, ...rest } = data;
+    // movement_direction выведено из обращения (колонка осталась в БД), старые клиенты могут его присылать — игнорируем
+    const { id: _newId, location, location_id, gate, gate_id, movement_direction: _ignoredMovement, ...rest } = data;
 
     const result = await AnprCamerasModel.create({
       ...rest,
@@ -113,8 +107,8 @@ export const AnprCamerasService = {
       // Связь пишем через connect, а не скалярным location_id: скалярная форма есть только
       // в unchecked-варианте input-типа Prisma и отваливается, если клиент его не отдаёт
       location: { connect: { id: Number(location_id) } },
+      ...(gate_id ? { gate: { connect: { id: Number(gate_id) } } } : {}),
       min_confidence: normalizeConfidence(rest.min_confidence),
-      movement_direction: normalizeMovementFilter(rest.movement_direction),
       status: rest.status !== undefined ? (rest.status === true || rest.status === "true") : true,
     });
     await createAuditLog({ userId, action: "create", entity: "anpr_cameras", recordId: result.id, newData: result });
@@ -123,14 +117,17 @@ export const AnprCamerasService = {
 
   update: async (id, data, userId) => {
     const old = await AnprCamerasModel.findById(id);
-    const { id: _removedId, location, port, location_id, status, min_confidence, movement_direction, ...rest } = data;
+    const { id: _removedId, location, gate, gate_id, port, location_id, status, min_confidence, movement_direction: _ignoredMovement, ...rest } = data;
 
     const result = await AnprCamerasModel.update(id, {
       ...rest,
       port: port ? Number(port) : null,
       ...(location_id ? { location: { connect: { id: Number(location_id) } } } : {}),
+      // gate_id не передан — ворота не трогаем; пустой — камера выводится из ворот
+      ...(gate_id === undefined
+        ? {}
+        : { gate: gate_id ? { connect: { id: Number(gate_id) } } : { disconnect: true } }),
       min_confidence: normalizeConfidence(min_confidence),
-      movement_direction: normalizeMovementFilter(movement_direction),
       status: status === true || status === "true",
     });
     await createAuditLog({ userId, action: "update", entity: "anpr_cameras", recordId: id, oldData: old, newData: result });

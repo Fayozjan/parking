@@ -72,6 +72,13 @@ input:focus {
     height: auto;
     min-height: 0;
   }
+
+  // Место под нижнюю панель вкладок на телефоне
+  @media (max-width: 720px) {
+    .page {
+      padding-bottom: 64px;
+    }
+  }
 }
 
 .topBar {

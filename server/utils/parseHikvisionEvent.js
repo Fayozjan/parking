@@ -45,5 +45,8 @@ export function formatLicensePlate(plate) {
   const m2 = plate.match(/^(\d{2})(\d{3})([A-Z]{3})$/i);
   if (m2) return `${m2[1]} ${m2[2]} ${m2[3]}`.toUpperCase();
 
+  const m3 = plate.match(/^(\d{2})([A-Z])(\d{6})$/i);
+  if (m3) return `${m3[1]} ${m3[2]} ${m3[3]}`.toUpperCase();
+
   return plate.toUpperCase();
 }

@@ -10,6 +10,7 @@ export const AnprCamerasModel = {
       orderBy: { id: "asc" },
       include: {
         location: { select: { id: true, name: true } },
+        gate: { select: { id: true, name: true } },
       },
     });
   },
@@ -48,6 +49,15 @@ export const AnprCamerasModel = {
             name: true,
             shift_start: true,
             shift_end: true,
+          },
+        },
+        gate: {
+          select: {
+            id: true,
+            status: true,
+            coop_enabled: true,
+            coop_window_sec: true,
+            maneuver_window_sec: true,
           },
         },
       },

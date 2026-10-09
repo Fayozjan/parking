@@ -29,3 +29,16 @@ server/uploads/
 
 # Prisma tmp engine files
 *.node.tmp*
+
+# ai-service
+ai-service/.venv/
+ai-service/dataset/
+ai-service/runs/
+ai-service/models/*.onnx
+!ai-service/models/plate_side.onnx
+ai-service/.venv-train/
+/runs/
+ai-service/*.pt
+ai-service/models/*.pt
+__pycache__/
+*.pyc

@@ -1,0 +1,201 @@
+// Оформление страниц «Настройки» в стиле главной (HomePage.module.scss):
+// карточки с рамкой и мягкой тенью, радиусы 10–14px, «пилюли», фиолетовый градиент.
+// Подключается внутри `.main` страницы; активно только при классе `settings-page`.
+// Общие компоненты (Search, Button, Pagination…) стилизуются в своих модулях по тому же классу.
+$accent-gradient: linear-gradient(135deg, #6366f1, #4f46e5);
+$card-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+
+@mixin settings-theme {
+  &:global(.settings-page) {
+    gap: 10px;
+
+    // ─── Виджеты ─────────────────────────────────────────────
+    .statsGrid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      padding: 0;
+    }
+
+    .statWidget {
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: $card-shadow;
+      transition:
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+
+      &:hover {
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.09);
+        transform: translateY(-1px);
+      }
+    }
+
+    .statWidgetInner {
+      gap: 12px;
+    }
+
+    .statWidgetIcon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .statWidgetLabel {
+      font-size: calc(12px * var(--font-scale));
+    }
+
+    .statWidgetValue {
+      font-size: calc(20px * var(--font-scale));
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .statWidgetProgressTrack {
+      height: 3px;
+    }
+
+    // ─── Панель поиска, фильтров и кнопок ────────────────────
+    .mainHeader {
+      padding: 10px 14px;
+      gap: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: $card-shadow;
+
+      .filterWrapper {
+        gap: 10px;
+      }
+
+      .locationSelect input {
+        height: 34px;
+        border-radius: 10px;
+      }
+
+      .statusFilter {
+        height: 36px;
+        padding: 3px;
+        gap: 2px;
+        background: var(--bg-light);
+        border: 1px solid var(--border-color);
+        border-radius: 999px;
+
+        .statusBtn {
+          padding: 0 14px;
+          border-radius: 999px;
+          font-weight: 600;
+        }
+
+        .statusBtnActive,
+        .statusBtnActiveSuccess,
+        .statusBtnActiveDanger {
+          color: #fff;
+          box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+        }
+
+        .statusBtnActive {
+          background: $accent-gradient;
+        }
+
+        .statusBtnActiveSuccess {
+          background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .statusBtnActiveDanger {
+          background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+      }
+
+      .filters {
+        gap: 8px;
+
+        input[type="text"],
+        select,
+        .dateInput {
+          height: 34px;
+          border: 1px solid var(--border-color);
+          border-radius: 10px;
+
+          &:focus {
+            border-color: var(--third-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+          }
+        }
+
+        .searchBtn,
+        .resetBtn {
+          height: 34px;
+          padding: 0 16px;
+          border: 1px solid var(--border-color);
+          border-radius: 999px;
+          transition: opacity 0.15s ease, border-color 0.15s ease;
+        }
+
+        .searchBtn {
+          background: $accent-gradient;
+          border-color: transparent;
+          color: #fff;
+
+          &:hover {
+            opacity: 0.88;
+          }
+        }
+      }
+
+      .buttonsWrapper,
+      .rightActions {
+        gap: 8px;
+
+        .refreshBtn {
+          height: 34px;
+          min-width: 34px;
+          border: 1px solid var(--border-color);
+          border-radius: 10px;
+          transition:
+            border-color 0.15s ease,
+            color 0.15s ease;
+
+          &:hover {
+            border-color: var(--third-color);
+            color: var(--third-color);
+          }
+        }
+      }
+    }
+
+    // ─── Таблица ─────────────────────────────────────────────
+    .tableContainer {
+      margin-bottom: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: $card-shadow;
+    }
+
+    .table {
+      thead th {
+        padding: 10px 8px;
+        background: var(--bg-light);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      tbody td {
+        padding: 7px 8px;
+      }
+
+      tbody tr {
+        transition: background 0.12s ease;
+
+        &:hover {
+          background: var(--select-hover-color);
+        }
+      }
+    }
+  }
+}

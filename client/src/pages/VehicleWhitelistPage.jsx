@@ -20,7 +20,7 @@ import WhitelistFolderBar, { FOLDER_ICON_COLOR } from "../components/WhitelistFo
 
 import styles from "./VehicleWhitelistPage.module.scss";
 import { ActionCell } from "../components/ActionButtons";
-import PageHeader from "../components/PageHeader";
+import PageHero from "../components/PageHero";
 import {
   ShieldCheck,
   ShieldOff,
@@ -382,8 +382,8 @@ const VehicleWhitelistPage = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className={styles.main}>
-          <PageHeader icon={ShieldCheck} title={t("vehicle-whitelist")} subtitle={t("pageSubtitleVehicleWhitelist")} color="#10b981" />
+        <div className={`${styles.main} settings-page`}>
+          <PageHero icon={ShieldCheck} title={t("vehicle-whitelist")} />
           <div className={styles.statsGrid}>
               <StatWidget
                 icon={List}

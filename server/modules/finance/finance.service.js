@@ -7,14 +7,21 @@ import {
 } from "../vehicleWhitelist/vehicleWhitelist.service.js";
 import { createAuditLog } from "../../utils/auditLog.js";
 
-export async function getParkings({ locationId, from, to }) {
+export async function getParkings({ locationId, from, to, page, pageSize, filter, search, sortKey, sortDir }) {
   if (!locationId || !from || !to) throw new Error("Укажите locationId и период");
   const [hiddenExclusion, noTariffEntries, hiddenEntries] = await Promise.all([
     buildHiddenPlateExclusion(),
     getNoTariffEntries(),
     getHiddenEntries(),
   ]);
-  return FinanceModel.getParkings({ locationId, from, to, skip: 0, take: 2000, hiddenExclusion, noTariffEntries, hiddenEntries });
+  // pageSize задан — отдаём страницу; без него — прежнее поведение (до 2000 записей, нужно для выгрузки в Excel)
+  const size = Math.min(Math.max(Number(pageSize) || 0, 0), 200);
+  const pageNum = Math.max(Number(page) || 1, 1);
+  const paging = size > 0 ? { skip: (pageNum - 1) * size, take: size } : { skip: 0, take: 2000 };
+  return FinanceModel.getParkings({
+    locationId, from, to, ...paging, filter, search, sortKey, sortDir,
+    hiddenExclusion, noTariffEntries, hiddenEntries,
+  });
 }
 
 export async function closeParking({ locationId, plateNumber, date }, userId) {

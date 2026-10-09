@@ -27,3 +27,13 @@
   font-size: calc(var(--font-small) - 2px);
   border: 1px solid rgba(112, 112, 112, 0.1);
 }
+
+// Страницы «Настройки»: бейджи-пилюли
+:global(.settings-page) {
+  .active,
+  .inactive,
+  .unknown {
+    padding: 2px 10px;
+    border-radius: 999px;
+  }
+}

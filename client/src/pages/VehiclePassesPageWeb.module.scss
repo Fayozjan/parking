@@ -2,17 +2,19 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  border-radius: 8px;
+  padding: 0 12px;
+  background: var(--card-bg);
+  border-radius: 0;
   width: 100%;
   height: 100%;
   min-height: 0;
 
   .main {
-    padding: 2px;
-    background-color: var(--card-bg);
+    padding: 0;
+    background-color: transparent;
     display: flex;
     flex-direction: column;
-    border-radius: 4px;
+    border-radius: 0;
     height: 100%;
     min-height: 0;
     overflow: hidden;
@@ -20,146 +22,175 @@
     // ── Stats ──────────────────────────────────────
     .statsGrid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 7px;
-      padding: 6px 5px 3px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 6px;
+      padding: 4px 5px 2px;
       flex-shrink: 0;
     }
 
     .statWidget {
       position: relative;
+      overflow: hidden;
       background: var(--card-bg);
       border: 1px solid var(--border-subtle);
       border-radius: 8px;
-      padding: 8px 11px;
+      padding: 5px 10px;
       display: flex;
-      flex-direction: column;
-      gap: 5px;
-      transition: box-shadow 0.18s, transform 0.18s;
+      align-items: center;
+      transition: box-shadow 0.18s, border-color 0.18s;
 
       &:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
       }
     }
 
     .statWidgetInner {
       display: flex;
-      align-items: flex-start;
-      gap: 8px;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      width: 100%;
     }
 
     .statWidgetIcon {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 7px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+
+      svg {
+        width: 15px;
+        height: 15px;
+      }
     }
 
     .statWidgetContent {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      gap: 0;
       min-width: 0;
     }
 
     .statWidgetLabel {
-      font-size: var(--font-widget-label);
+      font-size: calc(11px * var(--font-scale));
       color: var(--text-secondary);
       font-weight: 500;
+      line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .statWidgetValue {
-      font-size: var(--font-widget-value);
+      font-size: calc(17px * var(--font-scale));
       font-weight: 700;
       font-variant-numeric: tabular-nums;
       line-height: 1.2;
     }
 
     .statWidgetSub {
-      font-size: var(--font-widget-sub);
+      font-size: calc(11px * var(--font-scale));
       font-weight: 500;
       color: var(--placeholder-color);
     }
 
+    // Прогресс — тонкая линия по нижнему краю карточки, отдельной строки не занимает
     .statWidgetProgressTrack {
-      height: 3px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
       background: var(--bg-light);
-      border-radius: 2px;
       overflow: hidden;
     }
 
     .statWidgetProgressFill {
       height: 100%;
-      border-radius: 2px;
       transition: width 0.4s ease;
     }
 
-    // ── Controls bar ───────────────────────────────
+    // Перезагрузка списка: старые данные остаются на экране, слегка приглушены
+    .tableArea {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .reloading {
+      opacity: 0.55;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+
+    // ── Controls bar (как панель периода на главной) ─
     .controls {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 8px;
-      padding: 4px 5px;
+      gap: 10px;
+      margin: 10px 0 8px;
+      padding: 10px 14px;
       flex-shrink: 0;
-      border-bottom: 1px solid rgba(162, 161, 168, 0.15);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color, rgba(162, 161, 168, 0.25));
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 
-      .leftControls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-
+      // равные боковые колонки → пагинация строго по центру
+      .leftControls,
       .rightControls {
         display: flex;
         align-items: center;
         gap: 8px;
+        flex: 1 1 0;
         flex-wrap: wrap;
       }
 
-      .presetSelectWrap {
-        position: relative;
+      .rightControls {
+        justify-content: flex-end;
+      }
 
-        &::after {
-          content: "▾";
-          position: absolute;
-          right: 9px;
-          top: 50%;
-          transform: translateY(-50%);
-          pointer-events: none;
-          color: var(--text-secondary);
-          font-size: var(--font-small);
+      // поиск (корневой элемент компонента Search)
+      .leftControls > :first-child {
+        height: 34px;
+        border-radius: 999px;
+        padding: 0 14px;
+        border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+        background: var(--card-bg);
+        box-shadow: none;
+
+        &:hover,
+        &:focus-within {
+          border-color: var(--third-color);
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
         }
+      }
 
-        .presetSelect {
-          -webkit-appearance: none;
-          appearance: none;
-          height: 30px;
-          padding: 0 26px 0 10px;
-          border-radius: 4px;
-          border: 1px solid rgba(162, 161, 168, 0.4);
+      // мультивыбор локаций
+      .locationGroup {
+        min-width: 190px;
+        max-width: 260px;
+
+        input {
+          height: 34px;
+          border-radius: 10px;
+          border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
           background: var(--card-bg);
-          color: var(--text-color);
-          font-size: var(--font-small);
-          font-weight: 500;
-          font-family: inherit;
-          cursor: pointer;
-          min-width: 120px;
-          transition: border-color 0.15s;
+          transition:
+            border-color 0.15s,
+            box-shadow 0.15s;
 
           &:hover,
           &:focus {
-            border-color: var(--third-color);
             outline: none;
+            border-color: var(--third-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
           }
         }
       }
@@ -168,133 +199,85 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        flex-wrap: nowrap;
-      }
-
-      .locationGroup {
-        min-width: 190px;
-        max-width: 260px;
-      }
-
-      .dirSelectWrap {
-        position: relative;
-
-        &::after {
-          content: "▾";
-          position: absolute;
-          right: 9px;
-          top: 50%;
-          transform: translateY(-50%);
-          pointer-events: none;
-          color: var(--text-secondary);
-          font-size: var(--font-small);
-        }
-
-        .dirSelect {
-          -webkit-appearance: none;
-          appearance: none;
-          height: 30px;
-          padding: 0 28px 0 10px;
-          border-radius: 4px;
-          border: 1px solid rgba(162, 161, 168, 0.4);
-          background: var(--card-bg);
-          color: var(--text-color);
-          font-size: var(--font-small);
-          font-family: inherit;
-          cursor: pointer;
-          min-width: 130px;
-          transition: border-color 0.15s;
-
-          &:hover,
-          &:focus {
-            border-color: var(--third-color);
-            outline: none;
-          }
-        }
-      }
-
-      .dateSep {
-        color: var(--text-secondary);
-        font-size: var(--font-small);
+        flex-wrap: wrap;
       }
 
       .dateInput {
-        height: 30px;
-        padding: 0 6px;
+        height: 34px;
+        padding: 0 10px;
         font-size: var(--font-small);
-        border-radius: 4px;
-        border: 1px solid rgba(162, 161, 168, 0.4);
+        border-radius: 10px;
+        border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
         background: var(--card-bg);
         color: var(--text-color);
         cursor: pointer;
         box-sizing: border-box;
-        transition: border-color 0.15s;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
 
         &:hover,
         &:focus {
           outline: none;
           border-color: var(--third-color);
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
         }
       }
 
       .applyBtn {
-        height: 30px;
-        padding: 0 14px;
+        height: 34px;
+        padding: 0 20px;
         font-size: var(--font-small);
-        font-weight: 600;
-        border-radius: 4px;
+        font-weight: 700;
+        border-radius: 999px;
         border: none;
-        background: var(--third-color);
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
         color: #fff;
         cursor: pointer;
         font-family: inherit;
         white-space: nowrap;
-        transition: opacity 0.15s;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
 
         &:hover {
-          opacity: 0.9;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
         }
+      }
+
+      // кнопка «Добавить» (компонент Button)
+      .rightControls > button:not(.refreshBtn) {
+        height: 34px;
+        border-radius: 999px;
+        padding: 0 18px;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
       }
 
       .refreshBtn {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 30px;
-        height: 30px;
-        border-radius: 4px;
-        border: 1px solid rgba(162, 161, 168, 0.4);
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
         background: var(--card-bg);
         cursor: pointer;
         color: var(--text-secondary);
-        transition: border-color 0.15s, color 0.15s;
+        transition:
+          border-color 0.15s,
+          color 0.15s,
+          box-shadow 0.15s;
 
         &:hover {
           border-color: var(--third-color);
           color: var(--third-color);
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
         }
       }
-    }
-
-    // ── Table sub-header ───────────────────────────
-    .tableSubHeader {
-      display: flex;
-      align-items: center;
-      padding: 4px 5px;
-      flex-shrink: 0;
-      gap: 10px;
-    }
-
-    .tableSubHeaderSpacer {
-      flex: 1;
-    }
-
-    .tableSubHeaderRight {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
     }
 
     // ── View dropdown ──────────────────────────────
@@ -400,5 +383,150 @@
         right: 2px;
       }
     }
+  }
+}
+
+.addModeTabs {
+  display: flex;
+  gap: 4px;
+  margin: 16px 20px 0;
+  padding: 3px;
+  background: var(--bg-secondary, rgba(128, 128, 128, 0.12));
+  border-radius: 8px;
+
+  button {
+    flex: 1;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: var(--font-small);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .addModeActive {
+    background: var(--card-bg);
+    color: var(--text-primary, inherit);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Счётчики и кнопка в шапке (PageHero) — стекло на градиенте
+.heroStats {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.heroStat {
+  --tone: #6366f1;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 16px 0 7px;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(30, 27, 75, 0.3);
+  white-space: nowrap;
+  transition:
+    transform 0.18s,
+    box-shadow 0.18s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(30, 27, 75, 0.38);
+  }
+}
+
+.toneAll {
+  --tone: #6366f1;
+}
+
+.toneIn {
+  --tone: #10b981;
+}
+
+.toneOut {
+  --tone: #f59e0b;
+}
+
+.heroStatIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: var(--tone);
+  color: #fff;
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--tone) 50%, transparent);
+}
+
+// подпись сверху, число снизу
+.heroStatBody {
+  display: flex;
+  flex-direction: column-reverse;
+  line-height: 1.1;
+}
+
+.heroStatValue {
+  font-size: calc(17px * var(--font-scale));
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--tone);
+  font-variant-numeric: tabular-nums;
+}
+
+.heroStatLabel {
+  font-size: calc(9.5px * var(--font-scale));
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.heroDownload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: none;
+  background: #fff;
+  color: #4f46e5;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(30, 27, 75, 0.3);
+  transition: transform 0.15s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.8;
+  }
+}
+
+.heroDownloadBusy svg {
+  animation: heroSpin 0.9s linear infinite;
+}
+
+@keyframes heroSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .heroStatLabel {
+    display: none;
   }
 }

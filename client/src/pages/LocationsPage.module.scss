@@ -1,4 +1,6 @@
-﻿.locationsPage {
+@use "../styles/settingsTheme" as *;
+
+.locationsPage {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -8,7 +10,7 @@
   min-height: 0;
 
   .main {
-    padding: 2px;
+    padding: 2px 20px;
     background-color: var(--card-bg);
     display: flex;
     flex-direction: column;
@@ -16,86 +18,98 @@
     height: 100%;
     min-height: 0;
 
+    @include settings-theme;
+
     .statsGrid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 7px;
-      padding: 6px 5px 3px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 6px;
+      padding: 4px 5px 2px;
       flex-shrink: 0;
     }
 
     .statWidget {
       position: relative;
+      overflow: hidden;
       background: var(--card-bg);
       border: 1px solid var(--border-subtle);
       border-radius: 8px;
-      padding: 8px 11px;
+      padding: 5px 10px;
       display: flex;
-      flex-direction: column;
-      gap: 5px;
-      transition: box-shadow 0.18s, transform 0.18s;
+      align-items: center;
+      transition: box-shadow 0.18s, border-color 0.18s;
 
       &:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
       }
     }
 
     .statWidgetInner {
       display: flex;
-      align-items: flex-start;
-      gap: 8px;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+      width: 100%;
     }
 
     .statWidgetIcon {
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 7px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+
+      svg {
+        width: 15px;
+        height: 15px;
+      }
     }
 
     .statWidgetContent {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      gap: 0;
       min-width: 0;
     }
 
     .statWidgetLabel {
-      font-size: var(--font-widget-label);
+      font-size: calc(11px * var(--font-scale));
       color: var(--text-secondary);
       font-weight: 500;
+      line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .statWidgetValue {
-      font-size: var(--font-widget-value);
+      font-size: calc(17px * var(--font-scale));
       font-weight: 700;
       font-variant-numeric: tabular-nums;
       line-height: 1.2;
     }
 
     .statWidgetSub {
-      font-size: var(--font-widget-sub);
+      font-size: calc(11px * var(--font-scale));
       font-weight: 500;
       color: var(--placeholder-color);
     }
 
+    // Прогресс — тонкая линия по нижнему краю карточки, отдельной строки не занимает
     .statWidgetProgressTrack {
-      height: 3px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
       background: var(--bg-light);
-      border-radius: 2px;
       overflow: hidden;
     }
 
     .statWidgetProgressFill {
       height: 100%;
-      border-radius: 2px;
       transition: width 0.4s ease;
     }
 

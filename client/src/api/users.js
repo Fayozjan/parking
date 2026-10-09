@@ -48,9 +48,28 @@ export const uploadUserAvatar = async (id, file) => {
   return { result: res.data.result, success: res.data.success };
 };
 
-export const getUserMenu = async () => {
-  const res = await api.get("/users/menu");
-  return res.data;
+// Меню нужно и лейауту, и каждой странице (права). Кэш на 30 с и общий запрос
+// не дают слать /users/menu повторно при каждом переходе.
+const MENU_TTL_MS = 30000;
+let menuCache = { data: null, at: 0, promise: null };
+
+export const getUserMenu = async ({ force = false } = {}) => {
+  const fresh = menuCache.data && Date.now() - menuCache.at < MENU_TTL_MS;
+  if (!force && fresh) return menuCache.data;
+  if (!force && menuCache.promise) return menuCache.promise;
+
+  const promise = api
+    .get("/users/menu")
+    .then((res) => {
+      menuCache = { data: res.data, at: Date.now(), promise: null };
+      return res.data;
+    })
+    .catch((err) => {
+      menuCache.promise = null;
+      throw err;
+    });
+  menuCache.promise = promise;
+  return promise;
 };
 
 export const getUserInfo = async () => {

@@ -1,4 +1,6 @@
-﻿.page {
+@use "../styles/settingsTheme" as *;
+
+.page {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -8,13 +10,15 @@
   min-height: 0;
 
   .main {
-    padding: 2px;
+    padding: 2px 20px;
     background-color: var(--card-bg);
     display: flex;
     flex-direction: column;
     border-radius: 4px;
     height: 100%;
     min-height: 0;
+
+    @include settings-theme;
 
     .mainHeader {
       padding: 5px;

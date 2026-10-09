@@ -49,4 +49,14 @@
     color: var(--text-color);
     fill: var(--button-text);
   }
+
+  // Страницы «Настройки»: градиентная кнопка как на главной
+  :global(.settings-page) & {
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.28);
+  }
 }

@@ -4,6 +4,12 @@ import { CameraLogsModel } from "../cameraLogs/cameraLogs.model.js";
 import { parseHikvisionXml } from "../../utils/parseHikvisionEvent.js";
 import { isWithinShift } from "../../utils/shift.js";
 import { compressEventPhoto, makeThumbnail } from "../../utils/photoImage.js";
+import { correctPlate, isSamePlate, DUPLICATE_WINDOW_SEC } from "../../utils/plateCorrection.js";
+import { GateCooperationService } from "../gates/gateCooperation.service.js";
+import { GateConfirmationService } from "../gates/gateConfirmation.service.js";
+import { directionFromMovement, isOppositeMovement } from "../../utils/passDirection.js";
+import { isAiEnabled, recognizeFrame } from "../../utils/aiPlate.js";
+import { AnprVerificationService } from "./anprVerification.service.js";
 import fs from "fs";
 import path from "path";
 
@@ -115,20 +121,45 @@ export const AnprCamerasController = {
 
     try {
       const xmlContent = await fs.promises.readFile(xmlFile.path, "utf-8");
-      const { macAddress, licensePlate, dateTime, confidenceLevel, movementDirection } =
-        parseHikvisionXml(xmlContent);
+      const parsed = parseHikvisionXml(xmlContent);
+      const { macAddress, dateTime } = parsed;
+      let { licensePlate, confidenceLevel, movementDirection } = parsed;
+      const cameraMovement = movementDirection; // движение, которое сообщила именно камера, — для сверки с AI после сохранения
+      let plateFromAi = false;
 
-      console.log("🚗", licensePlate, "| MAC:", macAddress, "| Time:", dateTime, "| Confidence:", confidenceLevel, "| Move:", movementDirection ?? "unknown");
-
-      if (!macAddress || !licensePlate) {
+      if (!macAddress) {
         await cleanup();
-        return res.status(400).json({ error: "Missing licensePlate or macAddress in XML" });
+        return res.status(400).json({ error: "Missing macAddress in XML" });
       }
 
       // Read image before any early returns so we can log the photo for all events
       const imageBuffer = imageFile
         ? await fs.promises.readFile(imageFile.path)
         : null;
+
+      // Камера не прислала номер — достраиваем из AI-сервиса по кадру (иначе нечего сохранять).
+      // Направление при этом не ждём: проезд сохраняется по данным камеры, AI уточняет его позже, в фоне.
+      let directionFromAi = false;
+      if (isAiEnabled() && imageBuffer && !licensePlate) {
+        const ai = await recognizeFrame(imageBuffer);
+        if (ai?.found && ai.plate) {
+          licensePlate = ai.plate;
+          confidenceLevel = ai.confidence;
+          plateFromAi = true;
+          console.log("🤖 AI plate:", licensePlate, "| Confidence:", confidenceLevel);
+          if (!movementDirection && ai.movementDirection) {
+            movementDirection = ai.movementDirection;
+            directionFromAi = true;
+          }
+        }
+      }
+
+      console.log("🚗", licensePlate, "| MAC:", macAddress, "| Time:", dateTime, "| Confidence:", confidenceLevel, "| Move:", movementDirection ?? "unknown");
+
+      if (!licensePlate) {
+        await cleanup();
+        return res.status(400).json({ error: "Missing licensePlate in XML" });
+      }
 
       const camera = await AnprCamerasService.getByMacAddress(macAddress);
       if (camera) {
@@ -138,6 +169,7 @@ export const AnprCamerasController = {
         mac_address: macAddress,
         license_plate: licensePlate,
         confidence_level: confidenceLevel,
+        movement_direction: movementDirection ?? null,
         event_date: dateTime ? new Date(dateTime) : new Date(),
         camera_id: camera?.id ?? null,
         camera_name: camera?.name ?? null,
@@ -154,12 +186,15 @@ export const AnprCamerasController = {
           console.error("saveCameraLogPhoto error:", err.message);
           return null;
         });
-        CameraLogsModel.create({
+        return CameraLogsModel.create({
           ...logBase,
           photo,
           was_processed: false,
           skip_reason,
-        }).catch(console.error);
+        }).catch((err) => {
+          console.error(err);
+          return null;
+        });
       };
 
       if (!camera) {
@@ -169,22 +204,21 @@ export const AnprCamerasController = {
         return res.status(200).json({ ok: true, skipped: true, reason: "camera_not_found" });
       }
 
-      // Фильтр направления движения: камера ловит и подъезжающий, и отъезжающий транспорт.
-      // Событие без распознанного направления пропускаем дальше — часть моделей его не шлёт,
-      // иначе такие камеры потеряли бы все фиксации разом.
-      if (
-        camera.movement_direction &&
-        movementDirection &&
-        movementDirection !== camera.movement_direction
-      ) {
-        await cleanup();
-        console.log("⚠️ Direction mismatch:", movementDirection, "≠", camera.movement_direction, "| Plate:", licensePlate, "— skipped");
-        await logSkipped("direction_mismatch");
-        return res.status(200).json({ ok: true, skipped: true, reason: "direction_mismatch" });
+      // Слой 1: исправляем типичные ошибки OCR и отсекаем дубли одного проезда.
+      // В camera_logs остаётся сырой номер камеры, в фиксации — исправленный.
+      const fixed = correctPlate(licensePlate);
+      if (fixed.corrected) {
+        console.log("🔧 Plate corrected:", licensePlate, "→", fixed.plate);
       }
 
       // Порог задаётся на камере — угол/освещение у каждой свои
       const minConfidence = camera.min_confidence ?? DEFAULT_MIN_CONFIDENCE;
+
+      // События не фильтруются по направлению: принимаем всё. Въезд или выезд определяем по движению транспорта
+      // (данные камеры), а после сохранения уточняем по анализу AI (AnprVerificationService).
+      const passDirection = directionFromMovement(camera, movementDirection);
+      const directionSource = movementDirection ? (directionFromAi ? "ai" : "camera") : "default";
+
       if (confidenceLevel < minConfidence) {
         await cleanup();
         console.log("⚠️ Low confidence:", confidenceLevel, "<", minConfidence, "| Plate:", licensePlate, "— skipped");
@@ -200,21 +234,86 @@ export const AnprCamerasController = {
         return res.status(200).json({ ok: true, skipped: true, reason: "outside_shift" });
       }
 
+      if (
+        await VehiclePassesService.isDuplicateEvent(
+          camera.id,
+          fixed.plate,
+          logBase.event_date,
+          DUPLICATE_WINDOW_SEC,
+          isSamePlate,
+        )
+      ) {
+        await cleanup();
+        console.log("⚠️ Duplicate:", fixed.plate, "— skipped");
+        await logSkipped("duplicate");
+        return res.status(200).json({ ok: true, skipped: true, reason: "duplicate" });
+      }
+
+      // Манёвр: машина только что проехала у этой камеры и теперь сдаёт назад — это не новый проезд
+      if (
+        isOppositeMovement(movementDirection) &&
+        (await GateCooperationService.isManeuver(camera, fixed.plate, logBase.event_date).catch(() => false))
+      ) {
+        await cleanup();
+        console.log("⚠️ Maneuver:", fixed.plate, "| Camera:", camera.name, "— skipped");
+        await logSkipped("maneuver");
+        return res.status(200).json({ ok: true, skipped: true, reason: "maneuver" });
+      }
+
+      // Тот же проезд уже записала другая камера этих ворот (обе видят машину) — не плодим дубль, а подтверждаем им старый
+      const gateDuplicate = await GateConfirmationService.findDuplicateAtGate(
+        camera,
+        fixed.plate,
+        passDirection,
+        logBase.event_date,
+      ).catch(() => null);
+      if (gateDuplicate) {
+        await GateConfirmationService.confirmSurvivor(gateDuplicate, camera).catch(console.error);
+        await cleanup();
+        console.log("⚠️ Gate duplicate:", fixed.plate, "— skipped, confirmed pass#" + gateDuplicate.id);
+        await logSkipped("duplicate");
+        return res.status(200).json({ ok: true, skipped: true, reason: "duplicate" });
+      }
+
       const pass = await VehiclePassesService.createFromDeviceEvent(
-        { licensePlate, dateTime, macAddress, tenant: "public" },
+        {
+          licensePlate: fixed.plate,
+          dateTime,
+          macAddress,
+          tenant: "public",
+          confidence: confidenceLevel,
+          direction: passDirection,
+          directionSource,
+        },
         await compressEventPhoto(imageBuffer),
       );
 
       // Обработанное событие: журнал ссылается на кадр фиксации,
       // второй копии на диске нет.
-      CameraLogsModel.create({
+      const logPromise = CameraLogsModel.create({
         ...logBase,
         photo: pass.photo,
         was_processed: true,
-      }).catch(console.error);
+      }).catch((err) => {
+        console.error(err);
+        return null;
+      });
 
       await cleanup();
       res.status(200).json({ ok: true });
+
+      // После ответа камере: сверка с AI в фоне (номер взят у самой AI — сверять не с чем)
+      if (!plateFromAi) {
+        AnprVerificationService.enqueue({
+          passId: pass.id,
+          logPromise,
+          camera,
+          cameraPlate: fixed.plate,
+          cameraConfidence: confidenceLevel,
+          cameraMovement,
+          imageBuffer,
+        });
+      }
     } catch (err) {
       await cleanup();
       console.error("vehicleDetection error:", err.message);

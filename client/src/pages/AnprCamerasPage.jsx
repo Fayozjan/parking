@@ -20,7 +20,7 @@ import TableIcons from "../icons/tableIcons";
 import Search from "../components/Search";
 import styles from "./AnprCamerasPage.module.scss";
 import { ActionCell } from "../components/ActionButtons";
-import PageHeader from "../components/PageHeader";
+import PageHero from "../components/PageHero";
 import { Camera, CheckCircle, XCircle } from "lucide-react";
 import { Icons } from "../icons/icons";
 
@@ -224,8 +224,8 @@ const AnprCamerasPage = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className={styles.main}>
-          <PageHeader icon={Camera} title={t("vehicle-cameras")} subtitle={t("pageSubtitleAnprCameras")} color="#6366f1" />
+        <div className={`${styles.main} settings-page`}>
+          <PageHero icon={Camera} title={t("vehicle-cameras")} />
           <div className={styles.statsGrid}>
               <StatWidget
                 icon={Camera}
@@ -381,9 +381,18 @@ const AnprCamerasPage = () => {
                       />
                     </span>
                   </th>
-                  <th onClick={() => handleSort("gate_name")}>
+                  <th onClick={() => handleSort("parking_name")}>
                     <span className={styles.headerContent}>
                       {t("location")}
+                      <SortArrow
+                        active={sortField === "parking_name"}
+                        order={sortOrder}
+                      />
+                    </span>
+                  </th>
+                  <th onClick={() => handleSort("gate_name")}>
+                    <span className={styles.headerContent}>
+                      {t("gate")}
                       <SortArrow
                         active={sortField === "gate_name"}
                         order={sortOrder}
@@ -440,6 +449,7 @@ const AnprCamerasPage = () => {
                       <td>{item.mac_address || "—"}</td>
                       <td>{item.port}</td>
                       <td>{item.parking_name}</td>
+                      <td>{item.gate_name || "—"}</td>
                       <td>{t(item.direction)}</td>
                       <td>{item.is_local === false ? t("no") : t("yes")}</td>
                       <td>
@@ -464,7 +474,7 @@ const AnprCamerasPage = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="12">{t("noData")}</td>
+                    <td colSpan="13">{t("noData")}</td>
                   </tr>
                 )}
               </tbody>

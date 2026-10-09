@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAlertStore } from "../stores/alertStore";
 
 import Button from "./Button";
+import GateSelect from "./GateSelect";
 
 import styles from "./AddAnprCamera.module.scss";
 import { anprCamerasApi, getActiveLocations } from "../api";
@@ -15,12 +16,12 @@ const AddAnprCamera = ({ handleClose, onSuccess }) => {
     camera_ip: "",
     port: 80,
     location_id: "",
+    gate_id: "",
     serial_number: "",
     mac_address: "",
     password: "",
     is_local: true,
     min_confidence: 50,
-    movement_direction: "",
   });
   const [doors, setDoors] = useState();
   const { showAlert } = useAlertStore();
@@ -47,6 +48,8 @@ const AddAnprCamera = ({ handleClose, onSuccess }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: name === "is_local" ? value === "true" : value,
+      // ворота принадлежат локации — при смене локации выбор сбрасываем
+      ...(name === "location_id" ? { gate_id: "" } : {}),
     }));
   };
 
@@ -173,20 +176,6 @@ const AddAnprCamera = ({ handleClose, onSuccess }) => {
         </div>
       </div>
 
-      <div className={styles.row}>
-        <div>
-          <label>{t("movementDirection")}</label>
-          <select
-            name="movement_direction"
-            value={formData.movement_direction}
-            onChange={handleChange}
-          >
-            <option value="">{t("movementAny")}</option>
-            <option value="forward">{t("movementForward")}</option>
-            <option value="reverse">{t("movementReverse")}</option>
-          </select>
-        </div>
-      </div>
 
       <div className={styles.row}>
         <div>
@@ -214,6 +203,14 @@ const AddAnprCamera = ({ handleClose, onSuccess }) => {
             ))}
           </select>
         </div>
+      </div>
+
+      <div className={styles.row}>
+        <GateSelect
+          locationId={formData.location_id}
+          value={formData.gate_id}
+          onChange={handleChange}
+        />
       </div>
     </form>
   );

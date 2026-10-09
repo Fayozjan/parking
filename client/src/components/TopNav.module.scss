@@ -1,0 +1,171 @@
+// Круглые кнопки меню в правом нижнем углу (профиль — слева, см. Profile type="dock").
+// ── Нижняя правая панель ─────────────────────────────────
+.dock {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 120;
+}
+
+.dockItem {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+// переключатель темы: справа от аватарки профиля (52px + отступ)
+.dockItem.themeDock {
+  position: fixed;
+  left: 84px;
+  bottom: 20px;
+  z-index: 120;
+}
+
+.fab {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.16);
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background 0.18s,
+    color 0.18s,
+    border-color 0.18s,
+    box-shadow 0.18s;
+
+  &:hover {
+    transform: translateY(-3px);
+    color: #6366f1;
+    border-color: #6366f1;
+    box-shadow: 0 10px 24px rgba(99, 102, 241, 0.3);
+  }
+}
+
+.fabActive,
+.fabOpen {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.45);
+
+  &:hover {
+    color: #fff;
+    border-color: transparent;
+  }
+}
+
+// подпись при наведении
+.tip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #fff;
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+
+.dockItem:hover .tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+// список подпунктов открывается вверх, выровнен по правому краю кнопки
+.menu {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: 0;
+  min-width: 230px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.2);
+  animation: dockMenuIn 0.15s ease both;
+}
+
+.menuTitle {
+  padding: 8px 12px 6px;
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.menuLink {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: calc(13.5px * var(--font-scale));
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.12s;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.1);
+  }
+}
+
+.menuLinkActive {
+  background: rgba(99, 102, 241, 0.14);
+  color: #6366f1;
+  font-weight: 700;
+}
+
+@keyframes dockMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .dock {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .dockItem.themeDock {
+    left: 78px;
+    bottom: 14px;
+  }
+
+  .fab {
+    width: 48px;
+    height: 48px;
+  }
+
+  .tip {
+    display: none;
+  }
+}

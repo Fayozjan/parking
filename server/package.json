@@ -9,7 +9,8 @@
     "dev": "nodemon server.js",
     "seed": "node prisma/seed.js",
     "seed:test-passes": "node prisma/seed-test-passes.js",
-    "seed:open-parkings": "node prisma/seed-open-parkings.js"
+    "seed:open-parkings": "node prisma/seed-open-parkings.js",
+    "seed:gates-demo": "node prisma/seed-gates-demo.js"
   },
   "keywords": [],
   "author": "",

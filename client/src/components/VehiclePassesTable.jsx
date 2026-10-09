@@ -1,11 +1,99 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { X, Trash2, Pencil } from "lucide-react";
+import { X, Trash2, Pencil, Sparkles, TriangleAlert, History, HandHelping, ScanText } from "lucide-react";
 
 import Badge from "./Badge";
+import UzPlate from "./UzPlate";
 import SortArrow from "./SortArrow";
 
 import styles from "./VehiclePassesTable.module.scss";
+
+// Рейтинг достоверности фиксации (0–100): уверенность камеры + бонус за вторую камеру ворот
+const getScoreLevel = (score) => {
+  if (score >= 85) return "scoreHigh";
+  if (score >= 60) return "scoreMedium";
+  return "scoreLow";
+};
+
+const ScoreBadge = ({ event, styles, t }) => {
+  if (event.score === null || event.score === undefined) return <>—</>;
+  return (
+    <span
+      className={`${styles.scoreBadge} ${styles[getScoreLevel(event.score)]}`}
+      title={
+        event.gate_confirmed
+          ? `${t("cameraConfidence")}: ${event.confidence}% · ${t("gateConfirmed")}`
+          : `${t("cameraConfidence")}: ${event.confidence}%`
+      }
+    >
+      {event.score}
+      {event.gate_confirmed && <span className={styles.scoreConfirmed}>✓✓</span>}
+    </span>
+  );
+};
+
+// Состояния проезда: командная работа камер ворот и сверка с AI
+const FLAG_ICONS = {
+  conflict: TriangleAlert,
+  history: History,
+  aiDir: Sparkles,
+  plateFix: ScanText,
+  helper: HandHelping,
+};
+
+const PassFlags = ({ event, styles, t, compact = false }) => {
+  const dirLabel = (d) => (d === "entry" ? t("entry") : d === "exit" ? t("exit") : t("unknown"));
+  const flags = [];
+  if (event.plate_conflict)
+    flags.push({ icon: "conflict", cls: "flagDanger", label: t("passFlagPlateConflict"), hint: t("passFlagPlateConflictHint") });
+  if (event.history_conflict)
+    flags.push({ icon: "history", cls: "flagWarn", label: t("passFlagHistory"), hint: t("passFlagHistoryHint") });
+  if (event.direction_source === "ai" && event.direction_original)
+    flags.push({
+      icon: "aiDir",
+      cls: "flagAi",
+      label: t("passFlagAiDirection"),
+      hint: t("passFlagAiDirectionHint", { from: dirLabel(event.direction_original) }),
+    });
+  if (event.plate_original)
+    flags.push({
+      icon: "plateFix",
+      cls: "flagAi",
+      label: t("passFlagPlateFixed"),
+      hint: t("passFlagPlateFixedHint", { plate: event.plate_original }),
+    });
+  if (event.inferred && !event.gate_confirmed)
+    flags.push({ icon: "helper", cls: "flagHelper", label: t("passFlagHelper"), hint: t("passFlagHelperHint") });
+  if (compact) {
+    // Компактно: только иконки в строке фиксированной высоты — карточки одной высоты
+    return (
+      <div className={styles.flagsCompact}>
+        {flags.map((f) => {
+          const Icon = FLAG_ICONS[f.icon];
+          return (
+            <span
+              key={f.label}
+              className={`${styles.flagIcon} ${styles[f.cls]}`}
+              title={`${f.label} — ${f.hint}`}
+            >
+              <Icon size={13} strokeWidth={2.2} />
+            </span>
+          );
+        })}
+      </div>
+    );
+  }
+  if (flags.length === 0) return null;
+  return (
+    <div className={styles.flags}>
+      {flags.map((f) => (
+        <span key={f.label} className={`${styles.flag} ${styles[f.cls]}`} title={f.hint}>
+          {f.label}
+        </span>
+      ))}
+    </div>
+  );
+};
 
 const VehiclePassesTable = ({
   data,
@@ -75,50 +163,6 @@ const VehiclePassesTable = ({
 
   const sortedData = getSortedData();
 
-  const parsePlate = (raw = "") => {
-    const clean = raw.replace(/[^A-Z0-9]/gi, "").toUpperCase();
-
-    // 50Z436BB
-    let match = clean.match(/^(\d{2})([A-Z])(\d{3})([A-Z]{2})$/);
-    if (match) {
-      return {
-        region: match[1],
-        series: match[2],
-        number: match[3],
-        suffix: match[4],
-      };
-    }
-
-    // 50717CAA
-    match = clean.match(/^(\d{2})(\d{3})([A-Z]{3})$/);
-    if (match) {
-      return {
-        region: match[1],
-        series: null,
-        number: match[2],
-        suffix: match[3],
-      };
-    }
-
-    // 8570BA50  → 50 857 BA
-    match = clean.match(/^(\d{3,4})([A-Z]{2})(\d{2})$/);
-    if (match) {
-      return {
-        region: match[3],
-        series: null,
-        number: match[1],
-        suffix: match[2],
-      };
-    }
-
-    return {
-      region: null,
-      series: null,
-      number: raw || "—",
-      suffix: null,
-    };
-  };
-
   const lightbox = lightboxSrc && (
     <div className={styles.lightboxOverlay} onClick={() => setLightboxSrc(null)}>
       <button className={styles.lightboxClose} onClick={() => setLightboxSrc(null)}>
@@ -139,8 +183,7 @@ const VehiclePassesTable = ({
         {lightbox}
         <div className={styles.cardGrid}>
         {sortedData.length > 0 ? (
-          sortedData.map((event, i) => {
-            const plate = parsePlate(event.plate_number);
+          sortedData.map((event) => {
             return (
               <div key={event.identifier} className={styles.card}>
                 {/* Photo */}
@@ -148,6 +191,8 @@ const VehiclePassesTable = ({
                   {event.photo ? (
                     <img
                       src={`/api/vehicle-passes/image/${event.photo}`}
+                      loading="lazy"
+                      decoding="async"
                       style={{ cursor: "pointer" }}
                       onClick={() => setLightboxSrc(`/api/vehicle-passes/image/${event.photo}`)}
                     />
@@ -183,6 +228,14 @@ const VehiclePassesTable = ({
                         : t("unknown")}
                   </div>
 
+                  <PassFlags event={event} styles={styles} t={t} compact />
+
+                  {event.score != null && (
+                    <div className={styles.cardScore} title={t("passScore")}>
+                      <ScoreBadge event={event} styles={styles} t={t} />
+                    </div>
+                  )}
+
                   {canDelete && onDelete && (
                     <button
                       className={styles.cardPhotoDeleteBtn}
@@ -204,26 +257,8 @@ const VehiclePassesTable = ({
                 </div>
 
                 {/* Vehicle number (license plate style) */}
-                <div className={styles.cardPlate}>
-                  {plate.region && (
-                    <span className={styles.plateRegion}>{plate.region}</span>
-                  )}
-                  {plate.region && <div className={styles.plateDivider} />}
-                  {plate.series && (
-                    <span className={styles.plateSeries}>{plate.series}</span>
-                  )}
-                  <span className={styles.plateNumber}>{plate.number}</span>
-                  {plate.suffix && (
-                    <span className={styles.plateSuffix}>{plate.suffix}</span>
-                  )}
-                  <div className={styles.plateUzBlock}>
-                    <div className={styles.plateFlag}>
-                      <div className={styles.flagBlue} />
-                      <div className={styles.flagWhite} />
-                      <div className={styles.flagGreen} />
-                    </div>
-                    <span className={styles.plateUz}>uz</span>
-                  </div>
+                <div className={styles.cardPlateWrap}>
+                  <UzPlate plate={event.plate_number} />
                 </div>
 
                 {/* Card details */}
@@ -294,6 +329,7 @@ const VehiclePassesTable = ({
                       {event.date || "—"}
                     </span>
                   </div>
+
                 </div>
 
               </div>
@@ -348,6 +384,12 @@ const VehiclePassesTable = ({
                 <SortArrow active={sortField === "date"} order={sortOrder} />
               </span>
             </th>
+            <th onClick={() => handleSort("score")}>
+              <span className={styles.headerContent}>
+                {t("passScore")}
+                <SortArrow active={sortField === "score"} order={sortOrder} />
+              </span>
+            </th>
             <th>{t("image")}</th>
             {canDelete && <th></th>}
           </tr>
@@ -355,17 +397,12 @@ const VehiclePassesTable = ({
         <tbody>
           {sortedData.length > 0 ? (
             sortedData.map((event, i) => {
-              const plate = parsePlate(event.plate_number);
-              return (
+                return (
                 <tr key={event.identifier}>
                   <td>{(currentPage - 1) * pageSize + i + 1}</td>
                   <td>
                     <div className={styles.plateCell}>
-                      <span>
-                        {[plate.region, plate.series, plate.number, plate.suffix]
-                          .filter(Boolean)
-                          .join(" ")}
-                      </span>
+                      <UzPlate plate={event.plate_number} size="sm" />
                       {canEdit && onEdit && (
                         <button
                           className={styles.editPlateBtn}
@@ -376,6 +413,7 @@ const VehiclePassesTable = ({
                         </button>
                       )}
                     </div>
+                    <PassFlags event={event} styles={styles} t={t} />
                   </td>
                   <td>{event.location_name}</td>
                   <td>
@@ -383,9 +421,14 @@ const VehiclePassesTable = ({
                   </td>
                   <td>{event.date}</td>
                   <td>
+                    <ScoreBadge event={event} styles={styles} t={t} />
+                  </td>
+                  <td>
                     {event?.photo && (
                       <img
                         src={`/api/vehicle-passes/image/${event.photo}`}
+                        loading="lazy"
+                        decoding="async"
                         style={{ cursor: "pointer" }}
                         onClick={() => setLightboxSrc(`/api/vehicle-passes/image/${event.photo}`)}
                       />

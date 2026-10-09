@@ -196,10 +196,40 @@ exports.Prisma.LocationsScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.GatesScalarFieldEnum = {
+  id: 'id',
+  location_id: 'location_id',
+  name: 'name',
+  status: 'status',
+  coop_enabled: 'coop_enabled',
+  coop_window_sec: 'coop_window_sec',
+  maneuver_window_sec: 'maneuver_window_sec',
+  added_at: 'added_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.Gate_pending_eventsScalarFieldEnum = {
+  id: 'id',
+  gate_id: 'gate_id',
+  camera_id: 'camera_id',
+  location_id: 'location_id',
+  camera_log_id: 'camera_log_id',
+  plate_number: 'plate_number',
+  direction: 'direction',
+  event_date: 'event_date',
+  photo: 'photo',
+  confidence: 'confidence',
+  due_at: 'due_at',
+  status: 'status',
+  drop_reason: 'drop_reason',
+  created_at: 'created_at'
+};
+
 exports.Prisma.Anpr_camerasScalarFieldEnum = {
   id: 'id',
   name: 'name',
   location_id: 'location_id',
+  gate_id: 'gate_id',
   camera_ip: 'camera_ip',
   mac_address: 'mac_address',
   port: 'port',
@@ -227,7 +257,16 @@ exports.Prisma.Vehicle_passesScalarFieldEnum = {
   date: 'date',
   created_at: 'created_at',
   is_whitelisted: 'is_whitelisted',
-  is_hidden: 'is_hidden'
+  is_hidden: 'is_hidden',
+  inferred: 'inferred',
+  confidence: 'confidence',
+  gate_confirmed: 'gate_confirmed',
+  score: 'score',
+  plate_original: 'plate_original',
+  plate_conflict: 'plate_conflict',
+  direction_source: 'direction_source',
+  direction_original: 'direction_original',
+  history_conflict: 'history_conflict'
 };
 
 exports.Prisma.Whitelist_foldersScalarFieldEnum = {
@@ -254,6 +293,7 @@ exports.Prisma.Camera_logsScalarFieldEnum = {
   mac_address: 'mac_address',
   license_plate: 'license_plate',
   confidence_level: 'confidence_level',
+  movement_direction: 'movement_direction',
   event_date: 'event_date',
   camera_id: 'camera_id',
   camera_name: 'camera_name',
@@ -261,6 +301,11 @@ exports.Prisma.Camera_logsScalarFieldEnum = {
   photo: 'photo',
   was_processed: 'was_processed',
   skip_reason: 'skip_reason',
+  ai_plate: 'ai_plate',
+  ai_confidence: 'ai_confidence',
+  ai_direction: 'ai_direction',
+  plate_consensus: 'plate_consensus',
+  direction_consensus: 'direction_consensus',
   created_at: 'created_at'
 };
 
@@ -345,6 +390,8 @@ exports.Prisma.ModelName = {
   menus: 'menus',
   user_menu_access: 'user_menu_access',
   locations: 'locations',
+  gates: 'gates',
+  gate_pending_events: 'gate_pending_events',
   anpr_cameras: 'anpr_cameras',
   vehicle_passes: 'vehicle_passes',
   whitelist_folders: 'whitelist_folders',

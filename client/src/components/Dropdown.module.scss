@@ -1,0 +1,112 @@
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+  .trigger {
+    width: 100%;
+    height: 34px;
+    padding: 0 12px 0 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-size: var(--font-small);
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+
+    &:hover,
+    &.open {
+      border-color: var(--third-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+      outline: none;
+    }
+
+    .label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chevron {
+      flex-shrink: 0;
+      color: var(--text-secondary);
+      transition: transform 0.2s;
+    }
+
+    &.open .chevron {
+      transform: rotate(180deg);
+      color: var(--third-color);
+    }
+  }
+
+  .menu {
+    position: absolute;
+    left: 0;
+    min-width: 100%;
+    width: max-content;
+    max-width: 320px;
+    max-height: 280px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    overflow-y: auto;
+    background: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+    z-index: 9999;
+    box-sizing: border-box;
+    animation: dropdownIn 0.14s ease-out;
+
+    &.down {
+      top: calc(100% + 6px);
+    }
+
+    &.up {
+      bottom: calc(100% + 6px);
+    }
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: var(--font-small);
+    font-weight: 500;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background 0.12s;
+
+    &:hover {
+      background: var(--select-hover-color);
+    }
+
+    &.active {
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--third-color);
+      font-weight: 700;
+    }
+  }
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

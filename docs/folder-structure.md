@@ -141,3 +141,18 @@ server/
 ├── config.js                   — ENV конфиг (PORT, DATABASE_URL, ACCESS_SECRET, REFRESH_SECRET)
 └── db.js                       — PostgreSQL pool (pg) — для raw queries если нужно
 ```
+
+## ai-service/ (Python-микросервис)
+
+```
+ai-service/
+├── app/main.py        — FastAPI: POST /recognize, GET /health
+├── app/detector.py    — YOLOv8n ONNX: bbox номера + класс plate_front / plate_rear
+├── app/ocr.py         — fast-plate-ocr: текст номера по кропу
+├── train/             — обучение (train.py, data.yaml, export_dataset.mjs)
+└── models/            — plate_side.onnx (обученные веса, не в git)
+```
+
+Node-клиент: `server/utils/aiPlate.js`. Включается переменной `AI_SERVICE_URL` (например `http://127.0.0.1:8000`).
+AI синхронно вызывается, только если камера не прислала номер; всё остальное — в фоне после ответа камере (`anprVerification.service.js`).
+Подробности: `ai-service/README.md`.

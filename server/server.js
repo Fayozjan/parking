@@ -6,6 +6,7 @@ import pool from "./db.js";
 import { startNotificationsWorker } from "./workers/notificationsWorker.js";
 import { startAnprCameraLivenessWorker } from "./workers/anprCameraLivenessWorker.js";
 import { startPhotoRetentionWorker } from "./workers/photoRetentionWorker.js";
+import { startGateCooperationWorker } from "./workers/gateCooperationWorker.js";
 import { startTelegramBot } from "./services/telegram-bot/bot.js";
 import { initDatabase } from "./utils/initDatabase.js";
 
@@ -39,6 +40,7 @@ app.listen(config.port, "0.0.0.0", () => {
   startNotificationsWorker();
   startAnprCameraLivenessWorker();
   startPhotoRetentionWorker();
+  startGateCooperationWorker();
 });
 
 if (process.env.BOT_TOKEN) {

@@ -1,4 +1,9 @@
 .pageHeader {
+  // закреплён вверху страницы: не исчезает при прокрутке
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--card-bg);
   display: flex;
   align-items: center;
   gap: 8px;

@@ -5,8 +5,7 @@ import {
   ArrowDownToLine,
   ArrowUpFromLine,
   RefreshCw,
-  AlignJustify,
-  Grid2X2,
+  Download,
 } from "lucide-react";
 
 import { getVehiclePasses, exportVehiclePasses, deleteVehiclePass } from "../api/vehiclePasses";
@@ -16,11 +15,11 @@ import { useAlertStore } from "../stores/alertStore";
 
 import Pagination from "../components/Pagination";
 import Loading from "../components/Loading";
-import DownloadButton from "../components/DownloadButton";
+import PageHero from "../components/PageHero";
 import VehiclePassesTable from "../components/VehiclePassesTable";
 import MultiSelectDoors from "../components/MultiSelectDoors";
+import Dropdown from "../components/Dropdown";
 import Search from "../components/Search";
-import PageHeader from "../components/PageHeader";
 import Button from "../components/Button";
 import OverlaySidebar from "../components/OverlaySidebar";
 import AddVehiclePass from "../components/AddVehiclePass";
@@ -73,34 +72,17 @@ const getPresetDates = (key) => {
   return {};
 };
 
-const StatWidget = ({ icon: Icon, color, label, value, sub, progress }) => (
-  <div className={styles.statWidget}>
-    <div className={styles.statWidgetInner}>
-      <div
-        className={styles.statWidgetIcon}
-        style={{ background: color + "18" }}
-      >
-        <Icon size={15} color={color} strokeWidth={2} />
-      </div>
-      <div className={styles.statWidgetContent}>
-        <span className={styles.statWidgetLabel}>{label}</span>
-        <span className={styles.statWidgetValue} style={{ color }}>
-          {value}
-          {sub && <span className={styles.statWidgetSub}> {sub}</span>}
-        </span>
-      </div>
-    </div>
-    {progress != null && (
-      <div className={styles.statWidgetProgressTrack}>
-        <div
-          className={styles.statWidgetProgressFill}
-          style={{
-            width: `${Math.min(100, Math.max(0, progress))}%`,
-            background: color,
-          }}
-        />
-      </div>
-    )}
+const HeroStat = ({ icon: Icon, tone, label, value }) => (
+  <div className={`${styles.heroStat} ${styles[tone]}`}>
+    <span className={styles.heroStatIcon}>
+      <Icon size={16} strokeWidth={2.2} />
+    </span>
+    <span className={styles.heroStatBody}>
+      <span className={styles.heroStatValue}>
+        {new Intl.NumberFormat("ru-RU").format(value ?? 0)}
+      </span>
+      <span className={styles.heroStatLabel}>{label}</span>
+    </span>
   </div>
 );
 
@@ -113,13 +95,11 @@ const VehiclePassesPage = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalEntries, setTotalEntries] = useState(0);
   const [totalExits, setTotalExits] = useState(0);
-  const [viewType, setViewType] = useState("card");
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
   const [parkings, setParkings] = useState([]);
   const [activePreset, setActivePreset] = useState("today");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [showBulkModal, setShowBulkModal] = useState(false);
+  const [addMode, setAddMode] = useState("single");
   const [editId, setEditId] = useState(null);
   const { t } = useTranslation();
   const currentPath = window.location.pathname;
@@ -171,19 +151,22 @@ const VehiclePassesPage = () => {
     fetchData(currentPage);
   }, [currentPage, pageSize]);
 
+  // Новые фильтры → первая страница. Если страница уже 1, эффект не сработает — грузим сами,
+  // иначе загрузку делает эффект по смене currentPage (без двойного запроса)
+  const applyFilters = (next) => {
+    setFormData(next);
+    if (currentPage === 1) fetchData(1, next, pageSize);
+    else setCurrentPage(1);
+  };
+
   const handlePreset = (key) => {
-    const dates = getPresetDates(key);
-    const newFormData = { ...formData, ...dates };
-    setFormData(newFormData);
     setActivePreset(key);
-    setCurrentPage(1);
-    fetchData(1, newFormData, pageSize);
+    applyFilters({ ...formData, ...getPresetDates(key) });
   };
 
   const handleApply = () => {
     setActivePreset(null);
-    setCurrentPage(1);
-    fetchData(1, formData, pageSize);
+    applyFilters(formData);
   };
 
   const handlePageChange = useCallback(
@@ -199,15 +182,7 @@ const VehiclePassesPage = () => {
     setCurrentPage(1);
   }, []);
 
-  const handleSearch = (d = formData) => {
-    setCurrentPage(1);
-    fetchData(1, d, pageSize);
-  };
-
-  const handleViewChange = (type) => {
-    setViewType(type);
-    setDropdownOpen(false);
-  };
+  const handleSearch = (d = formData) => applyFilters(d);
 
   const handleExport = async () => {
     setExportLoading(true);
@@ -252,29 +227,47 @@ const VehiclePassesPage = () => {
   return (
     <div className={styles.vehiclePassesPages}>
       <div className={styles.main}>
-        <PageHeader icon={Car} title={t("vehicle-passes")} subtitle={t("pageSubtitleVehiclePasses")} color="#6366f1" />
-        {/* Stats — always visible */}
-        <div className={styles.statsGrid}>
-          <StatWidget
-            icon={Car}
-            color="#6366f1"
-            label={t("totalPassesLabel")}
-            value={totalItems}
-          />
-          <StatWidget
-            icon={ArrowDownToLine}
-            color="#10b981"
-            label={t("entry")}
-            value={totalEntries}
-          />
-          <StatWidget
-            icon={ArrowUpFromLine}
-            color="#f59e0b"
-            label={t("exit")}
-            value={totalExits}
-          />
-        </div>
-
+        <PageHero
+          icon={Car}
+          title={t("vehicle-passes")}
+          subtitle={t("pageSubtitleVehiclePasses")}
+        >
+          <div className={styles.heroStats}>
+            <HeroStat
+              icon={Car}
+              tone="toneAll"
+              label={t("totalPassesLabel")}
+              value={totalItems}
+            />
+            <HeroStat
+              icon={ArrowDownToLine}
+              tone="toneIn"
+              label={t("entry")}
+              value={totalEntries}
+            />
+            <HeroStat
+              icon={ArrowUpFromLine}
+              tone="toneOut"
+              label={t("exit")}
+              value={totalExits}
+            />
+          </div>
+          {data.length > 0 && (
+            <button
+              type="button"
+              className={`${styles.heroDownload} ${exportLoading ? styles.heroDownloadBusy : ""}`}
+              onClick={handleExport}
+              disabled={exportLoading}
+              title={t("save")}
+            >
+              {exportLoading ? (
+                <RefreshCw size={17} strokeWidth={2.2} />
+              ) : (
+                <Download size={17} strokeWidth={2.2} />
+              )}
+            </button>
+          )}
+        </PageHero>
         {/* Controls bar */}
         <div className={styles.controls}>
           <div className={styles.leftControls}>
@@ -288,54 +281,52 @@ const VehiclePassesPage = () => {
                 options={parkings}
                 selected={formData.selectedLocationIds || []}
                 placeholder={t("selectLocations")}
-                onChange={(ids) => {
-                  const next = { ...formData, selectedLocationIds: ids };
-                  setFormData(next);
-                  setCurrentPage(1);
-                  fetchData(1, next, pageSize);
-                }}
+                onChange={(ids) =>
+                  applyFilters({ ...formData, selectedLocationIds: ids })
+                }
               />
             </div>
 
-            <div className={styles.dirSelectWrap}>
-              <select
-                className={styles.dirSelect}
-                value={formData.direction}
-                onChange={(e) => {
-                  const next = { ...formData, direction: e.target.value };
-                  setFormData(next);
-                  setCurrentPage(1);
-                  fetchData(1, next, pageSize);
-                }}
-              >
-                <option value="">{t("all")}</option>
-                <option value="entry">{t("entry")}</option>
-                <option value="exit">{t("exit")}</option>
-              </select>
-            </div>
+            <Dropdown
+              minWidth={120}
+              value={formData.direction}
+              options={[
+                { value: "", label: t("all") },
+                { value: "entry", label: t("entry") },
+                { value: "exit", label: t("exit") },
+              ]}
+              onChange={(direction) => applyFilters({ ...formData, direction })}
+            />
           </div>
+
+          <Pagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            totalPages={totalPages}
+            handleChangePageSize={handleChangePageSize}
+            handlePageChange={handlePageChange}
+          />
 
           <div className={styles.rightControls}>
             <div className={styles.filterGroup}>
-              <div className={styles.presetSelectWrap}>
-                <select
-                  className={styles.presetSelect}
-                  value={activePreset ?? ""}
-                  onChange={(e) => {
-                    if (e.target.value) handlePreset(e.target.value);
-                  }}
-                  title={t("period")}
-                >
-                  {!activePreset && (
-                    <option value="">{t("financeCustom")}</option>
-                  )}
-                  {PRESETS.map((p) => (
-                    <option key={p.key} value={p.key}>
-                      {t(p.labelKey)}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <Dropdown
+                minWidth={130}
+                title={t("period")}
+                value={activePreset ?? ""}
+                options={[
+                  ...(activePreset
+                    ? []
+                    : [{ value: "", label: t("financeCustom") }]),
+                  ...PRESETS.map((p) => ({
+                    value: p.key,
+                    label: t(p.labelKey),
+                  })),
+                ]}
+                onChange={(key) => {
+                  if (key) handlePreset(key);
+                }}
+              />
               <input
                 className={styles.dateInput}
                 type="datetime-local"
@@ -370,19 +361,14 @@ const VehiclePassesPage = () => {
             </div>
 
             {canAdd && (
-              <>
-                <Button
-                  text={t("add")}
-                  onClick={() => {
-                    setEditId(null);
-                    setShowAddModal(true);
-                  }}
-                />
-                <Button
-                  text={t("bulkAdd")}
-                  onClick={() => setShowBulkModal(true)}
-                />
-              </>
+              <Button
+                text={t("add")}
+                onClick={() => {
+                  setEditId(null);
+                  setAddMode("single");
+                  setShowAddModal(true);
+                }}
+              />
             )}
 
             <button
@@ -395,67 +381,23 @@ const VehiclePassesPage = () => {
           </div>
         </div>
 
-        {/* Table sub-header: [spacer] [pagination center] [view toggle + download right] */}
-        <div className={styles.tableSubHeader}>
-          <div className={styles.tableSubHeaderSpacer} />
-
-          <Pagination
-            currentPage={currentPage}
-            pageSize={pageSize}
-            totalItems={totalItems}
-            totalPages={totalPages}
-            handleChangePageSize={handleChangePageSize}
-            handlePageChange={handlePageChange}
-          />
-
-          <div className={styles.tableSubHeaderRight}>
-            {data.length > 0 && (
-              <>
-                <div className={styles.customDropdown}>
-                  <button onClick={() => setDropdownOpen((prev) => !prev)}>
-                    {viewType === "row" ? (
-                      <AlignJustify size={15} strokeWidth={1.75} />
-                    ) : (
-                      <Grid2X2 size={15} strokeWidth={1.75} />
-                    )}
-                    {viewType === "row" ? t("listView") : t("cardView")}
-                  </button>
-                  {isDropdownOpen && (
-                    <ul>
-                      <li onClick={() => handleViewChange("row")}>
-                        <AlignJustify size={15} strokeWidth={1.75} />{" "}
-                        {t("listView")}
-                      </li>
-                      <li onClick={() => handleViewChange("card")}>
-                        <Grid2X2 size={15} strokeWidth={1.75} /> {t("cardView")}
-                      </li>
-                    </ul>
-                  )}
-                </div>
-
-                <DownloadButton
-                  text={t("save")}
-                  onClick={handleExport}
-                  loading={exportLoading}
-                />
-              </>
-            )}
-          </div>
-        </div>
-
-        {loading ? (
+        {loading && data.length === 0 ? (
           <Loading />
         ) : (
+          <div
+            className={`${styles.tableArea} ${loading ? styles.reloading : ""}`}
+          >
           <VehiclePassesTable
             data={data}
             currentPage={currentPage}
             pageSize={pageSize}
-            viewType={viewType}
+            viewType="card"
             canDelete={canDelete}
             onDelete={handleDelete}
             canEdit={canEdit}
             onEdit={handleEdit}
           />
+          </div>
         )}
       </div>
 
@@ -465,28 +407,42 @@ const VehiclePassesPage = () => {
         width="500px"
       >
         {showAddModal && (
-          <AddVehiclePass
-            id={editId}
-            handleClose={handleCloseModal}
-            onSuccess={() =>
-              editId
-                ? fetchData(currentPage, formData, pageSize)
-                : fetchData(1, formData, pageSize)
-            }
-          />
-        )}
-      </OverlaySidebar>
-
-      <OverlaySidebar
-        isOpen={showBulkModal}
-        onClose={() => setShowBulkModal(false)}
-        width="500px"
-      >
-        {showBulkModal && (
-          <AddVehiclePassBulk
-            handleClose={() => setShowBulkModal(false)}
-            onSuccess={() => fetchData(1, formData, pageSize)}
-          />
+          <>
+            {!editId && (
+              <div className={styles.addModeTabs}>
+                <button
+                  type="button"
+                  className={addMode === "single" ? styles.addModeActive : ""}
+                  onClick={() => setAddMode("single")}
+                >
+                  {t("addSingle")}
+                </button>
+                <button
+                  type="button"
+                  className={addMode === "bulk" ? styles.addModeActive : ""}
+                  onClick={() => setAddMode("bulk")}
+                >
+                  {t("bulkAdd")}
+                </button>
+              </div>
+            )}
+            {!editId && addMode === "bulk" ? (
+              <AddVehiclePassBulk
+                handleClose={handleCloseModal}
+                onSuccess={() => fetchData(1, formData, pageSize)}
+              />
+            ) : (
+              <AddVehiclePass
+                id={editId}
+                handleClose={handleCloseModal}
+                onSuccess={() =>
+                  editId
+                    ? fetchData(currentPage, formData, pageSize)
+                    : fetchData(1, formData, pageSize)
+                }
+              />
+            )}
+          </>
         )}
       </OverlaySidebar>
     </div>

@@ -2,8 +2,8 @@ import * as financeService from "./finance.service.js";
 
 export async function getParkings(req, res) {
   try {
-    const { locationId, from, to, page } = req.query;
-    const data = await financeService.getParkings({ locationId, from, to, page });
+    const { locationId, from, to, page, pageSize, filter, search, sortKey, sortDir } = req.query;
+    const data = await financeService.getParkings({ locationId, from, to, page, pageSize, filter, search, sortKey, sortDir });
     res.json({ success: true, data });
   } catch (e) {
     res.status(400).json({ success: false, message: e.message });

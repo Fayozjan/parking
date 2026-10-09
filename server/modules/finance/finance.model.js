@@ -19,7 +19,7 @@ function buildHiddenRawCondition(hiddenEntries) {
 }
 
 export const FinanceModel = {
-  getParkings: async ({ locationId, from, to, skip = 0, take = 50, hiddenExclusion = {}, noTariffEntries = [], hiddenEntries = [] }) => {
+  getParkings: async ({ locationId, from, to, skip = 0, take = 50, filter = "all", search = "", sortKey = "date", sortDir = "desc", hiddenExclusion = {}, noTariffEntries = [], hiddenEntries = [] }) => {
     const prisma = prismaContext.get();
     const fromDate = new Date(from);
     const toDate = new Date(to);
@@ -126,9 +126,35 @@ export const FinanceModel = {
     const totalOpen = visibleParkings.length - totalClosed;
     const totalRevenueClosed = visibleParkings.filter((s) => !s.is_open && !s.is_no_tariff && !s.is_free_period).length;
 
+    // Фильтр по статусу, поиск по номеру и сортировка — на сервере, чтобы клиент получал только страницу.
+    // Итоги (totalClosed/totalOpen/totalRevenueClosed) считаются по всему периоду, без фильтра и поиска.
+    const searchNorm = String(search || "").toUpperCase().replace(/\s+/g, "");
+    let list = visibleParkings.filter((s) => {
+      if (filter === "closed" && s.is_open) return false;
+      if (filter === "open" && !s.is_open) return false;
+      if (searchNorm && !(s.plate_number ?? "").toUpperCase().replace(/\s+/g, "").includes(searchNorm)) return false;
+      return true;
+    });
+
+    const isCustomSort = sortKey !== "date" || sortDir !== "desc";
+    if (isCustomSort) {
+      const dir = sortDir === "asc" ? 1 : -1;
+      const priceFlag = (s) => (s.is_no_tariff || s.is_free_period ? 0 : 1);
+      list = [...list].sort((a, b) => {
+        if (sortKey === "plate") return dir * (a.plate_number ?? "").localeCompare(b.plate_number ?? "");
+        if (sortKey === "duration") return dir * ((a.duration_minutes ?? 0) - (b.duration_minutes ?? 0));
+        if (sortKey === "status") return dir * ((a.is_open ? 1 : 0) - (b.is_open ? 1 : 0));
+        if (sortKey === "price") return dir * (priceFlag(a) - priceFlag(b));
+        return dir * ((a.entry_time?.getTime() ?? 0) - (b.entry_time?.getTime() ?? 0));
+      });
+    } else {
+      // сортировка по умолчанию — как раньше на клиенте: по времени въезда, новые сверху
+      list = [...list].sort((a, b) => (b.entry_time?.getTime() ?? 0) - (a.entry_time?.getTime() ?? 0));
+    }
+
     return {
-      records: visibleParkings.slice(skip, skip + take),
-      total: visibleParkings.length,
+      records: list.slice(skip, skip + take),
+      total: list.length,
       totalClosed,
       totalOpen,
       totalRevenueClosed,

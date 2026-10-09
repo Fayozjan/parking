@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 import Pagination from "../components/Pagination";
 import OverlaySidebar from "../components/OverlaySidebar";
 import { Icons } from "../icons/icons";
-import PageHeader from "../components/PageHeader";
+import PageHero from "../components/PageHero";
 import { ClipboardList } from "lucide-react";
 import styles from "./AuditLogsPage.module.scss";
 
@@ -220,8 +220,8 @@ const AuditLogsPage = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className={styles.main}>
-          <PageHeader icon={ClipboardList} title={t("auditLogs")} subtitle={t("pageSubtitleAuditLogs")} color="#8b5cf6" />
+        <div className={`${styles.main} settings-page`}>
+          <PageHero icon={ClipboardList} title={t("auditLogs")} />
           <div className={styles.mainHeader}>
             <div className={styles.filters}>
               <select

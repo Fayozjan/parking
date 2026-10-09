@@ -1,0 +1,86 @@
+// Номерной знак Узбекистана: слева регион, по центру номер, справа флаг и «UZ»
+.plate {
+  --plate-h: 26px;
+  display: inline-flex;
+  align-items: stretch;
+  height: var(--plate-h);
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: calc(var(--plate-h) * 0.22);
+  color: #111;
+  font-family: "Bahnschrift", "Arial Narrow", "Roboto Condensed", Arial, sans-serif;
+  font-weight: 700;
+  font-stretch: condensed;
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sm {
+  --plate-h: 22px;
+}
+
+.lg {
+  --plate-h: 34px;
+}
+
+.region {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 calc(var(--plate-h) * 0.22);
+  font-size: calc(var(--plate-h) * 0.7);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  border-right: 2px solid #111;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 0 calc(var(--plate-h) * 0.2);
+  font-size: calc(var(--plate-h) * 0.7);
+  letter-spacing: 0.04em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--plate-h) * 0.04);
+  padding: 0 calc(var(--plate-h) * 0.16) 0 calc(var(--plate-h) * 0.06);
+}
+
+.flag {
+  width: calc(var(--plate-h) * 0.4);
+  height: auto;
+}
+
+.uz {
+  font-size: calc(var(--plate-h) * 0.26);
+  font-weight: 800;
+  color: #1eb5e8;
+  letter-spacing: 0.02em;
+}
+
+// Текст обрезается по высоте заглавных букв — отступы сверху и снизу равны
+.txt {
+  display: block;
+  line-height: 1;
+  text-box: trim-both cap alphabetic;
+}
+
+@supports not (text-box: trim-both cap alphabetic) {
+  .txt {
+    transform: translateY(0.05em);
+  }
+}

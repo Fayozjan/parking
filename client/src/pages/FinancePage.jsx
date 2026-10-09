@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   BarChart,
@@ -20,6 +20,9 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ArrowLeft,
+  MapPin,
   Search,
   Download,
   Trash2,
@@ -37,6 +40,7 @@ import { deleteVehiclePass, updateVehiclePass } from "../api/vehiclePasses";
 import { usePermissions } from "../hooks/usePermissions";
 import { exportFinanceExcel } from "../utils/exportFinanceExcel";
 import Loading from "../components/Loading";
+import UzPlate from "../components/UzPlate";
 import PageHeader from "../components/PageHeader";
 import styles from "./FinancePage.module.scss";
 
@@ -149,7 +153,63 @@ const toLocalIso = (d) => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-export const SessionsModal = ({ parking, range, currency, onClose, canDelete, canEdit, closedOnly = false }) => {
+const PAGE_SIZES = [25, 50, 100];
+
+// Кастомный выпадающий список «на странице»
+const PageSizeSelect = ({ value, onChange }) => {
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => {
+      if (!ref.current?.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div className={styles.psSelect} ref={ref}>
+      <button
+        type="button"
+        className={`${styles.psTrigger} ${open ? styles.psTriggerOpen : ""}`}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <b>{value}</b>
+        <span className={styles.psLabel}>{t("perPage")}</span>
+        <ChevronDown size={14} className={styles.psChevron} />
+      </button>
+      {open && (
+        <ul className={styles.psMenu}>
+          {PAGE_SIZES.map((n) => (
+            <li key={n}>
+              <button
+                type="button"
+                className={`${styles.psOption} ${n === value ? styles.psOptionActive : ""}`}
+                onClick={() => {
+                  onChange(n);
+                  setOpen(false);
+                }}
+              >
+                {n}
+                {n === value && <Check size={14} />}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export const SessionsModal = ({ parking, range, currency, onClose, canDelete, canEdit, closedOnly = false, asPage = false }) => {
   const { t } = useTranslation();
   const [sessions, setSessions] = useState([]);
   const [totalClosed, setTotalClosed] = useState(0);
@@ -169,7 +229,11 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
   const [sortDir, setSortDir] = useState("desc");
   const [showSort, setShowSort] = useState(false);
   const [editingPlate, setEditingPlate] = useState(null);
-  const [selected, setSelected] = useState(() => new Set());
+  const [selected, setSelected] = useState(() => new Map());
+  const [totalFiltered, setTotalFiltered] = useState(0);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const loadedOnce = useRef(false);
+  const requestId = useRef(0);
   const [bulkAction, setBulkAction] = useState(null); // "delete" | "close" | "cancel"
   const [bulkCloseDateTime, setBulkCloseDateTime] = useState("");
 
@@ -182,7 +246,7 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
           setConfirmSession(null);
         } else if (bulkAction) {
           setBulkAction(null);
-        } else {
+        } else if (!asPage) {
           onClose();
         }
       }
@@ -194,28 +258,57 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
     return () => window.removeEventListener("keydown", handler);
   }, [lightboxSrc, onClose, confirmSession, bulkAction, actionLoading]);
 
-  const fetchSessions = useCallback(async ({ silent = false } = {}) => {
-    if (!silent) setLoading(true);
+  // Страница, фильтр, поиск и сортировка считаются на сервере: приходит только текущая страница
+  const fetchSessions = useCallback(async () => {
+    const id = ++requestId.current;
+    // Спиннер только при первой загрузке; при листании старые строки остаются на экране
+    if (!loadedOnce.current) setLoading(true);
     try {
       const res = await getFinanceLocationParkings({
         locationId: parking.id,
         from: range.from,
         to: range.to,
+        page,
+        pageSize,
+        filter: closedOnly ? "closed" : filter,
+        search: debouncedSearch,
+        sortKey,
+        sortDir,
       });
+      if (id !== requestId.current) return; // пришёл устаревший ответ
       setSessions(res.records);
+      setTotalFiltered(res.total ?? res.records.length);
       setTotalClosed(res.totalClosed);
       setTotalOpen(res.totalOpen);
       setTotalRevenueClosed(res.totalRevenueClosed ?? res.totalClosed);
+      loadedOnce.current = true;
     } catch (e) {
       console.error(e);
     } finally {
-      if (!silent) setLoading(false);
+      if (id === requestId.current) setLoading(false);
     }
-  }, [parking.id, range.from, range.to]);
+  }, [
+    parking.id,
+    range.from,
+    range.to,
+    page,
+    pageSize,
+    filter,
+    closedOnly,
+    debouncedSearch,
+    sortKey,
+    sortDir,
+  ]);
 
   useEffect(() => {
     fetchSessions();
   }, [fetchSessions]);
+
+  // Поиск по номеру — с задержкой, чтобы не слать запрос на каждую букву
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(id);
+  }, [search]);
 
   const handleCloseSession = async (plateNumber, dateStr) => {
     setActionLoading(`close-${plateNumber}`);
@@ -226,7 +319,8 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
         date: new Date(dateStr).toISOString(),
       });
       setClosingEntryId(null);
-      await fetchSessions({ silent: true });
+      clearSelection();
+      await fetchSessions();
     } catch (e) {
       console.error(e);
     } finally {
@@ -238,7 +332,8 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
     setActionLoading(`cancel-${exitId}`);
     try {
       await cancelFinanceParking({ exitId });
-      await fetchSessions({ silent: true });
+      clearSelection();
+      await fetchSessions();
     } catch (e) {
       console.error(e);
     } finally {
@@ -253,7 +348,12 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
       if (session.exit_id) await deleteVehiclePass(session.exit_id);
       if (session.entry_id) await deleteVehiclePass(session.entry_id);
       setConfirmSession(null);
-      await fetchSessions({ silent: true });
+      setSelected((prev) => {
+        const next = new Map(prev);
+        next.delete(rowKey(session));
+        return next;
+      });
+      await fetchSessions();
     } catch (e) {
       console.error(e);
     } finally {
@@ -266,42 +366,12 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
     setCloseDateTime(toLocalIso(new Date()));
   };
 
-  const searchNorm = search.toUpperCase().replace(/\s+/g, "");
-  const filtered = sessions.filter((s) => {
-    if (closedOnly && s.is_open) return false;
-    const filterOk =
-      filter === "closed" ? !s.is_open : filter === "open" ? s.is_open : true;
-    const searchOk =
-      !searchNorm ||
-      (s.plate_number ?? "")
-        .toUpperCase()
-        .replace(/\s+/g, "")
-        .includes(searchNorm);
-    return filterOk && searchOk;
-  });
+  // сервер уже отфильтровал и отсортировал записи
+  const displayed = sessions;
 
-  const displayed = [...filtered].sort((a, b) => {
-    const dir = sortDir === "asc" ? 1 : -1;
-    if (sortKey === "plate") {
-      return dir * (a.plate_number ?? "").localeCompare(b.plate_number ?? "");
-    }
-    if (sortKey === "duration") {
-      return dir * ((a.duration_minutes ?? 0) - (b.duration_minutes ?? 0));
-    }
-    if (sortKey === "status") {
-      return dir * ((a.is_open ? 1 : 0) - (b.is_open ? 1 : 0));
-    }
-    if (sortKey === "price") {
-      const pa = a.is_no_tariff || a.is_free_period ? 0 : 1;
-      const pb = b.is_no_tariff || b.is_free_period ? 0 : 1;
-      return dir * (pa - pb);
-    }
-    return dir * (new Date(a.entry_time || 0) - new Date(b.entry_time || 0));
-  });
-
-  const totalPages = Math.ceil(displayed.length / pageSize);
+  const totalPages = Math.ceil(totalFiltered / pageSize);
   const effectivePage = totalPages > 0 && page > totalPages ? totalPages : page;
-  const pageRows = displayed.slice((effectivePage - 1) * pageSize, effectivePage * pageSize);
+  const pageRows = displayed;
 
   useEffect(() => {
     if (totalPages > 0 && page > totalPages) setPage(totalPages);
@@ -309,7 +379,7 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
 
   // Множественный выбор: ключ строки — пара id въезда/выезда
   const rowKey = (s) => `${s.entry_id ?? ""}|${s.exit_id ?? ""}`;
-  const selectedSessions = displayed.filter((s) => selected.has(rowKey(s)));
+  const selectedSessions = Array.from(selected.values());
   const selectedOpen = selectedSessions.filter((s) => s.is_open && s.entry_id);
   const selectedCancelable = selectedSessions.filter(
     (s) => !s.is_open && s.is_manual && s.exit_id,
@@ -317,22 +387,22 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
   const pageAllSelected =
     pageRows.length > 0 && pageRows.every((s) => selected.has(rowKey(s)));
 
-  const clearSelection = () => setSelected(new Set());
+  const clearSelection = () => setSelected(new Map());
 
   const toggleRow = (s) =>
     setSelected((prev) => {
-      const next = new Set(prev);
+      const next = new Map(prev);
       const key = rowKey(s);
       if (next.has(key)) next.delete(key);
-      else next.add(key);
+      else next.set(key, s);
       return next;
     });
 
   const togglePage = () =>
     setSelected((prev) => {
-      const next = new Set(prev);
+      const next = new Map(prev);
       pageRows.forEach((s) =>
-        pageAllSelected ? next.delete(rowKey(s)) : next.add(rowKey(s)),
+        pageAllSelected ? next.delete(rowKey(s)) : next.set(rowKey(s), s),
       );
       return next;
     });
@@ -368,7 +438,7 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
       if (entryId) await updateVehiclePass(entryId, { plate_number: value });
       if (exitId) await updateVehiclePass(exitId, { plate_number: value });
       setEditingPlate(null);
-      await fetchSessions({ silent: true });
+      await fetchSessions();
     } catch (e) {
       console.error(e);
     } finally {
@@ -384,7 +454,7 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
   const finishBulk = async () => {
     setBulkAction(null);
     clearSelection();
-    await fetchSessions({ silent: true });
+    await fetchSessions();
   };
 
   const handleBulkDelete = async () => {
@@ -438,6 +508,54 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
 
   const revenue = totalRevenueClosed * (parking.tariff?.base_price ?? 0);
 
+  const pagination = (
+      <div className={styles.modalPagination}>
+      {asPage ? (
+        <PageSizeSelect
+          value={pageSize}
+          onChange={(n) => {
+            setPageSize(n);
+            setPage(1);
+          }}
+        />
+      ) : (
+        <div className={styles.pageSizeWrap}>
+          <select
+            className={styles.pageSizeSelect}
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+              setPage(1);
+            }}
+          >
+            {PAGE_SIZES.map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+        <button
+          className={styles.pageBtn}
+          disabled={effectivePage <= 1}
+          onClick={() => setPage(effectivePage - 1)}
+        >
+          <ChevronLeft size={14} />
+        </button>
+        <span className={styles.pageInfo}>
+          {effectivePage} / {totalPages || 1}
+        </span>
+        <button
+          className={styles.pageBtn}
+          disabled={effectivePage >= totalPages}
+          onClick={() => setPage(effectivePage + 1)}
+        >
+          <ChevronRight size={14} />
+        </button>
+      </div>
+  );
+
   return (
     <>
       {lightboxSrc && (
@@ -467,7 +585,11 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
             </div>
             <div className={styles.confirmTitle}>{t("confirmDelete")}</div>
             <div className={styles.confirmPlate}>
-              {fmtPlate(confirmSession.plate_number)}
+              {asPage ? (
+                <UzPlate plate={confirmSession.plate_number} />
+              ) : (
+                fmtPlate(confirmSession.plate_number)
+              )}
             </div>
             <div className={styles.confirmActions}>
               <button
@@ -574,17 +696,58 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
           </div>
         </div>
       )}
-      <div className={styles.modalOverlay} onClick={onClose}>
-        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-          <div className={styles.modalHeader}>
-            <div className={styles.modalTitle}>
-              {t("financeLocationParkingsList")} —{" "}
-              <span className={styles.modalParkingName}>{parking.name}</span>
+      <div
+        className={asPage ? styles.sessionsPageWrap : styles.modalOverlay}
+        onClick={asPage ? undefined : onClose}
+      >
+        <div
+          className={asPage ? styles.sessionsPage : styles.modal}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {asPage ? (
+            <div className={styles.heroHeader}>
+              <button
+                className={styles.heroBack}
+                onClick={onClose}
+                title={t("back")}
+              >
+                <ArrowLeft size={16} />
+              </button>
+              <div className={styles.heroIcon}>
+                <MapPin size={20} strokeWidth={2} />
+              </div>
+              <div className={styles.heroText}>
+                <div className={styles.heroCrumbs}>
+                  <button className={styles.heroCrumbLink} onClick={onClose}>
+                    {t("home")}
+                  </button>
+                  <ChevronRight size={12} />
+                  <span>{t("financeLocationParkingsList")}</span>
+                </div>
+                <h1 className={styles.heroTitle}>{parking.name}</h1>
+              </div>
+              {parking.camerasOnline != null && (
+                <span
+                  className={`${styles.heroStatus} ${
+                    parking.camerasOnline ? styles.heroStatusOn : styles.heroStatusOff
+                  }`}
+                >
+                  <span className={styles.heroStatusDot} />
+                  {parking.camerasOnline ? t("online") : t("offline")}
+                </span>
+              )}
             </div>
-            <button className={styles.modalClose} onClick={onClose}>
-              <X size={16} />
-            </button>
-          </div>
+          ) : (
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitle}>
+                {t("financeLocationParkingsList")} —{" "}
+                <span className={styles.modalParkingName}>{parking.name}</span>
+              </div>
+              <button className={styles.modalClose} onClick={onClose}>
+                <X size={16} />
+              </button>
+            </div>
+          )}
           <div className={styles.modalMeta}>
             <span>
               {range.from} — {range.to}
@@ -633,6 +796,7 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
                 {label} <span className={styles.filterCount}>{count}</span>
               </button>
             ))}
+            {asPage && pagination}
             <div className={styles.plateSearchWrap}>
               <Search size={13} className={styles.plateSearchIcon} />
               <input
@@ -808,7 +972,11 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
                                   value: s.plate_number ?? "",
                                 }) : undefined}
                               >
-                                {fmtPlate(s.plate_number)}
+                                {asPage ? (
+                                  <UzPlate plate={s.plate_number} />
+                                ) : (
+                                  fmtPlate(s.plate_number)
+                                )}
                               </span>
                             )}
                           </td>
@@ -977,41 +1145,7 @@ export const SessionsModal = ({ parking, range, currency, onClose, canDelete, ca
                   </tbody>
                 </table>
               </div>
-              <div className={styles.modalPagination}>
-                <div className={styles.pageSizeWrap}>
-                  <select
-                    className={styles.pageSizeSelect}
-                    value={pageSize}
-                    onChange={(e) => {
-                      setPageSize(Number(e.target.value));
-                      setPage(1);
-                    }}
-                  >
-                    {[25, 50, 100].map((n) => (
-                      <option key={n} value={n}>
-                        {n}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <button
-                  className={styles.pageBtn}
-                  disabled={effectivePage <= 1}
-                  onClick={() => setPage(effectivePage - 1)}
-                >
-                  <ChevronLeft size={14} />
-                </button>
-                <span className={styles.pageInfo}>
-                  {effectivePage} / {totalPages || 1}
-                </span>
-                <button
-                  className={styles.pageBtn}
-                  disabled={effectivePage >= totalPages}
-                  onClick={() => setPage(effectivePage + 1)}
-                >
-                  <ChevronRight size={14} />
-                </button>
-              </div>
+              {!asPage && pagination}
             </>
           )}
         </div>

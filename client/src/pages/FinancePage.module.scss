@@ -187,16 +187,16 @@
     .kpiGrid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 7px;
+      gap: 6px;
       padding: 0 5px;
       flex-shrink: 0;
     }
 
     .kpiCard {
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 10px 13px;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 11px;
       background: var(--card-bg);
       border: 1px solid var(--border-subtle);
       border-radius: 8px;
@@ -205,15 +205,14 @@
         transform 0.18s;
 
       &:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        transform: translateY(-1px);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
       }
     }
 
     .kpiIcon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -223,7 +222,7 @@
     .kpiBody {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 0;
       min-width: 0;
     }
 
@@ -237,7 +236,7 @@
     }
 
     .kpiValue {
-      font-size: var(--font-widget-value);
+      font-size: calc(17px * var(--font-scale));
       font-weight: 700;
       font-variant-numeric: tabular-nums;
       line-height: 1.2;
@@ -1440,4 +1439,512 @@
 .confirmIconInfo {
   background: rgba(99, 102, 241, 0.12);
   color: var(--third-color);
+}
+
+// ── Sessions Page (вместо модалки на главной) ────────────
+.sessionsPageWrap {
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.sessionsPage {
+  // единый акцент: те же цвета, что на главной
+  --third-color: #6366f1;
+  background: var(--card-bg);
+  border: none;
+  border-radius: 0;
+  width: 100%;
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  // clip (не hidden): не создаёт прокрутку и не ломает sticky у баннера
+  overflow: clip;
+  animation: sessionsPageIn 0.28s ease both;
+
+  // Мета-инфо превращается в «таблетки»
+  .modalMeta {
+    gap: 10px;
+    padding: 14px 24px;
+
+    > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-light);
+      font-size: calc(13px * var(--font-scale));
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+  }
+
+  .modalTotalRevenue {
+    margin-left: auto;
+    background: rgba(99, 102, 241, 0.1) !important;
+    border-color: rgba(99, 102, 241, 0.3) !important;
+    color: #6366f1 !important;
+    font-size: calc(14px * var(--font-scale)) !important;
+  }
+
+  .modalFilters {
+    padding: 12px 24px;
+    gap: 8px;
+  }
+
+  .filterBtn {
+    height: 34px;
+    padding: 0 16px;
+    border-radius: 999px;
+  }
+
+  // активные кнопки — тот же градиент, что на главной
+  .filterBtnActive,
+  .sortBtnActive {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border-color: transparent;
+    color: #fff;
+  }
+
+  .plateSearch {
+    height: 34px;
+    border-radius: 999px;
+    padding-left: 34px;
+  }
+
+  .plateSearchIcon {
+    left: 12px;
+  }
+
+  .sortToggleBtn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+  }
+
+  .sortRow {
+    padding: 10px 24px;
+  }
+
+  .sortBtn {
+    border-radius: 999px;
+  }
+
+  .modalTableWrap {
+    max-height: none;
+    padding: 0 12px;
+  }
+
+  .modalTable {
+    border-collapse: separate;
+    border-spacing: 0 4px;
+
+    thead {
+      background: var(--card-bg);
+    }
+
+    th {
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border-color);
+      font-size: calc(11.5px * var(--font-scale));
+      letter-spacing: 0.08em;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: none;
+      background: var(--card-bg);
+      transition: background 0.15s;
+
+      &:first-child {
+        border-radius: 10px 0 0 10px;
+      }
+      &:last-child {
+        border-radius: 0 10px 10px 0;
+      }
+    }
+
+    tbody tr {
+      box-shadow: 0 0 0 1px var(--border-subtle);
+      border-radius: 10px;
+    }
+
+    tbody tr:hover td {
+      background: rgba(99, 102, 241, 0.07);
+    }
+  }
+
+
+  .photoThumb {
+    border-radius: 6px;
+    transition: transform 0.15s;
+
+    &:hover {
+      transform: scale(1.12);
+    }
+  }
+
+  // Пагинация-«капсула» между фильтрами и поиском
+  .modalPagination {
+    margin: 0 auto;
+    padding: 3px;
+    gap: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--bg-light);
+    flex-shrink: 0;
+  }
+
+  .pageBtn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background: var(--card-bg);
+    box-shadow: 0 0 0 1px var(--border-subtle);
+    transition:
+      background 0.15s,
+      color 0.15s,
+      box-shadow 0.15s;
+
+    &:hover:not(:disabled) {
+      background: #6366f1;
+      color: #fff;
+      box-shadow: none;
+    }
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }
+
+  .pageInfo {
+    min-width: 62px;
+    text-align: center;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+  }
+
+  .plateSearchWrap {
+    margin-left: 0;
+  }
+
+  .bulkBar {
+    margin: 0 24px 8px;
+    border-radius: 10px;
+  }
+}
+
+@keyframes sessionsPageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .sessionsPage {
+    .modalMeta,
+    .modalFilters,
+    .sortRow {
+      padding-left: 16px;
+      padding-right: 16px;
+      flex-wrap: wrap;
+    }
+    .plateSearchWrap {
+      width: 100%;
+      margin-left: 0;
+    }
+    .modalTableWrap {
+      overflow-x: auto;
+      padding: 0;
+    }
+  }
+}
+
+.heroHeader {
+  // закреплён вверху при прокрутке
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 10px 0;
+  height: 58px;
+  box-sizing: border-box;
+  padding: 0 18px;
+  border-radius: 14px;
+  color: #fff;
+  overflow: hidden;
+  background: linear-gradient(120deg, #4338ca 0%, #4f46e5 50%, #6366f1 100%);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
+  flex-shrink: 0;
+
+  // декоративные круги
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+  }
+  &::before {
+    width: 260px;
+    height: 260px;
+    top: -180px;
+    right: -60px;
+  }
+  &::after {
+    width: 160px;
+    height: 160px;
+    bottom: -100px;
+    right: 200px;
+  }
+}
+
+.heroBack {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition:
+    background 0.15s,
+    transform 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateX(-2px);
+  }
+}
+
+.heroIcon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.heroText {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  flex: 1;
+}
+
+.heroCrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: calc(11.5px * var(--font-scale));
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.heroCrumbLink {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: calc(18px * var(--font-scale));
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heroStatus {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: calc(12.5px * var(--font-scale));
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+
+.heroStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.3);
+}
+
+.heroStatusOff .heroStatusDot {
+  background: #f87171;
+  box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.3);
+}
+
+@media (max-width: 720px) {
+  .heroHeader {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .heroTitle {
+    font-size: calc(18px * var(--font-scale));
+    white-space: normal;
+  }
+  .heroIcon {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+// ── Выбор «на странице» ──────────────────────────────────
+.psSelect {
+  position: relative;
+}
+
+.psTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px 0 12px;
+  border: none;
+  border-radius: 999px;
+  background: var(--card-bg);
+  box-shadow: 0 0 0 1px var(--border-subtle);
+  color: var(--text-primary);
+  font-size: calc(13px * var(--font-scale));
+  cursor: pointer;
+  transition:
+    box-shadow 0.15s,
+    background 0.15s;
+
+  b {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &:hover,
+  &.psTriggerOpen {
+    box-shadow: 0 0 0 1.5px #6366f1;
+  }
+}
+
+.psLabel {
+  color: var(--text-secondary);
+  font-size: calc(12px * var(--font-scale));
+}
+
+.psChevron {
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+
+  .psTriggerOpen & {
+    transform: rotate(180deg);
+    color: #6366f1;
+  }
+}
+
+.psMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  min-width: 104px;
+  margin: 0;
+  padding: 5px;
+  list-style: none;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+  animation: psMenuIn 0.15s ease both;
+}
+
+.psOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: calc(13.5px * var(--font-scale));
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 0.12s;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.1);
+  }
+}
+
+.psOptionActive {
+  background: rgba(99, 102, 241, 0.14);
+  color: #6366f1;
+  font-weight: 700;
+}
+
+@keyframes psMenuIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }

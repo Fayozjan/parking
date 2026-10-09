@@ -46,12 +46,35 @@ Auth: JWT в httpOnly cookie `access_token`. Маршруты без `*` тре�
 
 ---
 
+## Gates — `/api/gates`
+
+Ворота локации. Камеры въезда и выезда одних ворот работают совместно
+(`server/modules/gates/gateCooperation.service.js`, воркер `gateCooperationWorker`).
+
+| Метод | Путь | Auth | Описание |
+|-------|------|------|----------|
+| GET | `/gates` | да | Список ворот (фильтры: location_id, status, search) |
+| GET | `/gates/:id` | да | Ворота по ID |
+| POST | `/gates` | да | Создать ворота (name, location_id, coop_enabled, coop_window_sec, maneuver_window_sec) |
+| PUT | `/gates/:id` | да | Изменить ворота |
+| DELETE | `/gates/:id` | да | Удалить ворота (камеры остаются, gate_id → null) |
+
+**Камеры ворот работают командой.** Камеры въезда и выезда одних ворот (`gate_id`) — партнёры. Событие камеры
+принимается всегда, без фильтра по направлению. Въезд или выезд определяют данные камеры (машина едет на камеру →
+направление камеры, от камеры → обратное; `utils/passDirection.js`), а после сохранения — анализ AI.
+- Обе камеры ворот записали один и тот же проезд (`coop_window_sec`) → одна запись, `gate_confirmed = true`, рейтинг +15 (лучший случай).
+- Камера записала проезд в направлении, противоположном своему (камера выхода записала въезд, а камера входа пропустила) →
+  `inferred = true`: «камера помогла партнёру». Если партнёр потом подтвердит — пометка снимается.
+- Манёвр (машина только что проехала у этой камеры и сдаёт назад, `maneuver_window_sec`) проездом не считается.
+- Выезд без въезда или повторный въезд в истории номера помечаются `history_conflict`, проезд не теряется.
+У локации может быть одни или несколько ворот; пары камер определяются воротами, история номера — локацией.
+
 ## ANPR Cameras — `/api/anpr-cameras`
 
 | Method | Path | Auth | Описание |
 |--------|------|------|---------|
 | POST | `/anpr-cameras/events` | нет | Webhook от ANPR-камеры (multipart/form-data) |
-| GET | `/anpr-cameras` | да | Список камер (фильтры: parking_id, direction, movement_direction, status) |
+| GET | `/anpr-cameras` | да | Список камер (фильтры: parking_id, direction, status) |
 | GET | `/anpr-cameras/:id` | да | Камера по ID |
 | POST | `/anpr-cameras` | да | Создать камеру |
 | PUT | `/anpr-cameras/:id` | да | Обновить |

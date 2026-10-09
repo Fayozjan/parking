@@ -44,6 +44,16 @@ export type user_menu_access = $Result.DefaultSelection<Prisma.$user_menu_access
  */
 export type locations = $Result.DefaultSelection<Prisma.$locationsPayload>
 /**
+ * Model gates
+ * 
+ */
+export type gates = $Result.DefaultSelection<Prisma.$gatesPayload>
+/**
+ * Model gate_pending_events
+ * 
+ */
+export type gate_pending_events = $Result.DefaultSelection<Prisma.$gate_pending_eventsPayload>
+/**
  * Model anpr_cameras
  * 
  */
@@ -284,6 +294,26 @@ export class PrismaClient<
     * ```
     */
   get locations(): Prisma.locationsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.gates`: Exposes CRUD operations for the **gates** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Gates
+    * const gates = await prisma.gates.findMany()
+    * ```
+    */
+  get gates(): Prisma.gatesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.gate_pending_events`: Exposes CRUD operations for the **gate_pending_events** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Gate_pending_events
+    * const gate_pending_events = await prisma.gate_pending_events.findMany()
+    * ```
+    */
+  get gate_pending_events(): Prisma.gate_pending_eventsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.anpr_cameras`: Exposes CRUD operations for the **anpr_cameras** model.
@@ -820,6 +850,8 @@ export namespace Prisma {
     menus: 'menus',
     user_menu_access: 'user_menu_access',
     locations: 'locations',
+    gates: 'gates',
+    gate_pending_events: 'gate_pending_events',
     anpr_cameras: 'anpr_cameras',
     vehicle_passes: 'vehicle_passes',
     whitelist_folders: 'whitelist_folders',
@@ -847,7 +879,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "notifications_outbox" | "sessions" | "users" | "menus" | "user_menu_access" | "locations" | "anpr_cameras" | "vehicle_passes" | "whitelist_folders" | "vehicle_whitelist" | "camera_logs" | "audit_logs" | "location_tariffs" | "location_tariff_slots" | "location_tariff_history"
+      modelProps: "notifications_outbox" | "sessions" | "users" | "menus" | "user_menu_access" | "locations" | "gates" | "gate_pending_events" | "anpr_cameras" | "vehicle_passes" | "whitelist_folders" | "vehicle_whitelist" | "camera_logs" | "audit_logs" | "location_tariffs" | "location_tariff_slots" | "location_tariff_history"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1292,6 +1324,154 @@ export namespace Prisma {
           count: {
             args: Prisma.locationsCountArgs<ExtArgs>
             result: $Utils.Optional<LocationsCountAggregateOutputType> | number
+          }
+        }
+      }
+      gates: {
+        payload: Prisma.$gatesPayload<ExtArgs>
+        fields: Prisma.gatesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.gatesFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.gatesFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>
+          }
+          findFirst: {
+            args: Prisma.gatesFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.gatesFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>
+          }
+          findMany: {
+            args: Prisma.gatesFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>[]
+          }
+          create: {
+            args: Prisma.gatesCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>
+          }
+          createMany: {
+            args: Prisma.gatesCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.gatesCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>[]
+          }
+          delete: {
+            args: Prisma.gatesDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>
+          }
+          update: {
+            args: Prisma.gatesUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>
+          }
+          deleteMany: {
+            args: Prisma.gatesDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.gatesUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.gatesUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>[]
+          }
+          upsert: {
+            args: Prisma.gatesUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gatesPayload>
+          }
+          aggregate: {
+            args: Prisma.GatesAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGates>
+          }
+          groupBy: {
+            args: Prisma.gatesGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GatesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.gatesCountArgs<ExtArgs>
+            result: $Utils.Optional<GatesCountAggregateOutputType> | number
+          }
+        }
+      }
+      gate_pending_events: {
+        payload: Prisma.$gate_pending_eventsPayload<ExtArgs>
+        fields: Prisma.gate_pending_eventsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.gate_pending_eventsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.gate_pending_eventsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>
+          }
+          findFirst: {
+            args: Prisma.gate_pending_eventsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.gate_pending_eventsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>
+          }
+          findMany: {
+            args: Prisma.gate_pending_eventsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>[]
+          }
+          create: {
+            args: Prisma.gate_pending_eventsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>
+          }
+          createMany: {
+            args: Prisma.gate_pending_eventsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.gate_pending_eventsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>[]
+          }
+          delete: {
+            args: Prisma.gate_pending_eventsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>
+          }
+          update: {
+            args: Prisma.gate_pending_eventsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>
+          }
+          deleteMany: {
+            args: Prisma.gate_pending_eventsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.gate_pending_eventsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.gate_pending_eventsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>[]
+          }
+          upsert: {
+            args: Prisma.gate_pending_eventsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$gate_pending_eventsPayload>
+          }
+          aggregate: {
+            args: Prisma.Gate_pending_eventsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGate_pending_events>
+          }
+          groupBy: {
+            args: Prisma.gate_pending_eventsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Gate_pending_eventsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.gate_pending_eventsCountArgs<ExtArgs>
+            result: $Utils.Optional<Gate_pending_eventsCountAggregateOutputType> | number
           }
         }
       }
@@ -2059,6 +2239,8 @@ export namespace Prisma {
     menus?: menusOmit
     user_menu_access?: user_menu_accessOmit
     locations?: locationsOmit
+    gates?: gatesOmit
+    gate_pending_events?: gate_pending_eventsOmit
     anpr_cameras?: anpr_camerasOmit
     vehicle_passes?: vehicle_passesOmit
     whitelist_folders?: whitelist_foldersOmit
@@ -2265,12 +2447,14 @@ export namespace Prisma {
 
   export type LocationsCountOutputType = {
     cameras: number
+    gates: number
     vehiclePasses: number
     locationTariffHistory: number
   }
 
   export type LocationsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     cameras?: boolean | LocationsCountOutputTypeCountCamerasArgs
+    gates?: boolean | LocationsCountOutputTypeCountGatesArgs
     vehiclePasses?: boolean | LocationsCountOutputTypeCountVehiclePassesArgs
     locationTariffHistory?: boolean | LocationsCountOutputTypeCountLocationTariffHistoryArgs
   }
@@ -2296,6 +2480,13 @@ export namespace Prisma {
   /**
    * LocationsCountOutputType without action
    */
+  export type LocationsCountOutputTypeCountGatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: gatesWhereInput
+  }
+
+  /**
+   * LocationsCountOutputType without action
+   */
   export type LocationsCountOutputTypeCountVehiclePassesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: vehicle_passesWhereInput
   }
@@ -2305,6 +2496,46 @@ export namespace Prisma {
    */
   export type LocationsCountOutputTypeCountLocationTariffHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: location_tariff_historyWhereInput
+  }
+
+
+  /**
+   * Count Type GatesCountOutputType
+   */
+
+  export type GatesCountOutputType = {
+    cameras: number
+    pendingEvents: number
+  }
+
+  export type GatesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cameras?: boolean | GatesCountOutputTypeCountCamerasArgs
+    pendingEvents?: boolean | GatesCountOutputTypeCountPendingEventsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GatesCountOutputType without action
+   */
+  export type GatesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GatesCountOutputType
+     */
+    select?: GatesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GatesCountOutputType without action
+   */
+  export type GatesCountOutputTypeCountCamerasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: anpr_camerasWhereInput
+  }
+
+  /**
+   * GatesCountOutputType without action
+   */
+  export type GatesCountOutputTypeCountPendingEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: gate_pending_eventsWhereInput
   }
 
 
@@ -8600,6 +8831,7 @@ export namespace Prisma {
     added_at?: boolean
     updated_at?: boolean
     cameras?: boolean | locations$camerasArgs<ExtArgs>
+    gates?: boolean | locations$gatesArgs<ExtArgs>
     vehiclePasses?: boolean | locations$vehiclePassesArgs<ExtArgs>
     locationTariffHistory?: boolean | locations$locationTariffHistoryArgs<ExtArgs>
     _count?: boolean | LocationsCountOutputTypeDefaultArgs<ExtArgs>
@@ -8653,6 +8885,7 @@ export namespace Prisma {
   export type locationsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "telegram_chat_ids" | "status" | "total_spots" | "free_period" | "shift_start" | "shift_end" | "latitude" | "longitude" | "added_at" | "updated_at", ExtArgs["result"]["locations"]>
   export type locationsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     cameras?: boolean | locations$camerasArgs<ExtArgs>
+    gates?: boolean | locations$gatesArgs<ExtArgs>
     vehiclePasses?: boolean | locations$vehiclePassesArgs<ExtArgs>
     locationTariffHistory?: boolean | locations$locationTariffHistoryArgs<ExtArgs>
     _count?: boolean | LocationsCountOutputTypeDefaultArgs<ExtArgs>
@@ -8664,6 +8897,7 @@ export namespace Prisma {
     name: "locations"
     objects: {
       cameras: Prisma.$anpr_camerasPayload<ExtArgs>[]
+      gates: Prisma.$gatesPayload<ExtArgs>[]
       vehiclePasses: Prisma.$vehicle_passesPayload<ExtArgs>[]
       locationTariffHistory: Prisma.$location_tariff_historyPayload<ExtArgs>[]
     }
@@ -9075,6 +9309,7 @@ export namespace Prisma {
   export interface Prisma__locationsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     cameras<T extends locations$camerasArgs<ExtArgs> = {}>(args?: Subset<T, locations$camerasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$anpr_camerasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    gates<T extends locations$gatesArgs<ExtArgs> = {}>(args?: Subset<T, locations$gatesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     vehiclePasses<T extends locations$vehiclePassesArgs<ExtArgs> = {}>(args?: Subset<T, locations$vehiclePassesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$vehicle_passesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     locationTariffHistory<T extends locations$locationTariffHistoryArgs<ExtArgs> = {}>(args?: Subset<T, locations$locationTariffHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$location_tariff_historyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -9530,6 +9765,30 @@ export namespace Prisma {
   }
 
   /**
+   * locations.gates
+   */
+  export type locations$gatesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    where?: gatesWhereInput
+    orderBy?: gatesOrderByWithRelationInput | gatesOrderByWithRelationInput[]
+    cursor?: gatesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GatesScalarFieldEnum | GatesScalarFieldEnum[]
+  }
+
+  /**
    * locations.vehiclePasses
    */
   export type locations$vehiclePassesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9597,6 +9856,2449 @@ export namespace Prisma {
 
 
   /**
+   * Model gates
+   */
+
+  export type AggregateGates = {
+    _count: GatesCountAggregateOutputType | null
+    _avg: GatesAvgAggregateOutputType | null
+    _sum: GatesSumAggregateOutputType | null
+    _min: GatesMinAggregateOutputType | null
+    _max: GatesMaxAggregateOutputType | null
+  }
+
+  export type GatesAvgAggregateOutputType = {
+    id: number | null
+    location_id: number | null
+    coop_window_sec: number | null
+    maneuver_window_sec: number | null
+  }
+
+  export type GatesSumAggregateOutputType = {
+    id: number | null
+    location_id: number | null
+    coop_window_sec: number | null
+    maneuver_window_sec: number | null
+  }
+
+  export type GatesMinAggregateOutputType = {
+    id: number | null
+    location_id: number | null
+    name: string | null
+    status: boolean | null
+    coop_enabled: boolean | null
+    coop_window_sec: number | null
+    maneuver_window_sec: number | null
+    added_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type GatesMaxAggregateOutputType = {
+    id: number | null
+    location_id: number | null
+    name: string | null
+    status: boolean | null
+    coop_enabled: boolean | null
+    coop_window_sec: number | null
+    maneuver_window_sec: number | null
+    added_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type GatesCountAggregateOutputType = {
+    id: number
+    location_id: number
+    name: number
+    status: number
+    coop_enabled: number
+    coop_window_sec: number
+    maneuver_window_sec: number
+    added_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type GatesAvgAggregateInputType = {
+    id?: true
+    location_id?: true
+    coop_window_sec?: true
+    maneuver_window_sec?: true
+  }
+
+  export type GatesSumAggregateInputType = {
+    id?: true
+    location_id?: true
+    coop_window_sec?: true
+    maneuver_window_sec?: true
+  }
+
+  export type GatesMinAggregateInputType = {
+    id?: true
+    location_id?: true
+    name?: true
+    status?: true
+    coop_enabled?: true
+    coop_window_sec?: true
+    maneuver_window_sec?: true
+    added_at?: true
+    updated_at?: true
+  }
+
+  export type GatesMaxAggregateInputType = {
+    id?: true
+    location_id?: true
+    name?: true
+    status?: true
+    coop_enabled?: true
+    coop_window_sec?: true
+    maneuver_window_sec?: true
+    added_at?: true
+    updated_at?: true
+  }
+
+  export type GatesCountAggregateInputType = {
+    id?: true
+    location_id?: true
+    name?: true
+    status?: true
+    coop_enabled?: true
+    coop_window_sec?: true
+    maneuver_window_sec?: true
+    added_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type GatesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which gates to aggregate.
+     */
+    where?: gatesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of gates to fetch.
+     */
+    orderBy?: gatesOrderByWithRelationInput | gatesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: gatesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` gates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` gates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned gates
+    **/
+    _count?: true | GatesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GatesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GatesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GatesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GatesMaxAggregateInputType
+  }
+
+  export type GetGatesAggregateType<T extends GatesAggregateArgs> = {
+        [P in keyof T & keyof AggregateGates]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGates[P]>
+      : GetScalarType<T[P], AggregateGates[P]>
+  }
+
+
+
+
+  export type gatesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: gatesWhereInput
+    orderBy?: gatesOrderByWithAggregationInput | gatesOrderByWithAggregationInput[]
+    by: GatesScalarFieldEnum[] | GatesScalarFieldEnum
+    having?: gatesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GatesCountAggregateInputType | true
+    _avg?: GatesAvgAggregateInputType
+    _sum?: GatesSumAggregateInputType
+    _min?: GatesMinAggregateInputType
+    _max?: GatesMaxAggregateInputType
+  }
+
+  export type GatesGroupByOutputType = {
+    id: number
+    location_id: number
+    name: string
+    status: boolean
+    coop_enabled: boolean
+    coop_window_sec: number
+    maneuver_window_sec: number
+    added_at: Date
+    updated_at: Date
+    _count: GatesCountAggregateOutputType | null
+    _avg: GatesAvgAggregateOutputType | null
+    _sum: GatesSumAggregateOutputType | null
+    _min: GatesMinAggregateOutputType | null
+    _max: GatesMaxAggregateOutputType | null
+  }
+
+  type GetGatesGroupByPayload<T extends gatesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GatesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GatesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GatesGroupByOutputType[P]>
+            : GetScalarType<T[P], GatesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type gatesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    location_id?: boolean
+    name?: boolean
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: boolean
+    maneuver_window_sec?: boolean
+    added_at?: boolean
+    updated_at?: boolean
+    location?: boolean | locationsDefaultArgs<ExtArgs>
+    cameras?: boolean | gates$camerasArgs<ExtArgs>
+    pendingEvents?: boolean | gates$pendingEventsArgs<ExtArgs>
+    _count?: boolean | GatesCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gates"]>
+
+  export type gatesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    location_id?: boolean
+    name?: boolean
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: boolean
+    maneuver_window_sec?: boolean
+    added_at?: boolean
+    updated_at?: boolean
+    location?: boolean | locationsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gates"]>
+
+  export type gatesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    location_id?: boolean
+    name?: boolean
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: boolean
+    maneuver_window_sec?: boolean
+    added_at?: boolean
+    updated_at?: boolean
+    location?: boolean | locationsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gates"]>
+
+  export type gatesSelectScalar = {
+    id?: boolean
+    location_id?: boolean
+    name?: boolean
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: boolean
+    maneuver_window_sec?: boolean
+    added_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type gatesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "location_id" | "name" | "status" | "coop_enabled" | "coop_window_sec" | "maneuver_window_sec" | "added_at" | "updated_at", ExtArgs["result"]["gates"]>
+  export type gatesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    location?: boolean | locationsDefaultArgs<ExtArgs>
+    cameras?: boolean | gates$camerasArgs<ExtArgs>
+    pendingEvents?: boolean | gates$pendingEventsArgs<ExtArgs>
+    _count?: boolean | GatesCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type gatesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    location?: boolean | locationsDefaultArgs<ExtArgs>
+  }
+  export type gatesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    location?: boolean | locationsDefaultArgs<ExtArgs>
+  }
+
+  export type $gatesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "gates"
+    objects: {
+      location: Prisma.$locationsPayload<ExtArgs>
+      cameras: Prisma.$anpr_camerasPayload<ExtArgs>[]
+      pendingEvents: Prisma.$gate_pending_eventsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      location_id: number
+      name: string
+      status: boolean
+      coop_enabled: boolean
+      coop_window_sec: number
+      maneuver_window_sec: number
+      added_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["gates"]>
+    composites: {}
+  }
+
+  type gatesGetPayload<S extends boolean | null | undefined | gatesDefaultArgs> = $Result.GetResult<Prisma.$gatesPayload, S>
+
+  type gatesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<gatesFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GatesCountAggregateInputType | true
+    }
+
+  export interface gatesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['gates'], meta: { name: 'gates' } }
+    /**
+     * Find zero or one Gates that matches the filter.
+     * @param {gatesFindUniqueArgs} args - Arguments to find a Gates
+     * @example
+     * // Get one Gates
+     * const gates = await prisma.gates.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends gatesFindUniqueArgs>(args: SelectSubset<T, gatesFindUniqueArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Gates that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {gatesFindUniqueOrThrowArgs} args - Arguments to find a Gates
+     * @example
+     * // Get one Gates
+     * const gates = await prisma.gates.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends gatesFindUniqueOrThrowArgs>(args: SelectSubset<T, gatesFindUniqueOrThrowArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Gates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gatesFindFirstArgs} args - Arguments to find a Gates
+     * @example
+     * // Get one Gates
+     * const gates = await prisma.gates.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends gatesFindFirstArgs>(args?: SelectSubset<T, gatesFindFirstArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Gates that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gatesFindFirstOrThrowArgs} args - Arguments to find a Gates
+     * @example
+     * // Get one Gates
+     * const gates = await prisma.gates.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends gatesFindFirstOrThrowArgs>(args?: SelectSubset<T, gatesFindFirstOrThrowArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Gates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gatesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Gates
+     * const gates = await prisma.gates.findMany()
+     * 
+     * // Get first 10 Gates
+     * const gates = await prisma.gates.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const gatesWithIdOnly = await prisma.gates.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends gatesFindManyArgs>(args?: SelectSubset<T, gatesFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Gates.
+     * @param {gatesCreateArgs} args - Arguments to create a Gates.
+     * @example
+     * // Create one Gates
+     * const Gates = await prisma.gates.create({
+     *   data: {
+     *     // ... data to create a Gates
+     *   }
+     * })
+     * 
+     */
+    create<T extends gatesCreateArgs>(args: SelectSubset<T, gatesCreateArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Gates.
+     * @param {gatesCreateManyArgs} args - Arguments to create many Gates.
+     * @example
+     * // Create many Gates
+     * const gates = await prisma.gates.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends gatesCreateManyArgs>(args?: SelectSubset<T, gatesCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Gates and returns the data saved in the database.
+     * @param {gatesCreateManyAndReturnArgs} args - Arguments to create many Gates.
+     * @example
+     * // Create many Gates
+     * const gates = await prisma.gates.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Gates and only return the `id`
+     * const gatesWithIdOnly = await prisma.gates.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends gatesCreateManyAndReturnArgs>(args?: SelectSubset<T, gatesCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Gates.
+     * @param {gatesDeleteArgs} args - Arguments to delete one Gates.
+     * @example
+     * // Delete one Gates
+     * const Gates = await prisma.gates.delete({
+     *   where: {
+     *     // ... filter to delete one Gates
+     *   }
+     * })
+     * 
+     */
+    delete<T extends gatesDeleteArgs>(args: SelectSubset<T, gatesDeleteArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Gates.
+     * @param {gatesUpdateArgs} args - Arguments to update one Gates.
+     * @example
+     * // Update one Gates
+     * const gates = await prisma.gates.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends gatesUpdateArgs>(args: SelectSubset<T, gatesUpdateArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Gates.
+     * @param {gatesDeleteManyArgs} args - Arguments to filter Gates to delete.
+     * @example
+     * // Delete a few Gates
+     * const { count } = await prisma.gates.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends gatesDeleteManyArgs>(args?: SelectSubset<T, gatesDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Gates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gatesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Gates
+     * const gates = await prisma.gates.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends gatesUpdateManyArgs>(args: SelectSubset<T, gatesUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Gates and returns the data updated in the database.
+     * @param {gatesUpdateManyAndReturnArgs} args - Arguments to update many Gates.
+     * @example
+     * // Update many Gates
+     * const gates = await prisma.gates.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Gates and only return the `id`
+     * const gatesWithIdOnly = await prisma.gates.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends gatesUpdateManyAndReturnArgs>(args: SelectSubset<T, gatesUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Gates.
+     * @param {gatesUpsertArgs} args - Arguments to update or create a Gates.
+     * @example
+     * // Update or create a Gates
+     * const gates = await prisma.gates.upsert({
+     *   create: {
+     *     // ... data to create a Gates
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Gates we want to update
+     *   }
+     * })
+     */
+    upsert<T extends gatesUpsertArgs>(args: SelectSubset<T, gatesUpsertArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Gates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gatesCountArgs} args - Arguments to filter Gates to count.
+     * @example
+     * // Count the number of Gates
+     * const count = await prisma.gates.count({
+     *   where: {
+     *     // ... the filter for the Gates we want to count
+     *   }
+     * })
+    **/
+    count<T extends gatesCountArgs>(
+      args?: Subset<T, gatesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GatesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Gates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GatesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GatesAggregateArgs>(args: Subset<T, GatesAggregateArgs>): Prisma.PrismaPromise<GetGatesAggregateType<T>>
+
+    /**
+     * Group by Gates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gatesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends gatesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: gatesGroupByArgs['orderBy'] }
+        : { orderBy?: gatesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, gatesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGatesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the gates model
+   */
+  readonly fields: gatesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for gates.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__gatesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    location<T extends locationsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, locationsDefaultArgs<ExtArgs>>): Prisma__locationsClient<$Result.GetResult<Prisma.$locationsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    cameras<T extends gates$camerasArgs<ExtArgs> = {}>(args?: Subset<T, gates$camerasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$anpr_camerasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pendingEvents<T extends gates$pendingEventsArgs<ExtArgs> = {}>(args?: Subset<T, gates$pendingEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the gates model
+   */
+  interface gatesFieldRefs {
+    readonly id: FieldRef<"gates", 'Int'>
+    readonly location_id: FieldRef<"gates", 'Int'>
+    readonly name: FieldRef<"gates", 'String'>
+    readonly status: FieldRef<"gates", 'Boolean'>
+    readonly coop_enabled: FieldRef<"gates", 'Boolean'>
+    readonly coop_window_sec: FieldRef<"gates", 'Int'>
+    readonly maneuver_window_sec: FieldRef<"gates", 'Int'>
+    readonly added_at: FieldRef<"gates", 'DateTime'>
+    readonly updated_at: FieldRef<"gates", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * gates findUnique
+   */
+  export type gatesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * Filter, which gates to fetch.
+     */
+    where: gatesWhereUniqueInput
+  }
+
+  /**
+   * gates findUniqueOrThrow
+   */
+  export type gatesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * Filter, which gates to fetch.
+     */
+    where: gatesWhereUniqueInput
+  }
+
+  /**
+   * gates findFirst
+   */
+  export type gatesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * Filter, which gates to fetch.
+     */
+    where?: gatesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of gates to fetch.
+     */
+    orderBy?: gatesOrderByWithRelationInput | gatesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for gates.
+     */
+    cursor?: gatesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` gates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` gates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of gates.
+     */
+    distinct?: GatesScalarFieldEnum | GatesScalarFieldEnum[]
+  }
+
+  /**
+   * gates findFirstOrThrow
+   */
+  export type gatesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * Filter, which gates to fetch.
+     */
+    where?: gatesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of gates to fetch.
+     */
+    orderBy?: gatesOrderByWithRelationInput | gatesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for gates.
+     */
+    cursor?: gatesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` gates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` gates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of gates.
+     */
+    distinct?: GatesScalarFieldEnum | GatesScalarFieldEnum[]
+  }
+
+  /**
+   * gates findMany
+   */
+  export type gatesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * Filter, which gates to fetch.
+     */
+    where?: gatesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of gates to fetch.
+     */
+    orderBy?: gatesOrderByWithRelationInput | gatesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing gates.
+     */
+    cursor?: gatesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` gates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` gates.
+     */
+    skip?: number
+    distinct?: GatesScalarFieldEnum | GatesScalarFieldEnum[]
+  }
+
+  /**
+   * gates create
+   */
+  export type gatesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * The data needed to create a gates.
+     */
+    data: XOR<gatesCreateInput, gatesUncheckedCreateInput>
+  }
+
+  /**
+   * gates createMany
+   */
+  export type gatesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many gates.
+     */
+    data: gatesCreateManyInput | gatesCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * gates createManyAndReturn
+   */
+  export type gatesCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * The data used to create many gates.
+     */
+    data: gatesCreateManyInput | gatesCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * gates update
+   */
+  export type gatesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * The data needed to update a gates.
+     */
+    data: XOR<gatesUpdateInput, gatesUncheckedUpdateInput>
+    /**
+     * Choose, which gates to update.
+     */
+    where: gatesWhereUniqueInput
+  }
+
+  /**
+   * gates updateMany
+   */
+  export type gatesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update gates.
+     */
+    data: XOR<gatesUpdateManyMutationInput, gatesUncheckedUpdateManyInput>
+    /**
+     * Filter which gates to update
+     */
+    where?: gatesWhereInput
+    /**
+     * Limit how many gates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * gates updateManyAndReturn
+   */
+  export type gatesUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * The data used to update gates.
+     */
+    data: XOR<gatesUpdateManyMutationInput, gatesUncheckedUpdateManyInput>
+    /**
+     * Filter which gates to update
+     */
+    where?: gatesWhereInput
+    /**
+     * Limit how many gates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * gates upsert
+   */
+  export type gatesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * The filter to search for the gates to update in case it exists.
+     */
+    where: gatesWhereUniqueInput
+    /**
+     * In case the gates found by the `where` argument doesn't exist, create a new gates with this data.
+     */
+    create: XOR<gatesCreateInput, gatesUncheckedCreateInput>
+    /**
+     * In case the gates was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<gatesUpdateInput, gatesUncheckedUpdateInput>
+  }
+
+  /**
+   * gates delete
+   */
+  export type gatesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    /**
+     * Filter which gates to delete.
+     */
+    where: gatesWhereUniqueInput
+  }
+
+  /**
+   * gates deleteMany
+   */
+  export type gatesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which gates to delete
+     */
+    where?: gatesWhereInput
+    /**
+     * Limit how many gates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * gates.cameras
+   */
+  export type gates$camerasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the anpr_cameras
+     */
+    select?: anpr_camerasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the anpr_cameras
+     */
+    omit?: anpr_camerasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: anpr_camerasInclude<ExtArgs> | null
+    where?: anpr_camerasWhereInput
+    orderBy?: anpr_camerasOrderByWithRelationInput | anpr_camerasOrderByWithRelationInput[]
+    cursor?: anpr_camerasWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Anpr_camerasScalarFieldEnum | Anpr_camerasScalarFieldEnum[]
+  }
+
+  /**
+   * gates.pendingEvents
+   */
+  export type gates$pendingEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    where?: gate_pending_eventsWhereInput
+    orderBy?: gate_pending_eventsOrderByWithRelationInput | gate_pending_eventsOrderByWithRelationInput[]
+    cursor?: gate_pending_eventsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Gate_pending_eventsScalarFieldEnum | Gate_pending_eventsScalarFieldEnum[]
+  }
+
+  /**
+   * gates without action
+   */
+  export type gatesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model gate_pending_events
+   */
+
+  export type AggregateGate_pending_events = {
+    _count: Gate_pending_eventsCountAggregateOutputType | null
+    _avg: Gate_pending_eventsAvgAggregateOutputType | null
+    _sum: Gate_pending_eventsSumAggregateOutputType | null
+    _min: Gate_pending_eventsMinAggregateOutputType | null
+    _max: Gate_pending_eventsMaxAggregateOutputType | null
+  }
+
+  export type Gate_pending_eventsAvgAggregateOutputType = {
+    id: number | null
+    gate_id: number | null
+    camera_id: number | null
+    location_id: number | null
+    camera_log_id: number | null
+    confidence: number | null
+  }
+
+  export type Gate_pending_eventsSumAggregateOutputType = {
+    id: number | null
+    gate_id: number | null
+    camera_id: number | null
+    location_id: number | null
+    camera_log_id: number | null
+    confidence: number | null
+  }
+
+  export type Gate_pending_eventsMinAggregateOutputType = {
+    id: number | null
+    gate_id: number | null
+    camera_id: number | null
+    location_id: number | null
+    camera_log_id: number | null
+    plate_number: string | null
+    direction: string | null
+    event_date: Date | null
+    photo: string | null
+    confidence: number | null
+    due_at: Date | null
+    status: string | null
+    drop_reason: string | null
+    created_at: Date | null
+  }
+
+  export type Gate_pending_eventsMaxAggregateOutputType = {
+    id: number | null
+    gate_id: number | null
+    camera_id: number | null
+    location_id: number | null
+    camera_log_id: number | null
+    plate_number: string | null
+    direction: string | null
+    event_date: Date | null
+    photo: string | null
+    confidence: number | null
+    due_at: Date | null
+    status: string | null
+    drop_reason: string | null
+    created_at: Date | null
+  }
+
+  export type Gate_pending_eventsCountAggregateOutputType = {
+    id: number
+    gate_id: number
+    camera_id: number
+    location_id: number
+    camera_log_id: number
+    plate_number: number
+    direction: number
+    event_date: number
+    photo: number
+    confidence: number
+    due_at: number
+    status: number
+    drop_reason: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type Gate_pending_eventsAvgAggregateInputType = {
+    id?: true
+    gate_id?: true
+    camera_id?: true
+    location_id?: true
+    camera_log_id?: true
+    confidence?: true
+  }
+
+  export type Gate_pending_eventsSumAggregateInputType = {
+    id?: true
+    gate_id?: true
+    camera_id?: true
+    location_id?: true
+    camera_log_id?: true
+    confidence?: true
+  }
+
+  export type Gate_pending_eventsMinAggregateInputType = {
+    id?: true
+    gate_id?: true
+    camera_id?: true
+    location_id?: true
+    camera_log_id?: true
+    plate_number?: true
+    direction?: true
+    event_date?: true
+    photo?: true
+    confidence?: true
+    due_at?: true
+    status?: true
+    drop_reason?: true
+    created_at?: true
+  }
+
+  export type Gate_pending_eventsMaxAggregateInputType = {
+    id?: true
+    gate_id?: true
+    camera_id?: true
+    location_id?: true
+    camera_log_id?: true
+    plate_number?: true
+    direction?: true
+    event_date?: true
+    photo?: true
+    confidence?: true
+    due_at?: true
+    status?: true
+    drop_reason?: true
+    created_at?: true
+  }
+
+  export type Gate_pending_eventsCountAggregateInputType = {
+    id?: true
+    gate_id?: true
+    camera_id?: true
+    location_id?: true
+    camera_log_id?: true
+    plate_number?: true
+    direction?: true
+    event_date?: true
+    photo?: true
+    confidence?: true
+    due_at?: true
+    status?: true
+    drop_reason?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type Gate_pending_eventsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which gate_pending_events to aggregate.
+     */
+    where?: gate_pending_eventsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of gate_pending_events to fetch.
+     */
+    orderBy?: gate_pending_eventsOrderByWithRelationInput | gate_pending_eventsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: gate_pending_eventsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` gate_pending_events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` gate_pending_events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned gate_pending_events
+    **/
+    _count?: true | Gate_pending_eventsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Gate_pending_eventsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Gate_pending_eventsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Gate_pending_eventsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Gate_pending_eventsMaxAggregateInputType
+  }
+
+  export type GetGate_pending_eventsAggregateType<T extends Gate_pending_eventsAggregateArgs> = {
+        [P in keyof T & keyof AggregateGate_pending_events]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGate_pending_events[P]>
+      : GetScalarType<T[P], AggregateGate_pending_events[P]>
+  }
+
+
+
+
+  export type gate_pending_eventsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: gate_pending_eventsWhereInput
+    orderBy?: gate_pending_eventsOrderByWithAggregationInput | gate_pending_eventsOrderByWithAggregationInput[]
+    by: Gate_pending_eventsScalarFieldEnum[] | Gate_pending_eventsScalarFieldEnum
+    having?: gate_pending_eventsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Gate_pending_eventsCountAggregateInputType | true
+    _avg?: Gate_pending_eventsAvgAggregateInputType
+    _sum?: Gate_pending_eventsSumAggregateInputType
+    _min?: Gate_pending_eventsMinAggregateInputType
+    _max?: Gate_pending_eventsMaxAggregateInputType
+  }
+
+  export type Gate_pending_eventsGroupByOutputType = {
+    id: number
+    gate_id: number
+    camera_id: number
+    location_id: number
+    camera_log_id: number | null
+    plate_number: string
+    direction: string
+    event_date: Date
+    photo: string | null
+    confidence: number | null
+    due_at: Date
+    status: string
+    drop_reason: string | null
+    created_at: Date
+    _count: Gate_pending_eventsCountAggregateOutputType | null
+    _avg: Gate_pending_eventsAvgAggregateOutputType | null
+    _sum: Gate_pending_eventsSumAggregateOutputType | null
+    _min: Gate_pending_eventsMinAggregateOutputType | null
+    _max: Gate_pending_eventsMaxAggregateOutputType | null
+  }
+
+  type GetGate_pending_eventsGroupByPayload<T extends gate_pending_eventsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Gate_pending_eventsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Gate_pending_eventsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Gate_pending_eventsGroupByOutputType[P]>
+            : GetScalarType<T[P], Gate_pending_eventsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type gate_pending_eventsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gate_id?: boolean
+    camera_id?: boolean
+    location_id?: boolean
+    camera_log_id?: boolean
+    plate_number?: boolean
+    direction?: boolean
+    event_date?: boolean
+    photo?: boolean
+    confidence?: boolean
+    due_at?: boolean
+    status?: boolean
+    drop_reason?: boolean
+    created_at?: boolean
+    gate?: boolean | gatesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gate_pending_events"]>
+
+  export type gate_pending_eventsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gate_id?: boolean
+    camera_id?: boolean
+    location_id?: boolean
+    camera_log_id?: boolean
+    plate_number?: boolean
+    direction?: boolean
+    event_date?: boolean
+    photo?: boolean
+    confidence?: boolean
+    due_at?: boolean
+    status?: boolean
+    drop_reason?: boolean
+    created_at?: boolean
+    gate?: boolean | gatesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gate_pending_events"]>
+
+  export type gate_pending_eventsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gate_id?: boolean
+    camera_id?: boolean
+    location_id?: boolean
+    camera_log_id?: boolean
+    plate_number?: boolean
+    direction?: boolean
+    event_date?: boolean
+    photo?: boolean
+    confidence?: boolean
+    due_at?: boolean
+    status?: boolean
+    drop_reason?: boolean
+    created_at?: boolean
+    gate?: boolean | gatesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["gate_pending_events"]>
+
+  export type gate_pending_eventsSelectScalar = {
+    id?: boolean
+    gate_id?: boolean
+    camera_id?: boolean
+    location_id?: boolean
+    camera_log_id?: boolean
+    plate_number?: boolean
+    direction?: boolean
+    event_date?: boolean
+    photo?: boolean
+    confidence?: boolean
+    due_at?: boolean
+    status?: boolean
+    drop_reason?: boolean
+    created_at?: boolean
+  }
+
+  export type gate_pending_eventsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gate_id" | "camera_id" | "location_id" | "camera_log_id" | "plate_number" | "direction" | "event_date" | "photo" | "confidence" | "due_at" | "status" | "drop_reason" | "created_at", ExtArgs["result"]["gate_pending_events"]>
+  export type gate_pending_eventsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    gate?: boolean | gatesDefaultArgs<ExtArgs>
+  }
+  export type gate_pending_eventsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    gate?: boolean | gatesDefaultArgs<ExtArgs>
+  }
+  export type gate_pending_eventsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    gate?: boolean | gatesDefaultArgs<ExtArgs>
+  }
+
+  export type $gate_pending_eventsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "gate_pending_events"
+    objects: {
+      gate: Prisma.$gatesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      gate_id: number
+      camera_id: number
+      location_id: number
+      camera_log_id: number | null
+      plate_number: string
+      direction: string
+      event_date: Date
+      photo: string | null
+      confidence: number | null
+      due_at: Date
+      status: string
+      drop_reason: string | null
+      created_at: Date
+    }, ExtArgs["result"]["gate_pending_events"]>
+    composites: {}
+  }
+
+  type gate_pending_eventsGetPayload<S extends boolean | null | undefined | gate_pending_eventsDefaultArgs> = $Result.GetResult<Prisma.$gate_pending_eventsPayload, S>
+
+  type gate_pending_eventsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<gate_pending_eventsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Gate_pending_eventsCountAggregateInputType | true
+    }
+
+  export interface gate_pending_eventsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['gate_pending_events'], meta: { name: 'gate_pending_events' } }
+    /**
+     * Find zero or one Gate_pending_events that matches the filter.
+     * @param {gate_pending_eventsFindUniqueArgs} args - Arguments to find a Gate_pending_events
+     * @example
+     * // Get one Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends gate_pending_eventsFindUniqueArgs>(args: SelectSubset<T, gate_pending_eventsFindUniqueArgs<ExtArgs>>): Prisma__gate_pending_eventsClient<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Gate_pending_events that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {gate_pending_eventsFindUniqueOrThrowArgs} args - Arguments to find a Gate_pending_events
+     * @example
+     * // Get one Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends gate_pending_eventsFindUniqueOrThrowArgs>(args: SelectSubset<T, gate_pending_eventsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__gate_pending_eventsClient<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Gate_pending_events that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gate_pending_eventsFindFirstArgs} args - Arguments to find a Gate_pending_events
+     * @example
+     * // Get one Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends gate_pending_eventsFindFirstArgs>(args?: SelectSubset<T, gate_pending_eventsFindFirstArgs<ExtArgs>>): Prisma__gate_pending_eventsClient<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Gate_pending_events that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gate_pending_eventsFindFirstOrThrowArgs} args - Arguments to find a Gate_pending_events
+     * @example
+     * // Get one Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends gate_pending_eventsFindFirstOrThrowArgs>(args?: SelectSubset<T, gate_pending_eventsFindFirstOrThrowArgs<ExtArgs>>): Prisma__gate_pending_eventsClient<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Gate_pending_events that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gate_pending_eventsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.findMany()
+     * 
+     * // Get first 10 Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const gate_pending_eventsWithIdOnly = await prisma.gate_pending_events.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends gate_pending_eventsFindManyArgs>(args?: SelectSubset<T, gate_pending_eventsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Gate_pending_events.
+     * @param {gate_pending_eventsCreateArgs} args - Arguments to create a Gate_pending_events.
+     * @example
+     * // Create one Gate_pending_events
+     * const Gate_pending_events = await prisma.gate_pending_events.create({
+     *   data: {
+     *     // ... data to create a Gate_pending_events
+     *   }
+     * })
+     * 
+     */
+    create<T extends gate_pending_eventsCreateArgs>(args: SelectSubset<T, gate_pending_eventsCreateArgs<ExtArgs>>): Prisma__gate_pending_eventsClient<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Gate_pending_events.
+     * @param {gate_pending_eventsCreateManyArgs} args - Arguments to create many Gate_pending_events.
+     * @example
+     * // Create many Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends gate_pending_eventsCreateManyArgs>(args?: SelectSubset<T, gate_pending_eventsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Gate_pending_events and returns the data saved in the database.
+     * @param {gate_pending_eventsCreateManyAndReturnArgs} args - Arguments to create many Gate_pending_events.
+     * @example
+     * // Create many Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Gate_pending_events and only return the `id`
+     * const gate_pending_eventsWithIdOnly = await prisma.gate_pending_events.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends gate_pending_eventsCreateManyAndReturnArgs>(args?: SelectSubset<T, gate_pending_eventsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Gate_pending_events.
+     * @param {gate_pending_eventsDeleteArgs} args - Arguments to delete one Gate_pending_events.
+     * @example
+     * // Delete one Gate_pending_events
+     * const Gate_pending_events = await prisma.gate_pending_events.delete({
+     *   where: {
+     *     // ... filter to delete one Gate_pending_events
+     *   }
+     * })
+     * 
+     */
+    delete<T extends gate_pending_eventsDeleteArgs>(args: SelectSubset<T, gate_pending_eventsDeleteArgs<ExtArgs>>): Prisma__gate_pending_eventsClient<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Gate_pending_events.
+     * @param {gate_pending_eventsUpdateArgs} args - Arguments to update one Gate_pending_events.
+     * @example
+     * // Update one Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends gate_pending_eventsUpdateArgs>(args: SelectSubset<T, gate_pending_eventsUpdateArgs<ExtArgs>>): Prisma__gate_pending_eventsClient<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Gate_pending_events.
+     * @param {gate_pending_eventsDeleteManyArgs} args - Arguments to filter Gate_pending_events to delete.
+     * @example
+     * // Delete a few Gate_pending_events
+     * const { count } = await prisma.gate_pending_events.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends gate_pending_eventsDeleteManyArgs>(args?: SelectSubset<T, gate_pending_eventsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Gate_pending_events.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gate_pending_eventsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends gate_pending_eventsUpdateManyArgs>(args: SelectSubset<T, gate_pending_eventsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Gate_pending_events and returns the data updated in the database.
+     * @param {gate_pending_eventsUpdateManyAndReturnArgs} args - Arguments to update many Gate_pending_events.
+     * @example
+     * // Update many Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Gate_pending_events and only return the `id`
+     * const gate_pending_eventsWithIdOnly = await prisma.gate_pending_events.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends gate_pending_eventsUpdateManyAndReturnArgs>(args: SelectSubset<T, gate_pending_eventsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Gate_pending_events.
+     * @param {gate_pending_eventsUpsertArgs} args - Arguments to update or create a Gate_pending_events.
+     * @example
+     * // Update or create a Gate_pending_events
+     * const gate_pending_events = await prisma.gate_pending_events.upsert({
+     *   create: {
+     *     // ... data to create a Gate_pending_events
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Gate_pending_events we want to update
+     *   }
+     * })
+     */
+    upsert<T extends gate_pending_eventsUpsertArgs>(args: SelectSubset<T, gate_pending_eventsUpsertArgs<ExtArgs>>): Prisma__gate_pending_eventsClient<$Result.GetResult<Prisma.$gate_pending_eventsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Gate_pending_events.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gate_pending_eventsCountArgs} args - Arguments to filter Gate_pending_events to count.
+     * @example
+     * // Count the number of Gate_pending_events
+     * const count = await prisma.gate_pending_events.count({
+     *   where: {
+     *     // ... the filter for the Gate_pending_events we want to count
+     *   }
+     * })
+    **/
+    count<T extends gate_pending_eventsCountArgs>(
+      args?: Subset<T, gate_pending_eventsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Gate_pending_eventsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Gate_pending_events.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Gate_pending_eventsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Gate_pending_eventsAggregateArgs>(args: Subset<T, Gate_pending_eventsAggregateArgs>): Prisma.PrismaPromise<GetGate_pending_eventsAggregateType<T>>
+
+    /**
+     * Group by Gate_pending_events.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {gate_pending_eventsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends gate_pending_eventsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: gate_pending_eventsGroupByArgs['orderBy'] }
+        : { orderBy?: gate_pending_eventsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, gate_pending_eventsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGate_pending_eventsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the gate_pending_events model
+   */
+  readonly fields: gate_pending_eventsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for gate_pending_events.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__gate_pending_eventsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    gate<T extends gatesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, gatesDefaultArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the gate_pending_events model
+   */
+  interface gate_pending_eventsFieldRefs {
+    readonly id: FieldRef<"gate_pending_events", 'Int'>
+    readonly gate_id: FieldRef<"gate_pending_events", 'Int'>
+    readonly camera_id: FieldRef<"gate_pending_events", 'Int'>
+    readonly location_id: FieldRef<"gate_pending_events", 'Int'>
+    readonly camera_log_id: FieldRef<"gate_pending_events", 'Int'>
+    readonly plate_number: FieldRef<"gate_pending_events", 'String'>
+    readonly direction: FieldRef<"gate_pending_events", 'String'>
+    readonly event_date: FieldRef<"gate_pending_events", 'DateTime'>
+    readonly photo: FieldRef<"gate_pending_events", 'String'>
+    readonly confidence: FieldRef<"gate_pending_events", 'Int'>
+    readonly due_at: FieldRef<"gate_pending_events", 'DateTime'>
+    readonly status: FieldRef<"gate_pending_events", 'String'>
+    readonly drop_reason: FieldRef<"gate_pending_events", 'String'>
+    readonly created_at: FieldRef<"gate_pending_events", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * gate_pending_events findUnique
+   */
+  export type gate_pending_eventsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * Filter, which gate_pending_events to fetch.
+     */
+    where: gate_pending_eventsWhereUniqueInput
+  }
+
+  /**
+   * gate_pending_events findUniqueOrThrow
+   */
+  export type gate_pending_eventsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * Filter, which gate_pending_events to fetch.
+     */
+    where: gate_pending_eventsWhereUniqueInput
+  }
+
+  /**
+   * gate_pending_events findFirst
+   */
+  export type gate_pending_eventsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * Filter, which gate_pending_events to fetch.
+     */
+    where?: gate_pending_eventsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of gate_pending_events to fetch.
+     */
+    orderBy?: gate_pending_eventsOrderByWithRelationInput | gate_pending_eventsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for gate_pending_events.
+     */
+    cursor?: gate_pending_eventsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` gate_pending_events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` gate_pending_events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of gate_pending_events.
+     */
+    distinct?: Gate_pending_eventsScalarFieldEnum | Gate_pending_eventsScalarFieldEnum[]
+  }
+
+  /**
+   * gate_pending_events findFirstOrThrow
+   */
+  export type gate_pending_eventsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * Filter, which gate_pending_events to fetch.
+     */
+    where?: gate_pending_eventsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of gate_pending_events to fetch.
+     */
+    orderBy?: gate_pending_eventsOrderByWithRelationInput | gate_pending_eventsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for gate_pending_events.
+     */
+    cursor?: gate_pending_eventsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` gate_pending_events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` gate_pending_events.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of gate_pending_events.
+     */
+    distinct?: Gate_pending_eventsScalarFieldEnum | Gate_pending_eventsScalarFieldEnum[]
+  }
+
+  /**
+   * gate_pending_events findMany
+   */
+  export type gate_pending_eventsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * Filter, which gate_pending_events to fetch.
+     */
+    where?: gate_pending_eventsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of gate_pending_events to fetch.
+     */
+    orderBy?: gate_pending_eventsOrderByWithRelationInput | gate_pending_eventsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing gate_pending_events.
+     */
+    cursor?: gate_pending_eventsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` gate_pending_events from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` gate_pending_events.
+     */
+    skip?: number
+    distinct?: Gate_pending_eventsScalarFieldEnum | Gate_pending_eventsScalarFieldEnum[]
+  }
+
+  /**
+   * gate_pending_events create
+   */
+  export type gate_pending_eventsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a gate_pending_events.
+     */
+    data: XOR<gate_pending_eventsCreateInput, gate_pending_eventsUncheckedCreateInput>
+  }
+
+  /**
+   * gate_pending_events createMany
+   */
+  export type gate_pending_eventsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many gate_pending_events.
+     */
+    data: gate_pending_eventsCreateManyInput | gate_pending_eventsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * gate_pending_events createManyAndReturn
+   */
+  export type gate_pending_eventsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * The data used to create many gate_pending_events.
+     */
+    data: gate_pending_eventsCreateManyInput | gate_pending_eventsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * gate_pending_events update
+   */
+  export type gate_pending_eventsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a gate_pending_events.
+     */
+    data: XOR<gate_pending_eventsUpdateInput, gate_pending_eventsUncheckedUpdateInput>
+    /**
+     * Choose, which gate_pending_events to update.
+     */
+    where: gate_pending_eventsWhereUniqueInput
+  }
+
+  /**
+   * gate_pending_events updateMany
+   */
+  export type gate_pending_eventsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update gate_pending_events.
+     */
+    data: XOR<gate_pending_eventsUpdateManyMutationInput, gate_pending_eventsUncheckedUpdateManyInput>
+    /**
+     * Filter which gate_pending_events to update
+     */
+    where?: gate_pending_eventsWhereInput
+    /**
+     * Limit how many gate_pending_events to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * gate_pending_events updateManyAndReturn
+   */
+  export type gate_pending_eventsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * The data used to update gate_pending_events.
+     */
+    data: XOR<gate_pending_eventsUpdateManyMutationInput, gate_pending_eventsUncheckedUpdateManyInput>
+    /**
+     * Filter which gate_pending_events to update
+     */
+    where?: gate_pending_eventsWhereInput
+    /**
+     * Limit how many gate_pending_events to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * gate_pending_events upsert
+   */
+  export type gate_pending_eventsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the gate_pending_events to update in case it exists.
+     */
+    where: gate_pending_eventsWhereUniqueInput
+    /**
+     * In case the gate_pending_events found by the `where` argument doesn't exist, create a new gate_pending_events with this data.
+     */
+    create: XOR<gate_pending_eventsCreateInput, gate_pending_eventsUncheckedCreateInput>
+    /**
+     * In case the gate_pending_events was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<gate_pending_eventsUpdateInput, gate_pending_eventsUncheckedUpdateInput>
+  }
+
+  /**
+   * gate_pending_events delete
+   */
+  export type gate_pending_eventsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+    /**
+     * Filter which gate_pending_events to delete.
+     */
+    where: gate_pending_eventsWhereUniqueInput
+  }
+
+  /**
+   * gate_pending_events deleteMany
+   */
+  export type gate_pending_eventsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which gate_pending_events to delete
+     */
+    where?: gate_pending_eventsWhereInput
+    /**
+     * Limit how many gate_pending_events to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * gate_pending_events without action
+   */
+  export type gate_pending_eventsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gate_pending_events
+     */
+    select?: gate_pending_eventsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gate_pending_events
+     */
+    omit?: gate_pending_eventsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gate_pending_eventsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model anpr_cameras
    */
 
@@ -9611,6 +12313,7 @@ export namespace Prisma {
   export type Anpr_camerasAvgAggregateOutputType = {
     id: number | null
     location_id: number | null
+    gate_id: number | null
     port: number | null
     min_confidence: number | null
   }
@@ -9618,6 +12321,7 @@ export namespace Prisma {
   export type Anpr_camerasSumAggregateOutputType = {
     id: number | null
     location_id: number | null
+    gate_id: number | null
     port: number | null
     min_confidence: number | null
   }
@@ -9626,6 +12330,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     location_id: number | null
+    gate_id: number | null
     camera_ip: string | null
     mac_address: string | null
     port: number | null
@@ -9647,6 +12352,7 @@ export namespace Prisma {
     id: number | null
     name: string | null
     location_id: number | null
+    gate_id: number | null
     camera_ip: string | null
     mac_address: string | null
     port: number | null
@@ -9668,6 +12374,7 @@ export namespace Prisma {
     id: number
     name: number
     location_id: number
+    gate_id: number
     camera_ip: number
     mac_address: number
     port: number
@@ -9690,6 +12397,7 @@ export namespace Prisma {
   export type Anpr_camerasAvgAggregateInputType = {
     id?: true
     location_id?: true
+    gate_id?: true
     port?: true
     min_confidence?: true
   }
@@ -9697,6 +12405,7 @@ export namespace Prisma {
   export type Anpr_camerasSumAggregateInputType = {
     id?: true
     location_id?: true
+    gate_id?: true
     port?: true
     min_confidence?: true
   }
@@ -9705,6 +12414,7 @@ export namespace Prisma {
     id?: true
     name?: true
     location_id?: true
+    gate_id?: true
     camera_ip?: true
     mac_address?: true
     port?: true
@@ -9726,6 +12436,7 @@ export namespace Prisma {
     id?: true
     name?: true
     location_id?: true
+    gate_id?: true
     camera_ip?: true
     mac_address?: true
     port?: true
@@ -9747,6 +12458,7 @@ export namespace Prisma {
     id?: true
     name?: true
     location_id?: true
+    gate_id?: true
     camera_ip?: true
     mac_address?: true
     port?: true
@@ -9855,6 +12567,7 @@ export namespace Prisma {
     id: number
     name: string | null
     location_id: number
+    gate_id: number | null
     camera_ip: string
     mac_address: string | null
     port: number | null
@@ -9895,6 +12608,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     location_id?: boolean
+    gate_id?: boolean
     camera_ip?: boolean
     mac_address?: boolean
     port?: boolean
@@ -9911,6 +12625,7 @@ export namespace Prisma {
     added_at?: boolean
     updated_at?: boolean
     location?: boolean | locationsDefaultArgs<ExtArgs>
+    gate?: boolean | anpr_cameras$gateArgs<ExtArgs>
     vehiclePasses?: boolean | anpr_cameras$vehiclePassesArgs<ExtArgs>
     _count?: boolean | Anpr_camerasCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["anpr_cameras"]>
@@ -9919,6 +12634,7 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     location_id?: boolean
+    gate_id?: boolean
     camera_ip?: boolean
     mac_address?: boolean
     port?: boolean
@@ -9935,12 +12651,14 @@ export namespace Prisma {
     added_at?: boolean
     updated_at?: boolean
     location?: boolean | locationsDefaultArgs<ExtArgs>
+    gate?: boolean | anpr_cameras$gateArgs<ExtArgs>
   }, ExtArgs["result"]["anpr_cameras"]>
 
   export type anpr_camerasSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     location_id?: boolean
+    gate_id?: boolean
     camera_ip?: boolean
     mac_address?: boolean
     port?: boolean
@@ -9957,12 +12675,14 @@ export namespace Prisma {
     added_at?: boolean
     updated_at?: boolean
     location?: boolean | locationsDefaultArgs<ExtArgs>
+    gate?: boolean | anpr_cameras$gateArgs<ExtArgs>
   }, ExtArgs["result"]["anpr_cameras"]>
 
   export type anpr_camerasSelectScalar = {
     id?: boolean
     name?: boolean
     location_id?: boolean
+    gate_id?: boolean
     camera_ip?: boolean
     mac_address?: boolean
     port?: boolean
@@ -9980,29 +12700,34 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type anpr_camerasOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location_id" | "camera_ip" | "mac_address" | "port" | "direction" | "username" | "password" | "serial_number" | "is_local" | "min_confidence" | "movement_direction" | "status" | "is_online" | "last_seen_at" | "added_at" | "updated_at", ExtArgs["result"]["anpr_cameras"]>
+  export type anpr_camerasOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "location_id" | "gate_id" | "camera_ip" | "mac_address" | "port" | "direction" | "username" | "password" | "serial_number" | "is_local" | "min_confidence" | "movement_direction" | "status" | "is_online" | "last_seen_at" | "added_at" | "updated_at", ExtArgs["result"]["anpr_cameras"]>
   export type anpr_camerasInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | locationsDefaultArgs<ExtArgs>
+    gate?: boolean | anpr_cameras$gateArgs<ExtArgs>
     vehiclePasses?: boolean | anpr_cameras$vehiclePassesArgs<ExtArgs>
     _count?: boolean | Anpr_camerasCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type anpr_camerasIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | locationsDefaultArgs<ExtArgs>
+    gate?: boolean | anpr_cameras$gateArgs<ExtArgs>
   }
   export type anpr_camerasIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | locationsDefaultArgs<ExtArgs>
+    gate?: boolean | anpr_cameras$gateArgs<ExtArgs>
   }
 
   export type $anpr_camerasPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "anpr_cameras"
     objects: {
       location: Prisma.$locationsPayload<ExtArgs>
+      gate: Prisma.$gatesPayload<ExtArgs> | null
       vehiclePasses: Prisma.$vehicle_passesPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string | null
       location_id: number
+      gate_id: number | null
       camera_ip: string
       mac_address: string | null
       port: number | null
@@ -10413,6 +13138,7 @@ export namespace Prisma {
   export interface Prisma__anpr_camerasClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     location<T extends locationsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, locationsDefaultArgs<ExtArgs>>): Prisma__locationsClient<$Result.GetResult<Prisma.$locationsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    gate<T extends anpr_cameras$gateArgs<ExtArgs> = {}>(args?: Subset<T, anpr_cameras$gateArgs<ExtArgs>>): Prisma__gatesClient<$Result.GetResult<Prisma.$gatesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     vehiclePasses<T extends anpr_cameras$vehiclePassesArgs<ExtArgs> = {}>(args?: Subset<T, anpr_cameras$vehiclePassesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$vehicle_passesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10446,6 +13172,7 @@ export namespace Prisma {
     readonly id: FieldRef<"anpr_cameras", 'Int'>
     readonly name: FieldRef<"anpr_cameras", 'String'>
     readonly location_id: FieldRef<"anpr_cameras", 'Int'>
+    readonly gate_id: FieldRef<"anpr_cameras", 'Int'>
     readonly camera_ip: FieldRef<"anpr_cameras", 'String'>
     readonly mac_address: FieldRef<"anpr_cameras", 'String'>
     readonly port: FieldRef<"anpr_cameras", 'Int'>
@@ -10857,6 +13584,25 @@ export namespace Prisma {
   }
 
   /**
+   * anpr_cameras.gate
+   */
+  export type anpr_cameras$gateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the gates
+     */
+    select?: gatesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the gates
+     */
+    omit?: gatesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: gatesInclude<ExtArgs> | null
+    where?: gatesWhereInput
+  }
+
+  /**
    * anpr_cameras.vehiclePasses
    */
   export type anpr_cameras$vehiclePassesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10915,12 +13661,16 @@ export namespace Prisma {
     id: number | null
     location_id: number | null
     camera_id: number | null
+    confidence: number | null
+    score: number | null
   }
 
   export type Vehicle_passesSumAggregateOutputType = {
     id: number | null
     location_id: number | null
     camera_id: number | null
+    confidence: number | null
+    score: number | null
   }
 
   export type Vehicle_passesMinAggregateOutputType = {
@@ -10934,6 +13684,15 @@ export namespace Prisma {
     created_at: Date | null
     is_whitelisted: boolean | null
     is_hidden: boolean | null
+    inferred: boolean | null
+    confidence: number | null
+    gate_confirmed: boolean | null
+    score: number | null
+    plate_original: string | null
+    plate_conflict: boolean | null
+    direction_source: string | null
+    direction_original: string | null
+    history_conflict: boolean | null
   }
 
   export type Vehicle_passesMaxAggregateOutputType = {
@@ -10947,6 +13706,15 @@ export namespace Prisma {
     created_at: Date | null
     is_whitelisted: boolean | null
     is_hidden: boolean | null
+    inferred: boolean | null
+    confidence: number | null
+    gate_confirmed: boolean | null
+    score: number | null
+    plate_original: string | null
+    plate_conflict: boolean | null
+    direction_source: string | null
+    direction_original: string | null
+    history_conflict: boolean | null
   }
 
   export type Vehicle_passesCountAggregateOutputType = {
@@ -10960,6 +13728,15 @@ export namespace Prisma {
     created_at: number
     is_whitelisted: number
     is_hidden: number
+    inferred: number
+    confidence: number
+    gate_confirmed: number
+    score: number
+    plate_original: number
+    plate_conflict: number
+    direction_source: number
+    direction_original: number
+    history_conflict: number
     _all: number
   }
 
@@ -10968,12 +13745,16 @@ export namespace Prisma {
     id?: true
     location_id?: true
     camera_id?: true
+    confidence?: true
+    score?: true
   }
 
   export type Vehicle_passesSumAggregateInputType = {
     id?: true
     location_id?: true
     camera_id?: true
+    confidence?: true
+    score?: true
   }
 
   export type Vehicle_passesMinAggregateInputType = {
@@ -10987,6 +13768,15 @@ export namespace Prisma {
     created_at?: true
     is_whitelisted?: true
     is_hidden?: true
+    inferred?: true
+    confidence?: true
+    gate_confirmed?: true
+    score?: true
+    plate_original?: true
+    plate_conflict?: true
+    direction_source?: true
+    direction_original?: true
+    history_conflict?: true
   }
 
   export type Vehicle_passesMaxAggregateInputType = {
@@ -11000,6 +13790,15 @@ export namespace Prisma {
     created_at?: true
     is_whitelisted?: true
     is_hidden?: true
+    inferred?: true
+    confidence?: true
+    gate_confirmed?: true
+    score?: true
+    plate_original?: true
+    plate_conflict?: true
+    direction_source?: true
+    direction_original?: true
+    history_conflict?: true
   }
 
   export type Vehicle_passesCountAggregateInputType = {
@@ -11013,6 +13812,15 @@ export namespace Prisma {
     created_at?: true
     is_whitelisted?: true
     is_hidden?: true
+    inferred?: true
+    confidence?: true
+    gate_confirmed?: true
+    score?: true
+    plate_original?: true
+    plate_conflict?: true
+    direction_source?: true
+    direction_original?: true
+    history_conflict?: true
     _all?: true
   }
 
@@ -11113,6 +13921,15 @@ export namespace Prisma {
     created_at: Date
     is_whitelisted: boolean
     is_hidden: boolean
+    inferred: boolean
+    confidence: number | null
+    gate_confirmed: boolean
+    score: number | null
+    plate_original: string | null
+    plate_conflict: boolean
+    direction_source: string | null
+    direction_original: string | null
+    history_conflict: boolean
     _count: Vehicle_passesCountAggregateOutputType | null
     _avg: Vehicle_passesAvgAggregateOutputType | null
     _sum: Vehicle_passesSumAggregateOutputType | null
@@ -11145,6 +13962,15 @@ export namespace Prisma {
     created_at?: boolean
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: boolean
+    gate_confirmed?: boolean
+    score?: boolean
+    plate_original?: boolean
+    plate_conflict?: boolean
+    direction_source?: boolean
+    direction_original?: boolean
+    history_conflict?: boolean
     location?: boolean | locationsDefaultArgs<ExtArgs>
     camera?: boolean | vehicle_passes$cameraArgs<ExtArgs>
   }, ExtArgs["result"]["vehicle_passes"]>
@@ -11160,6 +13986,15 @@ export namespace Prisma {
     created_at?: boolean
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: boolean
+    gate_confirmed?: boolean
+    score?: boolean
+    plate_original?: boolean
+    plate_conflict?: boolean
+    direction_source?: boolean
+    direction_original?: boolean
+    history_conflict?: boolean
     location?: boolean | locationsDefaultArgs<ExtArgs>
     camera?: boolean | vehicle_passes$cameraArgs<ExtArgs>
   }, ExtArgs["result"]["vehicle_passes"]>
@@ -11175,6 +14010,15 @@ export namespace Prisma {
     created_at?: boolean
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: boolean
+    gate_confirmed?: boolean
+    score?: boolean
+    plate_original?: boolean
+    plate_conflict?: boolean
+    direction_source?: boolean
+    direction_original?: boolean
+    history_conflict?: boolean
     location?: boolean | locationsDefaultArgs<ExtArgs>
     camera?: boolean | vehicle_passes$cameraArgs<ExtArgs>
   }, ExtArgs["result"]["vehicle_passes"]>
@@ -11190,9 +14034,18 @@ export namespace Prisma {
     created_at?: boolean
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: boolean
+    gate_confirmed?: boolean
+    score?: boolean
+    plate_original?: boolean
+    plate_conflict?: boolean
+    direction_source?: boolean
+    direction_original?: boolean
+    history_conflict?: boolean
   }
 
-  export type vehicle_passesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "location_id" | "camera_id" | "plate_number" | "direction" | "photo" | "date" | "created_at" | "is_whitelisted" | "is_hidden", ExtArgs["result"]["vehicle_passes"]>
+  export type vehicle_passesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "location_id" | "camera_id" | "plate_number" | "direction" | "photo" | "date" | "created_at" | "is_whitelisted" | "is_hidden" | "inferred" | "confidence" | "gate_confirmed" | "score" | "plate_original" | "plate_conflict" | "direction_source" | "direction_original" | "history_conflict", ExtArgs["result"]["vehicle_passes"]>
   export type vehicle_passesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | locationsDefaultArgs<ExtArgs>
     camera?: boolean | vehicle_passes$cameraArgs<ExtArgs>
@@ -11223,6 +14076,15 @@ export namespace Prisma {
       created_at: Date
       is_whitelisted: boolean
       is_hidden: boolean
+      inferred: boolean
+      confidence: number | null
+      gate_confirmed: boolean
+      score: number | null
+      plate_original: string | null
+      plate_conflict: boolean
+      direction_source: string | null
+      direction_original: string | null
+      history_conflict: boolean
     }, ExtArgs["result"]["vehicle_passes"]>
     composites: {}
   }
@@ -11658,6 +14520,15 @@ export namespace Prisma {
     readonly created_at: FieldRef<"vehicle_passes", 'DateTime'>
     readonly is_whitelisted: FieldRef<"vehicle_passes", 'Boolean'>
     readonly is_hidden: FieldRef<"vehicle_passes", 'Boolean'>
+    readonly inferred: FieldRef<"vehicle_passes", 'Boolean'>
+    readonly confidence: FieldRef<"vehicle_passes", 'Int'>
+    readonly gate_confirmed: FieldRef<"vehicle_passes", 'Boolean'>
+    readonly score: FieldRef<"vehicle_passes", 'Int'>
+    readonly plate_original: FieldRef<"vehicle_passes", 'String'>
+    readonly plate_conflict: FieldRef<"vehicle_passes", 'Boolean'>
+    readonly direction_source: FieldRef<"vehicle_passes", 'String'>
+    readonly direction_original: FieldRef<"vehicle_passes", 'String'>
+    readonly history_conflict: FieldRef<"vehicle_passes", 'Boolean'>
   }
     
 
@@ -14382,6 +17253,7 @@ export namespace Prisma {
     confidence_level: number | null
     camera_id: number | null
     location_id: number | null
+    ai_confidence: number | null
   }
 
   export type Camera_logsSumAggregateOutputType = {
@@ -14389,6 +17261,7 @@ export namespace Prisma {
     confidence_level: number | null
     camera_id: number | null
     location_id: number | null
+    ai_confidence: number | null
   }
 
   export type Camera_logsMinAggregateOutputType = {
@@ -14396,6 +17269,7 @@ export namespace Prisma {
     mac_address: string | null
     license_plate: string | null
     confidence_level: number | null
+    movement_direction: string | null
     event_date: Date | null
     camera_id: number | null
     camera_name: string | null
@@ -14403,6 +17277,11 @@ export namespace Prisma {
     photo: string | null
     was_processed: boolean | null
     skip_reason: string | null
+    ai_plate: string | null
+    ai_confidence: number | null
+    ai_direction: string | null
+    plate_consensus: string | null
+    direction_consensus: string | null
     created_at: Date | null
   }
 
@@ -14411,6 +17290,7 @@ export namespace Prisma {
     mac_address: string | null
     license_plate: string | null
     confidence_level: number | null
+    movement_direction: string | null
     event_date: Date | null
     camera_id: number | null
     camera_name: string | null
@@ -14418,6 +17298,11 @@ export namespace Prisma {
     photo: string | null
     was_processed: boolean | null
     skip_reason: string | null
+    ai_plate: string | null
+    ai_confidence: number | null
+    ai_direction: string | null
+    plate_consensus: string | null
+    direction_consensus: string | null
     created_at: Date | null
   }
 
@@ -14426,6 +17311,7 @@ export namespace Prisma {
     mac_address: number
     license_plate: number
     confidence_level: number
+    movement_direction: number
     event_date: number
     camera_id: number
     camera_name: number
@@ -14433,6 +17319,11 @@ export namespace Prisma {
     photo: number
     was_processed: number
     skip_reason: number
+    ai_plate: number
+    ai_confidence: number
+    ai_direction: number
+    plate_consensus: number
+    direction_consensus: number
     created_at: number
     _all: number
   }
@@ -14443,6 +17334,7 @@ export namespace Prisma {
     confidence_level?: true
     camera_id?: true
     location_id?: true
+    ai_confidence?: true
   }
 
   export type Camera_logsSumAggregateInputType = {
@@ -14450,6 +17342,7 @@ export namespace Prisma {
     confidence_level?: true
     camera_id?: true
     location_id?: true
+    ai_confidence?: true
   }
 
   export type Camera_logsMinAggregateInputType = {
@@ -14457,6 +17350,7 @@ export namespace Prisma {
     mac_address?: true
     license_plate?: true
     confidence_level?: true
+    movement_direction?: true
     event_date?: true
     camera_id?: true
     camera_name?: true
@@ -14464,6 +17358,11 @@ export namespace Prisma {
     photo?: true
     was_processed?: true
     skip_reason?: true
+    ai_plate?: true
+    ai_confidence?: true
+    ai_direction?: true
+    plate_consensus?: true
+    direction_consensus?: true
     created_at?: true
   }
 
@@ -14472,6 +17371,7 @@ export namespace Prisma {
     mac_address?: true
     license_plate?: true
     confidence_level?: true
+    movement_direction?: true
     event_date?: true
     camera_id?: true
     camera_name?: true
@@ -14479,6 +17379,11 @@ export namespace Prisma {
     photo?: true
     was_processed?: true
     skip_reason?: true
+    ai_plate?: true
+    ai_confidence?: true
+    ai_direction?: true
+    plate_consensus?: true
+    direction_consensus?: true
     created_at?: true
   }
 
@@ -14487,6 +17392,7 @@ export namespace Prisma {
     mac_address?: true
     license_plate?: true
     confidence_level?: true
+    movement_direction?: true
     event_date?: true
     camera_id?: true
     camera_name?: true
@@ -14494,6 +17400,11 @@ export namespace Prisma {
     photo?: true
     was_processed?: true
     skip_reason?: true
+    ai_plate?: true
+    ai_confidence?: true
+    ai_direction?: true
+    plate_consensus?: true
+    direction_consensus?: true
     created_at?: true
     _all?: true
   }
@@ -14589,6 +17500,7 @@ export namespace Prisma {
     mac_address: string
     license_plate: string
     confidence_level: number
+    movement_direction: string | null
     event_date: Date
     camera_id: number | null
     camera_name: string | null
@@ -14596,6 +17508,11 @@ export namespace Prisma {
     photo: string | null
     was_processed: boolean
     skip_reason: string | null
+    ai_plate: string | null
+    ai_confidence: number | null
+    ai_direction: string | null
+    plate_consensus: string | null
+    direction_consensus: string | null
     created_at: Date
     _count: Camera_logsCountAggregateOutputType | null
     _avg: Camera_logsAvgAggregateOutputType | null
@@ -14623,6 +17540,7 @@ export namespace Prisma {
     mac_address?: boolean
     license_plate?: boolean
     confidence_level?: boolean
+    movement_direction?: boolean
     event_date?: boolean
     camera_id?: boolean
     camera_name?: boolean
@@ -14630,6 +17548,11 @@ export namespace Prisma {
     photo?: boolean
     was_processed?: boolean
     skip_reason?: boolean
+    ai_plate?: boolean
+    ai_confidence?: boolean
+    ai_direction?: boolean
+    plate_consensus?: boolean
+    direction_consensus?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["camera_logs"]>
 
@@ -14638,6 +17561,7 @@ export namespace Prisma {
     mac_address?: boolean
     license_plate?: boolean
     confidence_level?: boolean
+    movement_direction?: boolean
     event_date?: boolean
     camera_id?: boolean
     camera_name?: boolean
@@ -14645,6 +17569,11 @@ export namespace Prisma {
     photo?: boolean
     was_processed?: boolean
     skip_reason?: boolean
+    ai_plate?: boolean
+    ai_confidence?: boolean
+    ai_direction?: boolean
+    plate_consensus?: boolean
+    direction_consensus?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["camera_logs"]>
 
@@ -14653,6 +17582,7 @@ export namespace Prisma {
     mac_address?: boolean
     license_plate?: boolean
     confidence_level?: boolean
+    movement_direction?: boolean
     event_date?: boolean
     camera_id?: boolean
     camera_name?: boolean
@@ -14660,6 +17590,11 @@ export namespace Prisma {
     photo?: boolean
     was_processed?: boolean
     skip_reason?: boolean
+    ai_plate?: boolean
+    ai_confidence?: boolean
+    ai_direction?: boolean
+    plate_consensus?: boolean
+    direction_consensus?: boolean
     created_at?: boolean
   }, ExtArgs["result"]["camera_logs"]>
 
@@ -14668,6 +17603,7 @@ export namespace Prisma {
     mac_address?: boolean
     license_plate?: boolean
     confidence_level?: boolean
+    movement_direction?: boolean
     event_date?: boolean
     camera_id?: boolean
     camera_name?: boolean
@@ -14675,10 +17611,15 @@ export namespace Prisma {
     photo?: boolean
     was_processed?: boolean
     skip_reason?: boolean
+    ai_plate?: boolean
+    ai_confidence?: boolean
+    ai_direction?: boolean
+    plate_consensus?: boolean
+    direction_consensus?: boolean
     created_at?: boolean
   }
 
-  export type camera_logsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mac_address" | "license_plate" | "confidence_level" | "event_date" | "camera_id" | "camera_name" | "location_id" | "photo" | "was_processed" | "skip_reason" | "created_at", ExtArgs["result"]["camera_logs"]>
+  export type camera_logsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mac_address" | "license_plate" | "confidence_level" | "movement_direction" | "event_date" | "camera_id" | "camera_name" | "location_id" | "photo" | "was_processed" | "skip_reason" | "ai_plate" | "ai_confidence" | "ai_direction" | "plate_consensus" | "direction_consensus" | "created_at", ExtArgs["result"]["camera_logs"]>
 
   export type $camera_logsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "camera_logs"
@@ -14688,6 +17629,7 @@ export namespace Prisma {
       mac_address: string
       license_plate: string
       confidence_level: number
+      movement_direction: string | null
       event_date: Date
       camera_id: number | null
       camera_name: string | null
@@ -14695,6 +17637,11 @@ export namespace Prisma {
       photo: string | null
       was_processed: boolean
       skip_reason: string | null
+      ai_plate: string | null
+      ai_confidence: number | null
+      ai_direction: string | null
+      plate_consensus: string | null
+      direction_consensus: string | null
       created_at: Date
     }, ExtArgs["result"]["camera_logs"]>
     composites: {}
@@ -15123,6 +18070,7 @@ export namespace Prisma {
     readonly mac_address: FieldRef<"camera_logs", 'String'>
     readonly license_plate: FieldRef<"camera_logs", 'String'>
     readonly confidence_level: FieldRef<"camera_logs", 'Int'>
+    readonly movement_direction: FieldRef<"camera_logs", 'String'>
     readonly event_date: FieldRef<"camera_logs", 'DateTime'>
     readonly camera_id: FieldRef<"camera_logs", 'Int'>
     readonly camera_name: FieldRef<"camera_logs", 'String'>
@@ -15130,6 +18078,11 @@ export namespace Prisma {
     readonly photo: FieldRef<"camera_logs", 'String'>
     readonly was_processed: FieldRef<"camera_logs", 'Boolean'>
     readonly skip_reason: FieldRef<"camera_logs", 'String'>
+    readonly ai_plate: FieldRef<"camera_logs", 'String'>
+    readonly ai_confidence: FieldRef<"camera_logs", 'Int'>
+    readonly ai_direction: FieldRef<"camera_logs", 'String'>
+    readonly plate_consensus: FieldRef<"camera_logs", 'String'>
+    readonly direction_consensus: FieldRef<"camera_logs", 'String'>
     readonly created_at: FieldRef<"camera_logs", 'DateTime'>
   }
     
@@ -20197,10 +23150,46 @@ export namespace Prisma {
   export type LocationsScalarFieldEnum = (typeof LocationsScalarFieldEnum)[keyof typeof LocationsScalarFieldEnum]
 
 
+  export const GatesScalarFieldEnum: {
+    id: 'id',
+    location_id: 'location_id',
+    name: 'name',
+    status: 'status',
+    coop_enabled: 'coop_enabled',
+    coop_window_sec: 'coop_window_sec',
+    maneuver_window_sec: 'maneuver_window_sec',
+    added_at: 'added_at',
+    updated_at: 'updated_at'
+  };
+
+  export type GatesScalarFieldEnum = (typeof GatesScalarFieldEnum)[keyof typeof GatesScalarFieldEnum]
+
+
+  export const Gate_pending_eventsScalarFieldEnum: {
+    id: 'id',
+    gate_id: 'gate_id',
+    camera_id: 'camera_id',
+    location_id: 'location_id',
+    camera_log_id: 'camera_log_id',
+    plate_number: 'plate_number',
+    direction: 'direction',
+    event_date: 'event_date',
+    photo: 'photo',
+    confidence: 'confidence',
+    due_at: 'due_at',
+    status: 'status',
+    drop_reason: 'drop_reason',
+    created_at: 'created_at'
+  };
+
+  export type Gate_pending_eventsScalarFieldEnum = (typeof Gate_pending_eventsScalarFieldEnum)[keyof typeof Gate_pending_eventsScalarFieldEnum]
+
+
   export const Anpr_camerasScalarFieldEnum: {
     id: 'id',
     name: 'name',
     location_id: 'location_id',
+    gate_id: 'gate_id',
     camera_ip: 'camera_ip',
     mac_address: 'mac_address',
     port: 'port',
@@ -20231,7 +23220,16 @@ export namespace Prisma {
     date: 'date',
     created_at: 'created_at',
     is_whitelisted: 'is_whitelisted',
-    is_hidden: 'is_hidden'
+    is_hidden: 'is_hidden',
+    inferred: 'inferred',
+    confidence: 'confidence',
+    gate_confirmed: 'gate_confirmed',
+    score: 'score',
+    plate_original: 'plate_original',
+    plate_conflict: 'plate_conflict',
+    direction_source: 'direction_source',
+    direction_original: 'direction_original',
+    history_conflict: 'history_conflict'
   };
 
   export type Vehicle_passesScalarFieldEnum = (typeof Vehicle_passesScalarFieldEnum)[keyof typeof Vehicle_passesScalarFieldEnum]
@@ -20267,6 +23265,7 @@ export namespace Prisma {
     mac_address: 'mac_address',
     license_plate: 'license_plate',
     confidence_level: 'confidence_level',
+    movement_direction: 'movement_direction',
     event_date: 'event_date',
     camera_id: 'camera_id',
     camera_name: 'camera_name',
@@ -20274,6 +23273,11 @@ export namespace Prisma {
     photo: 'photo',
     was_processed: 'was_processed',
     skip_reason: 'skip_reason',
+    ai_plate: 'ai_plate',
+    ai_confidence: 'ai_confidence',
+    ai_direction: 'ai_direction',
+    plate_consensus: 'plate_consensus',
+    direction_consensus: 'direction_consensus',
     created_at: 'created_at'
   };
 
@@ -20921,6 +23925,7 @@ export namespace Prisma {
     added_at?: DateTimeFilter<"locations"> | Date | string
     updated_at?: DateTimeFilter<"locations"> | Date | string
     cameras?: Anpr_camerasListRelationFilter
+    gates?: GatesListRelationFilter
     vehiclePasses?: Vehicle_passesListRelationFilter
     locationTariffHistory?: Location_tariff_historyListRelationFilter
   }
@@ -20939,6 +23944,7 @@ export namespace Prisma {
     added_at?: SortOrder
     updated_at?: SortOrder
     cameras?: anpr_camerasOrderByRelationAggregateInput
+    gates?: gatesOrderByRelationAggregateInput
     vehiclePasses?: vehicle_passesOrderByRelationAggregateInput
     locationTariffHistory?: location_tariff_historyOrderByRelationAggregateInput
   }
@@ -20960,6 +23966,7 @@ export namespace Prisma {
     added_at?: DateTimeFilter<"locations"> | Date | string
     updated_at?: DateTimeFilter<"locations"> | Date | string
     cameras?: Anpr_camerasListRelationFilter
+    gates?: GatesListRelationFilter
     vehiclePasses?: Vehicle_passesListRelationFilter
     locationTariffHistory?: Location_tariff_historyListRelationFilter
   }, "id">
@@ -21002,6 +24009,192 @@ export namespace Prisma {
     updated_at?: DateTimeWithAggregatesFilter<"locations"> | Date | string
   }
 
+  export type gatesWhereInput = {
+    AND?: gatesWhereInput | gatesWhereInput[]
+    OR?: gatesWhereInput[]
+    NOT?: gatesWhereInput | gatesWhereInput[]
+    id?: IntFilter<"gates"> | number
+    location_id?: IntFilter<"gates"> | number
+    name?: StringFilter<"gates"> | string
+    status?: BoolFilter<"gates"> | boolean
+    coop_enabled?: BoolFilter<"gates"> | boolean
+    coop_window_sec?: IntFilter<"gates"> | number
+    maneuver_window_sec?: IntFilter<"gates"> | number
+    added_at?: DateTimeFilter<"gates"> | Date | string
+    updated_at?: DateTimeFilter<"gates"> | Date | string
+    location?: XOR<LocationsScalarRelationFilter, locationsWhereInput>
+    cameras?: Anpr_camerasListRelationFilter
+    pendingEvents?: Gate_pending_eventsListRelationFilter
+  }
+
+  export type gatesOrderByWithRelationInput = {
+    id?: SortOrder
+    location_id?: SortOrder
+    name?: SortOrder
+    status?: SortOrder
+    coop_enabled?: SortOrder
+    coop_window_sec?: SortOrder
+    maneuver_window_sec?: SortOrder
+    added_at?: SortOrder
+    updated_at?: SortOrder
+    location?: locationsOrderByWithRelationInput
+    cameras?: anpr_camerasOrderByRelationAggregateInput
+    pendingEvents?: gate_pending_eventsOrderByRelationAggregateInput
+  }
+
+  export type gatesWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    location_id_name?: gatesLocation_idNameCompoundUniqueInput
+    AND?: gatesWhereInput | gatesWhereInput[]
+    OR?: gatesWhereInput[]
+    NOT?: gatesWhereInput | gatesWhereInput[]
+    location_id?: IntFilter<"gates"> | number
+    name?: StringFilter<"gates"> | string
+    status?: BoolFilter<"gates"> | boolean
+    coop_enabled?: BoolFilter<"gates"> | boolean
+    coop_window_sec?: IntFilter<"gates"> | number
+    maneuver_window_sec?: IntFilter<"gates"> | number
+    added_at?: DateTimeFilter<"gates"> | Date | string
+    updated_at?: DateTimeFilter<"gates"> | Date | string
+    location?: XOR<LocationsScalarRelationFilter, locationsWhereInput>
+    cameras?: Anpr_camerasListRelationFilter
+    pendingEvents?: Gate_pending_eventsListRelationFilter
+  }, "id" | "location_id_name">
+
+  export type gatesOrderByWithAggregationInput = {
+    id?: SortOrder
+    location_id?: SortOrder
+    name?: SortOrder
+    status?: SortOrder
+    coop_enabled?: SortOrder
+    coop_window_sec?: SortOrder
+    maneuver_window_sec?: SortOrder
+    added_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: gatesCountOrderByAggregateInput
+    _avg?: gatesAvgOrderByAggregateInput
+    _max?: gatesMaxOrderByAggregateInput
+    _min?: gatesMinOrderByAggregateInput
+    _sum?: gatesSumOrderByAggregateInput
+  }
+
+  export type gatesScalarWhereWithAggregatesInput = {
+    AND?: gatesScalarWhereWithAggregatesInput | gatesScalarWhereWithAggregatesInput[]
+    OR?: gatesScalarWhereWithAggregatesInput[]
+    NOT?: gatesScalarWhereWithAggregatesInput | gatesScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"gates"> | number
+    location_id?: IntWithAggregatesFilter<"gates"> | number
+    name?: StringWithAggregatesFilter<"gates"> | string
+    status?: BoolWithAggregatesFilter<"gates"> | boolean
+    coop_enabled?: BoolWithAggregatesFilter<"gates"> | boolean
+    coop_window_sec?: IntWithAggregatesFilter<"gates"> | number
+    maneuver_window_sec?: IntWithAggregatesFilter<"gates"> | number
+    added_at?: DateTimeWithAggregatesFilter<"gates"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"gates"> | Date | string
+  }
+
+  export type gate_pending_eventsWhereInput = {
+    AND?: gate_pending_eventsWhereInput | gate_pending_eventsWhereInput[]
+    OR?: gate_pending_eventsWhereInput[]
+    NOT?: gate_pending_eventsWhereInput | gate_pending_eventsWhereInput[]
+    id?: IntFilter<"gate_pending_events"> | number
+    gate_id?: IntFilter<"gate_pending_events"> | number
+    camera_id?: IntFilter<"gate_pending_events"> | number
+    location_id?: IntFilter<"gate_pending_events"> | number
+    camera_log_id?: IntNullableFilter<"gate_pending_events"> | number | null
+    plate_number?: StringFilter<"gate_pending_events"> | string
+    direction?: StringFilter<"gate_pending_events"> | string
+    event_date?: DateTimeFilter<"gate_pending_events"> | Date | string
+    photo?: StringNullableFilter<"gate_pending_events"> | string | null
+    confidence?: IntNullableFilter<"gate_pending_events"> | number | null
+    due_at?: DateTimeFilter<"gate_pending_events"> | Date | string
+    status?: StringFilter<"gate_pending_events"> | string
+    drop_reason?: StringNullableFilter<"gate_pending_events"> | string | null
+    created_at?: DateTimeFilter<"gate_pending_events"> | Date | string
+    gate?: XOR<GatesScalarRelationFilter, gatesWhereInput>
+  }
+
+  export type gate_pending_eventsOrderByWithRelationInput = {
+    id?: SortOrder
+    gate_id?: SortOrder
+    camera_id?: SortOrder
+    location_id?: SortOrder
+    camera_log_id?: SortOrderInput | SortOrder
+    plate_number?: SortOrder
+    direction?: SortOrder
+    event_date?: SortOrder
+    photo?: SortOrderInput | SortOrder
+    confidence?: SortOrderInput | SortOrder
+    due_at?: SortOrder
+    status?: SortOrder
+    drop_reason?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    gate?: gatesOrderByWithRelationInput
+  }
+
+  export type gate_pending_eventsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: gate_pending_eventsWhereInput | gate_pending_eventsWhereInput[]
+    OR?: gate_pending_eventsWhereInput[]
+    NOT?: gate_pending_eventsWhereInput | gate_pending_eventsWhereInput[]
+    gate_id?: IntFilter<"gate_pending_events"> | number
+    camera_id?: IntFilter<"gate_pending_events"> | number
+    location_id?: IntFilter<"gate_pending_events"> | number
+    camera_log_id?: IntNullableFilter<"gate_pending_events"> | number | null
+    plate_number?: StringFilter<"gate_pending_events"> | string
+    direction?: StringFilter<"gate_pending_events"> | string
+    event_date?: DateTimeFilter<"gate_pending_events"> | Date | string
+    photo?: StringNullableFilter<"gate_pending_events"> | string | null
+    confidence?: IntNullableFilter<"gate_pending_events"> | number | null
+    due_at?: DateTimeFilter<"gate_pending_events"> | Date | string
+    status?: StringFilter<"gate_pending_events"> | string
+    drop_reason?: StringNullableFilter<"gate_pending_events"> | string | null
+    created_at?: DateTimeFilter<"gate_pending_events"> | Date | string
+    gate?: XOR<GatesScalarRelationFilter, gatesWhereInput>
+  }, "id">
+
+  export type gate_pending_eventsOrderByWithAggregationInput = {
+    id?: SortOrder
+    gate_id?: SortOrder
+    camera_id?: SortOrder
+    location_id?: SortOrder
+    camera_log_id?: SortOrderInput | SortOrder
+    plate_number?: SortOrder
+    direction?: SortOrder
+    event_date?: SortOrder
+    photo?: SortOrderInput | SortOrder
+    confidence?: SortOrderInput | SortOrder
+    due_at?: SortOrder
+    status?: SortOrder
+    drop_reason?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _count?: gate_pending_eventsCountOrderByAggregateInput
+    _avg?: gate_pending_eventsAvgOrderByAggregateInput
+    _max?: gate_pending_eventsMaxOrderByAggregateInput
+    _min?: gate_pending_eventsMinOrderByAggregateInput
+    _sum?: gate_pending_eventsSumOrderByAggregateInput
+  }
+
+  export type gate_pending_eventsScalarWhereWithAggregatesInput = {
+    AND?: gate_pending_eventsScalarWhereWithAggregatesInput | gate_pending_eventsScalarWhereWithAggregatesInput[]
+    OR?: gate_pending_eventsScalarWhereWithAggregatesInput[]
+    NOT?: gate_pending_eventsScalarWhereWithAggregatesInput | gate_pending_eventsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"gate_pending_events"> | number
+    gate_id?: IntWithAggregatesFilter<"gate_pending_events"> | number
+    camera_id?: IntWithAggregatesFilter<"gate_pending_events"> | number
+    location_id?: IntWithAggregatesFilter<"gate_pending_events"> | number
+    camera_log_id?: IntNullableWithAggregatesFilter<"gate_pending_events"> | number | null
+    plate_number?: StringWithAggregatesFilter<"gate_pending_events"> | string
+    direction?: StringWithAggregatesFilter<"gate_pending_events"> | string
+    event_date?: DateTimeWithAggregatesFilter<"gate_pending_events"> | Date | string
+    photo?: StringNullableWithAggregatesFilter<"gate_pending_events"> | string | null
+    confidence?: IntNullableWithAggregatesFilter<"gate_pending_events"> | number | null
+    due_at?: DateTimeWithAggregatesFilter<"gate_pending_events"> | Date | string
+    status?: StringWithAggregatesFilter<"gate_pending_events"> | string
+    drop_reason?: StringNullableWithAggregatesFilter<"gate_pending_events"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"gate_pending_events"> | Date | string
+  }
+
   export type anpr_camerasWhereInput = {
     AND?: anpr_camerasWhereInput | anpr_camerasWhereInput[]
     OR?: anpr_camerasWhereInput[]
@@ -21009,6 +24202,7 @@ export namespace Prisma {
     id?: IntFilter<"anpr_cameras"> | number
     name?: StringNullableFilter<"anpr_cameras"> | string | null
     location_id?: IntFilter<"anpr_cameras"> | number
+    gate_id?: IntNullableFilter<"anpr_cameras"> | number | null
     camera_ip?: StringFilter<"anpr_cameras"> | string
     mac_address?: StringNullableFilter<"anpr_cameras"> | string | null
     port?: IntNullableFilter<"anpr_cameras"> | number | null
@@ -21025,6 +24219,7 @@ export namespace Prisma {
     added_at?: DateTimeFilter<"anpr_cameras"> | Date | string
     updated_at?: DateTimeFilter<"anpr_cameras"> | Date | string
     location?: XOR<LocationsScalarRelationFilter, locationsWhereInput>
+    gate?: XOR<GatesNullableScalarRelationFilter, gatesWhereInput> | null
     vehiclePasses?: Vehicle_passesListRelationFilter
   }
 
@@ -21032,6 +24227,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
     location_id?: SortOrder
+    gate_id?: SortOrderInput | SortOrder
     camera_ip?: SortOrder
     mac_address?: SortOrderInput | SortOrder
     port?: SortOrderInput | SortOrder
@@ -21048,6 +24244,7 @@ export namespace Prisma {
     added_at?: SortOrder
     updated_at?: SortOrder
     location?: locationsOrderByWithRelationInput
+    gate?: gatesOrderByWithRelationInput
     vehiclePasses?: vehicle_passesOrderByRelationAggregateInput
   }
 
@@ -21060,6 +24257,7 @@ export namespace Prisma {
     NOT?: anpr_camerasWhereInput | anpr_camerasWhereInput[]
     name?: StringNullableFilter<"anpr_cameras"> | string | null
     location_id?: IntFilter<"anpr_cameras"> | number
+    gate_id?: IntNullableFilter<"anpr_cameras"> | number | null
     port?: IntNullableFilter<"anpr_cameras"> | number | null
     direction?: StringNullableFilter<"anpr_cameras"> | string | null
     username?: StringNullableFilter<"anpr_cameras"> | string | null
@@ -21074,6 +24272,7 @@ export namespace Prisma {
     added_at?: DateTimeFilter<"anpr_cameras"> | Date | string
     updated_at?: DateTimeFilter<"anpr_cameras"> | Date | string
     location?: XOR<LocationsScalarRelationFilter, locationsWhereInput>
+    gate?: XOR<GatesNullableScalarRelationFilter, gatesWhereInput> | null
     vehiclePasses?: Vehicle_passesListRelationFilter
   }, "id" | "camera_ip" | "mac_address">
 
@@ -21081,6 +24280,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
     location_id?: SortOrder
+    gate_id?: SortOrderInput | SortOrder
     camera_ip?: SortOrder
     mac_address?: SortOrderInput | SortOrder
     port?: SortOrderInput | SortOrder
@@ -21110,6 +24310,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"anpr_cameras"> | number
     name?: StringNullableWithAggregatesFilter<"anpr_cameras"> | string | null
     location_id?: IntWithAggregatesFilter<"anpr_cameras"> | number
+    gate_id?: IntNullableWithAggregatesFilter<"anpr_cameras"> | number | null
     camera_ip?: StringWithAggregatesFilter<"anpr_cameras"> | string
     mac_address?: StringNullableWithAggregatesFilter<"anpr_cameras"> | string | null
     port?: IntNullableWithAggregatesFilter<"anpr_cameras"> | number | null
@@ -21141,6 +24342,15 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"vehicle_passes"> | Date | string
     is_whitelisted?: BoolFilter<"vehicle_passes"> | boolean
     is_hidden?: BoolFilter<"vehicle_passes"> | boolean
+    inferred?: BoolFilter<"vehicle_passes"> | boolean
+    confidence?: IntNullableFilter<"vehicle_passes"> | number | null
+    gate_confirmed?: BoolFilter<"vehicle_passes"> | boolean
+    score?: IntNullableFilter<"vehicle_passes"> | number | null
+    plate_original?: StringNullableFilter<"vehicle_passes"> | string | null
+    plate_conflict?: BoolFilter<"vehicle_passes"> | boolean
+    direction_source?: StringNullableFilter<"vehicle_passes"> | string | null
+    direction_original?: StringNullableFilter<"vehicle_passes"> | string | null
+    history_conflict?: BoolFilter<"vehicle_passes"> | boolean
     location?: XOR<LocationsScalarRelationFilter, locationsWhereInput>
     camera?: XOR<Anpr_camerasNullableScalarRelationFilter, anpr_camerasWhereInput> | null
   }
@@ -21156,6 +24366,15 @@ export namespace Prisma {
     created_at?: SortOrder
     is_whitelisted?: SortOrder
     is_hidden?: SortOrder
+    inferred?: SortOrder
+    confidence?: SortOrderInput | SortOrder
+    gate_confirmed?: SortOrder
+    score?: SortOrderInput | SortOrder
+    plate_original?: SortOrderInput | SortOrder
+    plate_conflict?: SortOrder
+    direction_source?: SortOrderInput | SortOrder
+    direction_original?: SortOrderInput | SortOrder
+    history_conflict?: SortOrder
     location?: locationsOrderByWithRelationInput
     camera?: anpr_camerasOrderByWithRelationInput
   }
@@ -21174,6 +24393,15 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"vehicle_passes"> | Date | string
     is_whitelisted?: BoolFilter<"vehicle_passes"> | boolean
     is_hidden?: BoolFilter<"vehicle_passes"> | boolean
+    inferred?: BoolFilter<"vehicle_passes"> | boolean
+    confidence?: IntNullableFilter<"vehicle_passes"> | number | null
+    gate_confirmed?: BoolFilter<"vehicle_passes"> | boolean
+    score?: IntNullableFilter<"vehicle_passes"> | number | null
+    plate_original?: StringNullableFilter<"vehicle_passes"> | string | null
+    plate_conflict?: BoolFilter<"vehicle_passes"> | boolean
+    direction_source?: StringNullableFilter<"vehicle_passes"> | string | null
+    direction_original?: StringNullableFilter<"vehicle_passes"> | string | null
+    history_conflict?: BoolFilter<"vehicle_passes"> | boolean
     location?: XOR<LocationsScalarRelationFilter, locationsWhereInput>
     camera?: XOR<Anpr_camerasNullableScalarRelationFilter, anpr_camerasWhereInput> | null
   }, "id">
@@ -21189,6 +24417,15 @@ export namespace Prisma {
     created_at?: SortOrder
     is_whitelisted?: SortOrder
     is_hidden?: SortOrder
+    inferred?: SortOrder
+    confidence?: SortOrderInput | SortOrder
+    gate_confirmed?: SortOrder
+    score?: SortOrderInput | SortOrder
+    plate_original?: SortOrderInput | SortOrder
+    plate_conflict?: SortOrder
+    direction_source?: SortOrderInput | SortOrder
+    direction_original?: SortOrderInput | SortOrder
+    history_conflict?: SortOrder
     _count?: vehicle_passesCountOrderByAggregateInput
     _avg?: vehicle_passesAvgOrderByAggregateInput
     _max?: vehicle_passesMaxOrderByAggregateInput
@@ -21210,6 +24447,15 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"vehicle_passes"> | Date | string
     is_whitelisted?: BoolWithAggregatesFilter<"vehicle_passes"> | boolean
     is_hidden?: BoolWithAggregatesFilter<"vehicle_passes"> | boolean
+    inferred?: BoolWithAggregatesFilter<"vehicle_passes"> | boolean
+    confidence?: IntNullableWithAggregatesFilter<"vehicle_passes"> | number | null
+    gate_confirmed?: BoolWithAggregatesFilter<"vehicle_passes"> | boolean
+    score?: IntNullableWithAggregatesFilter<"vehicle_passes"> | number | null
+    plate_original?: StringNullableWithAggregatesFilter<"vehicle_passes"> | string | null
+    plate_conflict?: BoolWithAggregatesFilter<"vehicle_passes"> | boolean
+    direction_source?: StringNullableWithAggregatesFilter<"vehicle_passes"> | string | null
+    direction_original?: StringNullableWithAggregatesFilter<"vehicle_passes"> | string | null
+    history_conflict?: BoolWithAggregatesFilter<"vehicle_passes"> | boolean
   }
 
   export type whitelist_foldersWhereInput = {
@@ -21352,6 +24598,7 @@ export namespace Prisma {
     mac_address?: StringFilter<"camera_logs"> | string
     license_plate?: StringFilter<"camera_logs"> | string
     confidence_level?: IntFilter<"camera_logs"> | number
+    movement_direction?: StringNullableFilter<"camera_logs"> | string | null
     event_date?: DateTimeFilter<"camera_logs"> | Date | string
     camera_id?: IntNullableFilter<"camera_logs"> | number | null
     camera_name?: StringNullableFilter<"camera_logs"> | string | null
@@ -21359,6 +24606,11 @@ export namespace Prisma {
     photo?: StringNullableFilter<"camera_logs"> | string | null
     was_processed?: BoolFilter<"camera_logs"> | boolean
     skip_reason?: StringNullableFilter<"camera_logs"> | string | null
+    ai_plate?: StringNullableFilter<"camera_logs"> | string | null
+    ai_confidence?: IntNullableFilter<"camera_logs"> | number | null
+    ai_direction?: StringNullableFilter<"camera_logs"> | string | null
+    plate_consensus?: StringNullableFilter<"camera_logs"> | string | null
+    direction_consensus?: StringNullableFilter<"camera_logs"> | string | null
     created_at?: DateTimeFilter<"camera_logs"> | Date | string
   }
 
@@ -21367,6 +24619,7 @@ export namespace Prisma {
     mac_address?: SortOrder
     license_plate?: SortOrder
     confidence_level?: SortOrder
+    movement_direction?: SortOrderInput | SortOrder
     event_date?: SortOrder
     camera_id?: SortOrderInput | SortOrder
     camera_name?: SortOrderInput | SortOrder
@@ -21374,6 +24627,11 @@ export namespace Prisma {
     photo?: SortOrderInput | SortOrder
     was_processed?: SortOrder
     skip_reason?: SortOrderInput | SortOrder
+    ai_plate?: SortOrderInput | SortOrder
+    ai_confidence?: SortOrderInput | SortOrder
+    ai_direction?: SortOrderInput | SortOrder
+    plate_consensus?: SortOrderInput | SortOrder
+    direction_consensus?: SortOrderInput | SortOrder
     created_at?: SortOrder
   }
 
@@ -21385,6 +24643,7 @@ export namespace Prisma {
     mac_address?: StringFilter<"camera_logs"> | string
     license_plate?: StringFilter<"camera_logs"> | string
     confidence_level?: IntFilter<"camera_logs"> | number
+    movement_direction?: StringNullableFilter<"camera_logs"> | string | null
     event_date?: DateTimeFilter<"camera_logs"> | Date | string
     camera_id?: IntNullableFilter<"camera_logs"> | number | null
     camera_name?: StringNullableFilter<"camera_logs"> | string | null
@@ -21392,6 +24651,11 @@ export namespace Prisma {
     photo?: StringNullableFilter<"camera_logs"> | string | null
     was_processed?: BoolFilter<"camera_logs"> | boolean
     skip_reason?: StringNullableFilter<"camera_logs"> | string | null
+    ai_plate?: StringNullableFilter<"camera_logs"> | string | null
+    ai_confidence?: IntNullableFilter<"camera_logs"> | number | null
+    ai_direction?: StringNullableFilter<"camera_logs"> | string | null
+    plate_consensus?: StringNullableFilter<"camera_logs"> | string | null
+    direction_consensus?: StringNullableFilter<"camera_logs"> | string | null
     created_at?: DateTimeFilter<"camera_logs"> | Date | string
   }, "id">
 
@@ -21400,6 +24664,7 @@ export namespace Prisma {
     mac_address?: SortOrder
     license_plate?: SortOrder
     confidence_level?: SortOrder
+    movement_direction?: SortOrderInput | SortOrder
     event_date?: SortOrder
     camera_id?: SortOrderInput | SortOrder
     camera_name?: SortOrderInput | SortOrder
@@ -21407,6 +24672,11 @@ export namespace Prisma {
     photo?: SortOrderInput | SortOrder
     was_processed?: SortOrder
     skip_reason?: SortOrderInput | SortOrder
+    ai_plate?: SortOrderInput | SortOrder
+    ai_confidence?: SortOrderInput | SortOrder
+    ai_direction?: SortOrderInput | SortOrder
+    plate_consensus?: SortOrderInput | SortOrder
+    direction_consensus?: SortOrderInput | SortOrder
     created_at?: SortOrder
     _count?: camera_logsCountOrderByAggregateInput
     _avg?: camera_logsAvgOrderByAggregateInput
@@ -21423,6 +24693,7 @@ export namespace Prisma {
     mac_address?: StringWithAggregatesFilter<"camera_logs"> | string
     license_plate?: StringWithAggregatesFilter<"camera_logs"> | string
     confidence_level?: IntWithAggregatesFilter<"camera_logs"> | number
+    movement_direction?: StringNullableWithAggregatesFilter<"camera_logs"> | string | null
     event_date?: DateTimeWithAggregatesFilter<"camera_logs"> | Date | string
     camera_id?: IntNullableWithAggregatesFilter<"camera_logs"> | number | null
     camera_name?: StringNullableWithAggregatesFilter<"camera_logs"> | string | null
@@ -21430,6 +24701,11 @@ export namespace Prisma {
     photo?: StringNullableWithAggregatesFilter<"camera_logs"> | string | null
     was_processed?: BoolWithAggregatesFilter<"camera_logs"> | boolean
     skip_reason?: StringNullableWithAggregatesFilter<"camera_logs"> | string | null
+    ai_plate?: StringNullableWithAggregatesFilter<"camera_logs"> | string | null
+    ai_confidence?: IntNullableWithAggregatesFilter<"camera_logs"> | number | null
+    ai_direction?: StringNullableWithAggregatesFilter<"camera_logs"> | string | null
+    plate_consensus?: StringNullableWithAggregatesFilter<"camera_logs"> | string | null
+    direction_consensus?: StringNullableWithAggregatesFilter<"camera_logs"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"camera_logs"> | Date | string
   }
 
@@ -22164,6 +25440,7 @@ export namespace Prisma {
     added_at?: Date | string
     updated_at?: Date | string
     cameras?: anpr_camerasCreateNestedManyWithoutLocationInput
+    gates?: gatesCreateNestedManyWithoutLocationInput
     vehiclePasses?: vehicle_passesCreateNestedManyWithoutLocationInput
     locationTariffHistory?: location_tariff_historyCreateNestedManyWithoutLocationInput
   }
@@ -22182,6 +25459,7 @@ export namespace Prisma {
     added_at?: Date | string
     updated_at?: Date | string
     cameras?: anpr_camerasUncheckedCreateNestedManyWithoutLocationInput
+    gates?: gatesUncheckedCreateNestedManyWithoutLocationInput
     vehiclePasses?: vehicle_passesUncheckedCreateNestedManyWithoutLocationInput
     locationTariffHistory?: location_tariff_historyUncheckedCreateNestedManyWithoutLocationInput
   }
@@ -22199,6 +25477,7 @@ export namespace Prisma {
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     cameras?: anpr_camerasUpdateManyWithoutLocationNestedInput
+    gates?: gatesUpdateManyWithoutLocationNestedInput
     vehiclePasses?: vehicle_passesUpdateManyWithoutLocationNestedInput
     locationTariffHistory?: location_tariff_historyUpdateManyWithoutLocationNestedInput
   }
@@ -22217,6 +25496,7 @@ export namespace Prisma {
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     cameras?: anpr_camerasUncheckedUpdateManyWithoutLocationNestedInput
+    gates?: gatesUncheckedUpdateManyWithoutLocationNestedInput
     vehiclePasses?: vehicle_passesUncheckedUpdateManyWithoutLocationNestedInput
     locationTariffHistory?: location_tariff_historyUncheckedUpdateManyWithoutLocationNestedInput
   }
@@ -22265,6 +25545,209 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type gatesCreateInput = {
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+    location: locationsCreateNestedOneWithoutGatesInput
+    cameras?: anpr_camerasCreateNestedManyWithoutGateInput
+    pendingEvents?: gate_pending_eventsCreateNestedManyWithoutGateInput
+  }
+
+  export type gatesUncheckedCreateInput = {
+    id?: number
+    location_id: number
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+    cameras?: anpr_camerasUncheckedCreateNestedManyWithoutGateInput
+    pendingEvents?: gate_pending_eventsUncheckedCreateNestedManyWithoutGateInput
+  }
+
+  export type gatesUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: locationsUpdateOneRequiredWithoutGatesNestedInput
+    cameras?: anpr_camerasUpdateManyWithoutGateNestedInput
+    pendingEvents?: gate_pending_eventsUpdateManyWithoutGateNestedInput
+  }
+
+  export type gatesUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    cameras?: anpr_camerasUncheckedUpdateManyWithoutGateNestedInput
+    pendingEvents?: gate_pending_eventsUncheckedUpdateManyWithoutGateNestedInput
+  }
+
+  export type gatesCreateManyInput = {
+    id?: number
+    location_id: number
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type gatesUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type gatesUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type gate_pending_eventsCreateInput = {
+    camera_id: number
+    location_id: number
+    camera_log_id?: number | null
+    plate_number: string
+    direction: string
+    event_date: Date | string
+    photo?: string | null
+    confidence?: number | null
+    due_at: Date | string
+    status?: string
+    drop_reason?: string | null
+    created_at?: Date | string
+    gate: gatesCreateNestedOneWithoutPendingEventsInput
+  }
+
+  export type gate_pending_eventsUncheckedCreateInput = {
+    id?: number
+    gate_id: number
+    camera_id: number
+    location_id: number
+    camera_log_id?: number | null
+    plate_number: string
+    direction: string
+    event_date: Date | string
+    photo?: string | null
+    confidence?: number | null
+    due_at: Date | string
+    status?: string
+    drop_reason?: string | null
+    created_at?: Date | string
+  }
+
+  export type gate_pending_eventsUpdateInput = {
+    camera_id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_log_id?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_number?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    event_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    due_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    drop_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    gate?: gatesUpdateOneRequiredWithoutPendingEventsNestedInput
+  }
+
+  export type gate_pending_eventsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    gate_id?: IntFieldUpdateOperationsInput | number
+    camera_id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_log_id?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_number?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    event_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    due_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    drop_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type gate_pending_eventsCreateManyInput = {
+    id?: number
+    gate_id: number
+    camera_id: number
+    location_id: number
+    camera_log_id?: number | null
+    plate_number: string
+    direction: string
+    event_date: Date | string
+    photo?: string | null
+    confidence?: number | null
+    due_at: Date | string
+    status?: string
+    drop_reason?: string | null
+    created_at?: Date | string
+  }
+
+  export type gate_pending_eventsUpdateManyMutationInput = {
+    camera_id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_log_id?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_number?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    event_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    due_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    drop_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type gate_pending_eventsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    gate_id?: IntFieldUpdateOperationsInput | number
+    camera_id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_log_id?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_number?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    event_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    due_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    drop_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type anpr_camerasCreateInput = {
     name?: string | null
     camera_ip: string
@@ -22283,6 +25766,7 @@ export namespace Prisma {
     added_at?: Date | string
     updated_at?: Date | string
     location: locationsCreateNestedOneWithoutCamerasInput
+    gate?: gatesCreateNestedOneWithoutCamerasInput
     vehiclePasses?: vehicle_passesCreateNestedManyWithoutCameraInput
   }
 
@@ -22290,6 +25774,7 @@ export namespace Prisma {
     id?: number
     name?: string | null
     location_id: number
+    gate_id?: number | null
     camera_ip: string
     mac_address?: string | null
     port?: number | null
@@ -22326,6 +25811,7 @@ export namespace Prisma {
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: locationsUpdateOneRequiredWithoutCamerasNestedInput
+    gate?: gatesUpdateOneWithoutCamerasNestedInput
     vehiclePasses?: vehicle_passesUpdateManyWithoutCameraNestedInput
   }
 
@@ -22333,6 +25819,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     location_id?: IntFieldUpdateOperationsInput | number
+    gate_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_ip?: StringFieldUpdateOperationsInput | string
     mac_address?: NullableStringFieldUpdateOperationsInput | string | null
     port?: NullableIntFieldUpdateOperationsInput | number | null
@@ -22355,6 +25842,7 @@ export namespace Prisma {
     id?: number
     name?: string | null
     location_id: number
+    gate_id?: number | null
     camera_ip: string
     mac_address?: string | null
     port?: number | null
@@ -22395,6 +25883,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     location_id?: IntFieldUpdateOperationsInput | number
+    gate_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_ip?: StringFieldUpdateOperationsInput | string
     mac_address?: NullableStringFieldUpdateOperationsInput | string | null
     port?: NullableIntFieldUpdateOperationsInput | number | null
@@ -22420,6 +25909,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
     location: locationsCreateNestedOneWithoutVehiclePassesInput
     camera?: anpr_camerasCreateNestedOneWithoutVehiclePassesInput
   }
@@ -22435,6 +25933,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
   }
 
   export type vehicle_passesUpdateInput = {
@@ -22445,6 +25952,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
     location?: locationsUpdateOneRequiredWithoutVehiclePassesNestedInput
     camera?: anpr_camerasUpdateOneWithoutVehiclePassesNestedInput
   }
@@ -22460,6 +25976,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type vehicle_passesCreateManyInput = {
@@ -22473,6 +25998,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
   }
 
   export type vehicle_passesUpdateManyMutationInput = {
@@ -22483,6 +26017,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type vehicle_passesUncheckedUpdateManyInput = {
@@ -22496,6 +26039,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type whitelist_foldersCreateInput = {
@@ -22631,6 +26183,7 @@ export namespace Prisma {
     mac_address: string
     license_plate: string
     confidence_level: number
+    movement_direction?: string | null
     event_date: Date | string
     camera_id?: number | null
     camera_name?: string | null
@@ -22638,6 +26191,11 @@ export namespace Prisma {
     photo?: string | null
     was_processed?: boolean
     skip_reason?: string | null
+    ai_plate?: string | null
+    ai_confidence?: number | null
+    ai_direction?: string | null
+    plate_consensus?: string | null
+    direction_consensus?: string | null
     created_at?: Date | string
   }
 
@@ -22646,6 +26204,7 @@ export namespace Prisma {
     mac_address: string
     license_plate: string
     confidence_level: number
+    movement_direction?: string | null
     event_date: Date | string
     camera_id?: number | null
     camera_name?: string | null
@@ -22653,6 +26212,11 @@ export namespace Prisma {
     photo?: string | null
     was_processed?: boolean
     skip_reason?: string | null
+    ai_plate?: string | null
+    ai_confidence?: number | null
+    ai_direction?: string | null
+    plate_consensus?: string | null
+    direction_consensus?: string | null
     created_at?: Date | string
   }
 
@@ -22660,6 +26224,7 @@ export namespace Prisma {
     mac_address?: StringFieldUpdateOperationsInput | string
     license_plate?: StringFieldUpdateOperationsInput | string
     confidence_level?: IntFieldUpdateOperationsInput | number
+    movement_direction?: NullableStringFieldUpdateOperationsInput | string | null
     event_date?: DateTimeFieldUpdateOperationsInput | Date | string
     camera_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22667,6 +26232,11 @@ export namespace Prisma {
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     was_processed?: BoolFieldUpdateOperationsInput | boolean
     skip_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_plate?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    ai_direction?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_consensus?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_consensus?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22675,6 +26245,7 @@ export namespace Prisma {
     mac_address?: StringFieldUpdateOperationsInput | string
     license_plate?: StringFieldUpdateOperationsInput | string
     confidence_level?: IntFieldUpdateOperationsInput | number
+    movement_direction?: NullableStringFieldUpdateOperationsInput | string | null
     event_date?: DateTimeFieldUpdateOperationsInput | Date | string
     camera_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22682,6 +26253,11 @@ export namespace Prisma {
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     was_processed?: BoolFieldUpdateOperationsInput | boolean
     skip_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_plate?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    ai_direction?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_consensus?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_consensus?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22690,6 +26266,7 @@ export namespace Prisma {
     mac_address: string
     license_plate: string
     confidence_level: number
+    movement_direction?: string | null
     event_date: Date | string
     camera_id?: number | null
     camera_name?: string | null
@@ -22697,6 +26274,11 @@ export namespace Prisma {
     photo?: string | null
     was_processed?: boolean
     skip_reason?: string | null
+    ai_plate?: string | null
+    ai_confidence?: number | null
+    ai_direction?: string | null
+    plate_consensus?: string | null
+    direction_consensus?: string | null
     created_at?: Date | string
   }
 
@@ -22704,6 +26286,7 @@ export namespace Prisma {
     mac_address?: StringFieldUpdateOperationsInput | string
     license_plate?: StringFieldUpdateOperationsInput | string
     confidence_level?: IntFieldUpdateOperationsInput | number
+    movement_direction?: NullableStringFieldUpdateOperationsInput | string | null
     event_date?: DateTimeFieldUpdateOperationsInput | Date | string
     camera_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22711,6 +26294,11 @@ export namespace Prisma {
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     was_processed?: BoolFieldUpdateOperationsInput | boolean
     skip_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_plate?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    ai_direction?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_consensus?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_consensus?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22719,6 +26307,7 @@ export namespace Prisma {
     mac_address?: StringFieldUpdateOperationsInput | string
     license_plate?: StringFieldUpdateOperationsInput | string
     confidence_level?: IntFieldUpdateOperationsInput | number
+    movement_direction?: NullableStringFieldUpdateOperationsInput | string | null
     event_date?: DateTimeFieldUpdateOperationsInput | Date | string
     camera_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_name?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22726,6 +26315,11 @@ export namespace Prisma {
     photo?: NullableStringFieldUpdateOperationsInput | string | null
     was_processed?: BoolFieldUpdateOperationsInput | boolean
     skip_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_plate?: NullableStringFieldUpdateOperationsInput | string | null
+    ai_confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    ai_direction?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_consensus?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_consensus?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -23671,6 +27265,12 @@ export namespace Prisma {
     none?: anpr_camerasWhereInput
   }
 
+  export type GatesListRelationFilter = {
+    every?: gatesWhereInput
+    some?: gatesWhereInput
+    none?: gatesWhereInput
+  }
+
   export type Vehicle_passesListRelationFilter = {
     every?: vehicle_passesWhereInput
     some?: vehicle_passesWhereInput
@@ -23678,6 +27278,10 @@ export namespace Prisma {
   }
 
   export type anpr_camerasOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type gatesOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23773,10 +27377,155 @@ export namespace Prisma {
     isNot?: locationsWhereInput
   }
 
+  export type Gate_pending_eventsListRelationFilter = {
+    every?: gate_pending_eventsWhereInput
+    some?: gate_pending_eventsWhereInput
+    none?: gate_pending_eventsWhereInput
+  }
+
+  export type gate_pending_eventsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type gatesLocation_idNameCompoundUniqueInput = {
+    location_id: number
+    name: string
+  }
+
+  export type gatesCountOrderByAggregateInput = {
+    id?: SortOrder
+    location_id?: SortOrder
+    name?: SortOrder
+    status?: SortOrder
+    coop_enabled?: SortOrder
+    coop_window_sec?: SortOrder
+    maneuver_window_sec?: SortOrder
+    added_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type gatesAvgOrderByAggregateInput = {
+    id?: SortOrder
+    location_id?: SortOrder
+    coop_window_sec?: SortOrder
+    maneuver_window_sec?: SortOrder
+  }
+
+  export type gatesMaxOrderByAggregateInput = {
+    id?: SortOrder
+    location_id?: SortOrder
+    name?: SortOrder
+    status?: SortOrder
+    coop_enabled?: SortOrder
+    coop_window_sec?: SortOrder
+    maneuver_window_sec?: SortOrder
+    added_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type gatesMinOrderByAggregateInput = {
+    id?: SortOrder
+    location_id?: SortOrder
+    name?: SortOrder
+    status?: SortOrder
+    coop_enabled?: SortOrder
+    coop_window_sec?: SortOrder
+    maneuver_window_sec?: SortOrder
+    added_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type gatesSumOrderByAggregateInput = {
+    id?: SortOrder
+    location_id?: SortOrder
+    coop_window_sec?: SortOrder
+    maneuver_window_sec?: SortOrder
+  }
+
+  export type GatesScalarRelationFilter = {
+    is?: gatesWhereInput
+    isNot?: gatesWhereInput
+  }
+
+  export type gate_pending_eventsCountOrderByAggregateInput = {
+    id?: SortOrder
+    gate_id?: SortOrder
+    camera_id?: SortOrder
+    location_id?: SortOrder
+    camera_log_id?: SortOrder
+    plate_number?: SortOrder
+    direction?: SortOrder
+    event_date?: SortOrder
+    photo?: SortOrder
+    confidence?: SortOrder
+    due_at?: SortOrder
+    status?: SortOrder
+    drop_reason?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type gate_pending_eventsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    gate_id?: SortOrder
+    camera_id?: SortOrder
+    location_id?: SortOrder
+    camera_log_id?: SortOrder
+    confidence?: SortOrder
+  }
+
+  export type gate_pending_eventsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    gate_id?: SortOrder
+    camera_id?: SortOrder
+    location_id?: SortOrder
+    camera_log_id?: SortOrder
+    plate_number?: SortOrder
+    direction?: SortOrder
+    event_date?: SortOrder
+    photo?: SortOrder
+    confidence?: SortOrder
+    due_at?: SortOrder
+    status?: SortOrder
+    drop_reason?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type gate_pending_eventsMinOrderByAggregateInput = {
+    id?: SortOrder
+    gate_id?: SortOrder
+    camera_id?: SortOrder
+    location_id?: SortOrder
+    camera_log_id?: SortOrder
+    plate_number?: SortOrder
+    direction?: SortOrder
+    event_date?: SortOrder
+    photo?: SortOrder
+    confidence?: SortOrder
+    due_at?: SortOrder
+    status?: SortOrder
+    drop_reason?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type gate_pending_eventsSumOrderByAggregateInput = {
+    id?: SortOrder
+    gate_id?: SortOrder
+    camera_id?: SortOrder
+    location_id?: SortOrder
+    camera_log_id?: SortOrder
+    confidence?: SortOrder
+  }
+
+  export type GatesNullableScalarRelationFilter = {
+    is?: gatesWhereInput | null
+    isNot?: gatesWhereInput | null
+  }
+
   export type anpr_camerasCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     location_id?: SortOrder
+    gate_id?: SortOrder
     camera_ip?: SortOrder
     mac_address?: SortOrder
     port?: SortOrder
@@ -23797,6 +27546,7 @@ export namespace Prisma {
   export type anpr_camerasAvgOrderByAggregateInput = {
     id?: SortOrder
     location_id?: SortOrder
+    gate_id?: SortOrder
     port?: SortOrder
     min_confidence?: SortOrder
   }
@@ -23805,6 +27555,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     location_id?: SortOrder
+    gate_id?: SortOrder
     camera_ip?: SortOrder
     mac_address?: SortOrder
     port?: SortOrder
@@ -23826,6 +27577,7 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     location_id?: SortOrder
+    gate_id?: SortOrder
     camera_ip?: SortOrder
     mac_address?: SortOrder
     port?: SortOrder
@@ -23846,6 +27598,7 @@ export namespace Prisma {
   export type anpr_camerasSumOrderByAggregateInput = {
     id?: SortOrder
     location_id?: SortOrder
+    gate_id?: SortOrder
     port?: SortOrder
     min_confidence?: SortOrder
   }
@@ -23866,12 +27619,23 @@ export namespace Prisma {
     created_at?: SortOrder
     is_whitelisted?: SortOrder
     is_hidden?: SortOrder
+    inferred?: SortOrder
+    confidence?: SortOrder
+    gate_confirmed?: SortOrder
+    score?: SortOrder
+    plate_original?: SortOrder
+    plate_conflict?: SortOrder
+    direction_source?: SortOrder
+    direction_original?: SortOrder
+    history_conflict?: SortOrder
   }
 
   export type vehicle_passesAvgOrderByAggregateInput = {
     id?: SortOrder
     location_id?: SortOrder
     camera_id?: SortOrder
+    confidence?: SortOrder
+    score?: SortOrder
   }
 
   export type vehicle_passesMaxOrderByAggregateInput = {
@@ -23885,6 +27649,15 @@ export namespace Prisma {
     created_at?: SortOrder
     is_whitelisted?: SortOrder
     is_hidden?: SortOrder
+    inferred?: SortOrder
+    confidence?: SortOrder
+    gate_confirmed?: SortOrder
+    score?: SortOrder
+    plate_original?: SortOrder
+    plate_conflict?: SortOrder
+    direction_source?: SortOrder
+    direction_original?: SortOrder
+    history_conflict?: SortOrder
   }
 
   export type vehicle_passesMinOrderByAggregateInput = {
@@ -23898,12 +27671,23 @@ export namespace Prisma {
     created_at?: SortOrder
     is_whitelisted?: SortOrder
     is_hidden?: SortOrder
+    inferred?: SortOrder
+    confidence?: SortOrder
+    gate_confirmed?: SortOrder
+    score?: SortOrder
+    plate_original?: SortOrder
+    plate_conflict?: SortOrder
+    direction_source?: SortOrder
+    direction_original?: SortOrder
+    history_conflict?: SortOrder
   }
 
   export type vehicle_passesSumOrderByAggregateInput = {
     id?: SortOrder
     location_id?: SortOrder
     camera_id?: SortOrder
+    confidence?: SortOrder
+    score?: SortOrder
   }
 
   export type whitelist_foldersCountOrderByAggregateInput = {
@@ -24003,6 +27787,7 @@ export namespace Prisma {
     mac_address?: SortOrder
     license_plate?: SortOrder
     confidence_level?: SortOrder
+    movement_direction?: SortOrder
     event_date?: SortOrder
     camera_id?: SortOrder
     camera_name?: SortOrder
@@ -24010,6 +27795,11 @@ export namespace Prisma {
     photo?: SortOrder
     was_processed?: SortOrder
     skip_reason?: SortOrder
+    ai_plate?: SortOrder
+    ai_confidence?: SortOrder
+    ai_direction?: SortOrder
+    plate_consensus?: SortOrder
+    direction_consensus?: SortOrder
     created_at?: SortOrder
   }
 
@@ -24018,6 +27808,7 @@ export namespace Prisma {
     confidence_level?: SortOrder
     camera_id?: SortOrder
     location_id?: SortOrder
+    ai_confidence?: SortOrder
   }
 
   export type camera_logsMaxOrderByAggregateInput = {
@@ -24025,6 +27816,7 @@ export namespace Prisma {
     mac_address?: SortOrder
     license_plate?: SortOrder
     confidence_level?: SortOrder
+    movement_direction?: SortOrder
     event_date?: SortOrder
     camera_id?: SortOrder
     camera_name?: SortOrder
@@ -24032,6 +27824,11 @@ export namespace Prisma {
     photo?: SortOrder
     was_processed?: SortOrder
     skip_reason?: SortOrder
+    ai_plate?: SortOrder
+    ai_confidence?: SortOrder
+    ai_direction?: SortOrder
+    plate_consensus?: SortOrder
+    direction_consensus?: SortOrder
     created_at?: SortOrder
   }
 
@@ -24040,6 +27837,7 @@ export namespace Prisma {
     mac_address?: SortOrder
     license_plate?: SortOrder
     confidence_level?: SortOrder
+    movement_direction?: SortOrder
     event_date?: SortOrder
     camera_id?: SortOrder
     camera_name?: SortOrder
@@ -24047,6 +27845,11 @@ export namespace Prisma {
     photo?: SortOrder
     was_processed?: SortOrder
     skip_reason?: SortOrder
+    ai_plate?: SortOrder
+    ai_confidence?: SortOrder
+    ai_direction?: SortOrder
+    plate_consensus?: SortOrder
+    direction_consensus?: SortOrder
     created_at?: SortOrder
   }
 
@@ -24055,6 +27858,7 @@ export namespace Prisma {
     confidence_level?: SortOrder
     camera_id?: SortOrder
     location_id?: SortOrder
+    ai_confidence?: SortOrder
   }
 
   export type UsersNullableScalarRelationFilter = {
@@ -24745,6 +28549,13 @@ export namespace Prisma {
     connect?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
   }
 
+  export type gatesCreateNestedManyWithoutLocationInput = {
+    create?: XOR<gatesCreateWithoutLocationInput, gatesUncheckedCreateWithoutLocationInput> | gatesCreateWithoutLocationInput[] | gatesUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: gatesCreateOrConnectWithoutLocationInput | gatesCreateOrConnectWithoutLocationInput[]
+    createMany?: gatesCreateManyLocationInputEnvelope
+    connect?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+  }
+
   export type vehicle_passesCreateNestedManyWithoutLocationInput = {
     create?: XOR<vehicle_passesCreateWithoutLocationInput, vehicle_passesUncheckedCreateWithoutLocationInput> | vehicle_passesCreateWithoutLocationInput[] | vehicle_passesUncheckedCreateWithoutLocationInput[]
     connectOrCreate?: vehicle_passesCreateOrConnectWithoutLocationInput | vehicle_passesCreateOrConnectWithoutLocationInput[]
@@ -24764,6 +28575,13 @@ export namespace Prisma {
     connectOrCreate?: anpr_camerasCreateOrConnectWithoutLocationInput | anpr_camerasCreateOrConnectWithoutLocationInput[]
     createMany?: anpr_camerasCreateManyLocationInputEnvelope
     connect?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+  }
+
+  export type gatesUncheckedCreateNestedManyWithoutLocationInput = {
+    create?: XOR<gatesCreateWithoutLocationInput, gatesUncheckedCreateWithoutLocationInput> | gatesCreateWithoutLocationInput[] | gatesUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: gatesCreateOrConnectWithoutLocationInput | gatesCreateOrConnectWithoutLocationInput[]
+    createMany?: gatesCreateManyLocationInputEnvelope
+    connect?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
   }
 
   export type vehicle_passesUncheckedCreateNestedManyWithoutLocationInput = {
@@ -24811,6 +28629,20 @@ export namespace Prisma {
     deleteMany?: anpr_camerasScalarWhereInput | anpr_camerasScalarWhereInput[]
   }
 
+  export type gatesUpdateManyWithoutLocationNestedInput = {
+    create?: XOR<gatesCreateWithoutLocationInput, gatesUncheckedCreateWithoutLocationInput> | gatesCreateWithoutLocationInput[] | gatesUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: gatesCreateOrConnectWithoutLocationInput | gatesCreateOrConnectWithoutLocationInput[]
+    upsert?: gatesUpsertWithWhereUniqueWithoutLocationInput | gatesUpsertWithWhereUniqueWithoutLocationInput[]
+    createMany?: gatesCreateManyLocationInputEnvelope
+    set?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+    disconnect?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+    delete?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+    connect?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+    update?: gatesUpdateWithWhereUniqueWithoutLocationInput | gatesUpdateWithWhereUniqueWithoutLocationInput[]
+    updateMany?: gatesUpdateManyWithWhereWithoutLocationInput | gatesUpdateManyWithWhereWithoutLocationInput[]
+    deleteMany?: gatesScalarWhereInput | gatesScalarWhereInput[]
+  }
+
   export type vehicle_passesUpdateManyWithoutLocationNestedInput = {
     create?: XOR<vehicle_passesCreateWithoutLocationInput, vehicle_passesUncheckedCreateWithoutLocationInput> | vehicle_passesCreateWithoutLocationInput[] | vehicle_passesUncheckedCreateWithoutLocationInput[]
     connectOrCreate?: vehicle_passesCreateOrConnectWithoutLocationInput | vehicle_passesCreateOrConnectWithoutLocationInput[]
@@ -24853,6 +28685,20 @@ export namespace Prisma {
     deleteMany?: anpr_camerasScalarWhereInput | anpr_camerasScalarWhereInput[]
   }
 
+  export type gatesUncheckedUpdateManyWithoutLocationNestedInput = {
+    create?: XOR<gatesCreateWithoutLocationInput, gatesUncheckedCreateWithoutLocationInput> | gatesCreateWithoutLocationInput[] | gatesUncheckedCreateWithoutLocationInput[]
+    connectOrCreate?: gatesCreateOrConnectWithoutLocationInput | gatesCreateOrConnectWithoutLocationInput[]
+    upsert?: gatesUpsertWithWhereUniqueWithoutLocationInput | gatesUpsertWithWhereUniqueWithoutLocationInput[]
+    createMany?: gatesCreateManyLocationInputEnvelope
+    set?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+    disconnect?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+    delete?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+    connect?: gatesWhereUniqueInput | gatesWhereUniqueInput[]
+    update?: gatesUpdateWithWhereUniqueWithoutLocationInput | gatesUpdateWithWhereUniqueWithoutLocationInput[]
+    updateMany?: gatesUpdateManyWithWhereWithoutLocationInput | gatesUpdateManyWithWhereWithoutLocationInput[]
+    deleteMany?: gatesScalarWhereInput | gatesScalarWhereInput[]
+  }
+
   export type vehicle_passesUncheckedUpdateManyWithoutLocationNestedInput = {
     create?: XOR<vehicle_passesCreateWithoutLocationInput, vehicle_passesUncheckedCreateWithoutLocationInput> | vehicle_passesCreateWithoutLocationInput[] | vehicle_passesUncheckedCreateWithoutLocationInput[]
     connectOrCreate?: vehicle_passesCreateOrConnectWithoutLocationInput | vehicle_passesCreateOrConnectWithoutLocationInput[]
@@ -24881,10 +28727,128 @@ export namespace Prisma {
     deleteMany?: location_tariff_historyScalarWhereInput | location_tariff_historyScalarWhereInput[]
   }
 
+  export type locationsCreateNestedOneWithoutGatesInput = {
+    create?: XOR<locationsCreateWithoutGatesInput, locationsUncheckedCreateWithoutGatesInput>
+    connectOrCreate?: locationsCreateOrConnectWithoutGatesInput
+    connect?: locationsWhereUniqueInput
+  }
+
+  export type anpr_camerasCreateNestedManyWithoutGateInput = {
+    create?: XOR<anpr_camerasCreateWithoutGateInput, anpr_camerasUncheckedCreateWithoutGateInput> | anpr_camerasCreateWithoutGateInput[] | anpr_camerasUncheckedCreateWithoutGateInput[]
+    connectOrCreate?: anpr_camerasCreateOrConnectWithoutGateInput | anpr_camerasCreateOrConnectWithoutGateInput[]
+    createMany?: anpr_camerasCreateManyGateInputEnvelope
+    connect?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+  }
+
+  export type gate_pending_eventsCreateNestedManyWithoutGateInput = {
+    create?: XOR<gate_pending_eventsCreateWithoutGateInput, gate_pending_eventsUncheckedCreateWithoutGateInput> | gate_pending_eventsCreateWithoutGateInput[] | gate_pending_eventsUncheckedCreateWithoutGateInput[]
+    connectOrCreate?: gate_pending_eventsCreateOrConnectWithoutGateInput | gate_pending_eventsCreateOrConnectWithoutGateInput[]
+    createMany?: gate_pending_eventsCreateManyGateInputEnvelope
+    connect?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+  }
+
+  export type anpr_camerasUncheckedCreateNestedManyWithoutGateInput = {
+    create?: XOR<anpr_camerasCreateWithoutGateInput, anpr_camerasUncheckedCreateWithoutGateInput> | anpr_camerasCreateWithoutGateInput[] | anpr_camerasUncheckedCreateWithoutGateInput[]
+    connectOrCreate?: anpr_camerasCreateOrConnectWithoutGateInput | anpr_camerasCreateOrConnectWithoutGateInput[]
+    createMany?: anpr_camerasCreateManyGateInputEnvelope
+    connect?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+  }
+
+  export type gate_pending_eventsUncheckedCreateNestedManyWithoutGateInput = {
+    create?: XOR<gate_pending_eventsCreateWithoutGateInput, gate_pending_eventsUncheckedCreateWithoutGateInput> | gate_pending_eventsCreateWithoutGateInput[] | gate_pending_eventsUncheckedCreateWithoutGateInput[]
+    connectOrCreate?: gate_pending_eventsCreateOrConnectWithoutGateInput | gate_pending_eventsCreateOrConnectWithoutGateInput[]
+    createMany?: gate_pending_eventsCreateManyGateInputEnvelope
+    connect?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+  }
+
+  export type locationsUpdateOneRequiredWithoutGatesNestedInput = {
+    create?: XOR<locationsCreateWithoutGatesInput, locationsUncheckedCreateWithoutGatesInput>
+    connectOrCreate?: locationsCreateOrConnectWithoutGatesInput
+    upsert?: locationsUpsertWithoutGatesInput
+    connect?: locationsWhereUniqueInput
+    update?: XOR<XOR<locationsUpdateToOneWithWhereWithoutGatesInput, locationsUpdateWithoutGatesInput>, locationsUncheckedUpdateWithoutGatesInput>
+  }
+
+  export type anpr_camerasUpdateManyWithoutGateNestedInput = {
+    create?: XOR<anpr_camerasCreateWithoutGateInput, anpr_camerasUncheckedCreateWithoutGateInput> | anpr_camerasCreateWithoutGateInput[] | anpr_camerasUncheckedCreateWithoutGateInput[]
+    connectOrCreate?: anpr_camerasCreateOrConnectWithoutGateInput | anpr_camerasCreateOrConnectWithoutGateInput[]
+    upsert?: anpr_camerasUpsertWithWhereUniqueWithoutGateInput | anpr_camerasUpsertWithWhereUniqueWithoutGateInput[]
+    createMany?: anpr_camerasCreateManyGateInputEnvelope
+    set?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+    disconnect?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+    delete?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+    connect?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+    update?: anpr_camerasUpdateWithWhereUniqueWithoutGateInput | anpr_camerasUpdateWithWhereUniqueWithoutGateInput[]
+    updateMany?: anpr_camerasUpdateManyWithWhereWithoutGateInput | anpr_camerasUpdateManyWithWhereWithoutGateInput[]
+    deleteMany?: anpr_camerasScalarWhereInput | anpr_camerasScalarWhereInput[]
+  }
+
+  export type gate_pending_eventsUpdateManyWithoutGateNestedInput = {
+    create?: XOR<gate_pending_eventsCreateWithoutGateInput, gate_pending_eventsUncheckedCreateWithoutGateInput> | gate_pending_eventsCreateWithoutGateInput[] | gate_pending_eventsUncheckedCreateWithoutGateInput[]
+    connectOrCreate?: gate_pending_eventsCreateOrConnectWithoutGateInput | gate_pending_eventsCreateOrConnectWithoutGateInput[]
+    upsert?: gate_pending_eventsUpsertWithWhereUniqueWithoutGateInput | gate_pending_eventsUpsertWithWhereUniqueWithoutGateInput[]
+    createMany?: gate_pending_eventsCreateManyGateInputEnvelope
+    set?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+    disconnect?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+    delete?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+    connect?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+    update?: gate_pending_eventsUpdateWithWhereUniqueWithoutGateInput | gate_pending_eventsUpdateWithWhereUniqueWithoutGateInput[]
+    updateMany?: gate_pending_eventsUpdateManyWithWhereWithoutGateInput | gate_pending_eventsUpdateManyWithWhereWithoutGateInput[]
+    deleteMany?: gate_pending_eventsScalarWhereInput | gate_pending_eventsScalarWhereInput[]
+  }
+
+  export type anpr_camerasUncheckedUpdateManyWithoutGateNestedInput = {
+    create?: XOR<anpr_camerasCreateWithoutGateInput, anpr_camerasUncheckedCreateWithoutGateInput> | anpr_camerasCreateWithoutGateInput[] | anpr_camerasUncheckedCreateWithoutGateInput[]
+    connectOrCreate?: anpr_camerasCreateOrConnectWithoutGateInput | anpr_camerasCreateOrConnectWithoutGateInput[]
+    upsert?: anpr_camerasUpsertWithWhereUniqueWithoutGateInput | anpr_camerasUpsertWithWhereUniqueWithoutGateInput[]
+    createMany?: anpr_camerasCreateManyGateInputEnvelope
+    set?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+    disconnect?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+    delete?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+    connect?: anpr_camerasWhereUniqueInput | anpr_camerasWhereUniqueInput[]
+    update?: anpr_camerasUpdateWithWhereUniqueWithoutGateInput | anpr_camerasUpdateWithWhereUniqueWithoutGateInput[]
+    updateMany?: anpr_camerasUpdateManyWithWhereWithoutGateInput | anpr_camerasUpdateManyWithWhereWithoutGateInput[]
+    deleteMany?: anpr_camerasScalarWhereInput | anpr_camerasScalarWhereInput[]
+  }
+
+  export type gate_pending_eventsUncheckedUpdateManyWithoutGateNestedInput = {
+    create?: XOR<gate_pending_eventsCreateWithoutGateInput, gate_pending_eventsUncheckedCreateWithoutGateInput> | gate_pending_eventsCreateWithoutGateInput[] | gate_pending_eventsUncheckedCreateWithoutGateInput[]
+    connectOrCreate?: gate_pending_eventsCreateOrConnectWithoutGateInput | gate_pending_eventsCreateOrConnectWithoutGateInput[]
+    upsert?: gate_pending_eventsUpsertWithWhereUniqueWithoutGateInput | gate_pending_eventsUpsertWithWhereUniqueWithoutGateInput[]
+    createMany?: gate_pending_eventsCreateManyGateInputEnvelope
+    set?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+    disconnect?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+    delete?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+    connect?: gate_pending_eventsWhereUniqueInput | gate_pending_eventsWhereUniqueInput[]
+    update?: gate_pending_eventsUpdateWithWhereUniqueWithoutGateInput | gate_pending_eventsUpdateWithWhereUniqueWithoutGateInput[]
+    updateMany?: gate_pending_eventsUpdateManyWithWhereWithoutGateInput | gate_pending_eventsUpdateManyWithWhereWithoutGateInput[]
+    deleteMany?: gate_pending_eventsScalarWhereInput | gate_pending_eventsScalarWhereInput[]
+  }
+
+  export type gatesCreateNestedOneWithoutPendingEventsInput = {
+    create?: XOR<gatesCreateWithoutPendingEventsInput, gatesUncheckedCreateWithoutPendingEventsInput>
+    connectOrCreate?: gatesCreateOrConnectWithoutPendingEventsInput
+    connect?: gatesWhereUniqueInput
+  }
+
+  export type gatesUpdateOneRequiredWithoutPendingEventsNestedInput = {
+    create?: XOR<gatesCreateWithoutPendingEventsInput, gatesUncheckedCreateWithoutPendingEventsInput>
+    connectOrCreate?: gatesCreateOrConnectWithoutPendingEventsInput
+    upsert?: gatesUpsertWithoutPendingEventsInput
+    connect?: gatesWhereUniqueInput
+    update?: XOR<XOR<gatesUpdateToOneWithWhereWithoutPendingEventsInput, gatesUpdateWithoutPendingEventsInput>, gatesUncheckedUpdateWithoutPendingEventsInput>
+  }
+
   export type locationsCreateNestedOneWithoutCamerasInput = {
     create?: XOR<locationsCreateWithoutCamerasInput, locationsUncheckedCreateWithoutCamerasInput>
     connectOrCreate?: locationsCreateOrConnectWithoutCamerasInput
     connect?: locationsWhereUniqueInput
+  }
+
+  export type gatesCreateNestedOneWithoutCamerasInput = {
+    create?: XOR<gatesCreateWithoutCamerasInput, gatesUncheckedCreateWithoutCamerasInput>
+    connectOrCreate?: gatesCreateOrConnectWithoutCamerasInput
+    connect?: gatesWhereUniqueInput
   }
 
   export type vehicle_passesCreateNestedManyWithoutCameraInput = {
@@ -24907,6 +28871,16 @@ export namespace Prisma {
     upsert?: locationsUpsertWithoutCamerasInput
     connect?: locationsWhereUniqueInput
     update?: XOR<XOR<locationsUpdateToOneWithWhereWithoutCamerasInput, locationsUpdateWithoutCamerasInput>, locationsUncheckedUpdateWithoutCamerasInput>
+  }
+
+  export type gatesUpdateOneWithoutCamerasNestedInput = {
+    create?: XOR<gatesCreateWithoutCamerasInput, gatesUncheckedCreateWithoutCamerasInput>
+    connectOrCreate?: gatesCreateOrConnectWithoutCamerasInput
+    upsert?: gatesUpsertWithoutCamerasInput
+    disconnect?: gatesWhereInput | boolean
+    delete?: gatesWhereInput | boolean
+    connect?: gatesWhereUniqueInput
+    update?: XOR<XOR<gatesUpdateToOneWithWhereWithoutCamerasInput, gatesUpdateWithoutCamerasInput>, gatesUncheckedUpdateWithoutCamerasInput>
   }
 
   export type vehicle_passesUpdateManyWithoutCameraNestedInput = {
@@ -26398,12 +30372,14 @@ export namespace Prisma {
     last_seen_at?: Date | string | null
     added_at?: Date | string
     updated_at?: Date | string
+    gate?: gatesCreateNestedOneWithoutCamerasInput
     vehiclePasses?: vehicle_passesCreateNestedManyWithoutCameraInput
   }
 
   export type anpr_camerasUncheckedCreateWithoutLocationInput = {
     id?: number
     name?: string | null
+    gate_id?: number | null
     camera_ip: string
     mac_address?: string | null
     port?: number | null
@@ -26432,6 +30408,41 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type gatesCreateWithoutLocationInput = {
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+    cameras?: anpr_camerasCreateNestedManyWithoutGateInput
+    pendingEvents?: gate_pending_eventsCreateNestedManyWithoutGateInput
+  }
+
+  export type gatesUncheckedCreateWithoutLocationInput = {
+    id?: number
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+    cameras?: anpr_camerasUncheckedCreateNestedManyWithoutGateInput
+    pendingEvents?: gate_pending_eventsUncheckedCreateNestedManyWithoutGateInput
+  }
+
+  export type gatesCreateOrConnectWithoutLocationInput = {
+    where: gatesWhereUniqueInput
+    create: XOR<gatesCreateWithoutLocationInput, gatesUncheckedCreateWithoutLocationInput>
+  }
+
+  export type gatesCreateManyLocationInputEnvelope = {
+    data: gatesCreateManyLocationInput | gatesCreateManyLocationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type vehicle_passesCreateWithoutLocationInput = {
     plate_number: string
     direction?: string | null
@@ -26440,6 +30451,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
     camera?: anpr_camerasCreateNestedOneWithoutVehiclePassesInput
   }
 
@@ -26453,6 +30473,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
   }
 
   export type vehicle_passesCreateOrConnectWithoutLocationInput = {
@@ -26511,6 +30540,7 @@ export namespace Prisma {
     id?: IntFilter<"anpr_cameras"> | number
     name?: StringNullableFilter<"anpr_cameras"> | string | null
     location_id?: IntFilter<"anpr_cameras"> | number
+    gate_id?: IntNullableFilter<"anpr_cameras"> | number | null
     camera_ip?: StringFilter<"anpr_cameras"> | string
     mac_address?: StringNullableFilter<"anpr_cameras"> | string | null
     port?: IntNullableFilter<"anpr_cameras"> | number | null
@@ -26526,6 +30556,37 @@ export namespace Prisma {
     last_seen_at?: DateTimeNullableFilter<"anpr_cameras"> | Date | string | null
     added_at?: DateTimeFilter<"anpr_cameras"> | Date | string
     updated_at?: DateTimeFilter<"anpr_cameras"> | Date | string
+  }
+
+  export type gatesUpsertWithWhereUniqueWithoutLocationInput = {
+    where: gatesWhereUniqueInput
+    update: XOR<gatesUpdateWithoutLocationInput, gatesUncheckedUpdateWithoutLocationInput>
+    create: XOR<gatesCreateWithoutLocationInput, gatesUncheckedCreateWithoutLocationInput>
+  }
+
+  export type gatesUpdateWithWhereUniqueWithoutLocationInput = {
+    where: gatesWhereUniqueInput
+    data: XOR<gatesUpdateWithoutLocationInput, gatesUncheckedUpdateWithoutLocationInput>
+  }
+
+  export type gatesUpdateManyWithWhereWithoutLocationInput = {
+    where: gatesScalarWhereInput
+    data: XOR<gatesUpdateManyMutationInput, gatesUncheckedUpdateManyWithoutLocationInput>
+  }
+
+  export type gatesScalarWhereInput = {
+    AND?: gatesScalarWhereInput | gatesScalarWhereInput[]
+    OR?: gatesScalarWhereInput[]
+    NOT?: gatesScalarWhereInput | gatesScalarWhereInput[]
+    id?: IntFilter<"gates"> | number
+    location_id?: IntFilter<"gates"> | number
+    name?: StringFilter<"gates"> | string
+    status?: BoolFilter<"gates"> | boolean
+    coop_enabled?: BoolFilter<"gates"> | boolean
+    coop_window_sec?: IntFilter<"gates"> | number
+    maneuver_window_sec?: IntFilter<"gates"> | number
+    added_at?: DateTimeFilter<"gates"> | Date | string
+    updated_at?: DateTimeFilter<"gates"> | Date | string
   }
 
   export type vehicle_passesUpsertWithWhereUniqueWithoutLocationInput = {
@@ -26558,6 +30619,15 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"vehicle_passes"> | Date | string
     is_whitelisted?: BoolFilter<"vehicle_passes"> | boolean
     is_hidden?: BoolFilter<"vehicle_passes"> | boolean
+    inferred?: BoolFilter<"vehicle_passes"> | boolean
+    confidence?: IntNullableFilter<"vehicle_passes"> | number | null
+    gate_confirmed?: BoolFilter<"vehicle_passes"> | boolean
+    score?: IntNullableFilter<"vehicle_passes"> | number | null
+    plate_original?: StringNullableFilter<"vehicle_passes"> | string | null
+    plate_conflict?: BoolFilter<"vehicle_passes"> | boolean
+    direction_source?: StringNullableFilter<"vehicle_passes"> | string | null
+    direction_original?: StringNullableFilter<"vehicle_passes"> | string | null
+    history_conflict?: BoolFilter<"vehicle_passes"> | boolean
   }
 
   export type location_tariff_historyUpsertWithWhereUniqueWithoutLocationInput = {
@@ -26576,6 +30646,304 @@ export namespace Prisma {
     data: XOR<location_tariff_historyUpdateManyMutationInput, location_tariff_historyUncheckedUpdateManyWithoutLocationInput>
   }
 
+  export type locationsCreateWithoutGatesInput = {
+    name?: string | null
+    telegram_chat_ids?: locationsCreatetelegram_chat_idsInput | string[]
+    status?: boolean | null
+    total_spots?: number | null
+    free_period?: number | null
+    shift_start?: string | null
+    shift_end?: string | null
+    latitude?: number | null
+    longitude?: number | null
+    added_at?: Date | string
+    updated_at?: Date | string
+    cameras?: anpr_camerasCreateNestedManyWithoutLocationInput
+    vehiclePasses?: vehicle_passesCreateNestedManyWithoutLocationInput
+    locationTariffHistory?: location_tariff_historyCreateNestedManyWithoutLocationInput
+  }
+
+  export type locationsUncheckedCreateWithoutGatesInput = {
+    id?: number
+    name?: string | null
+    telegram_chat_ids?: locationsCreatetelegram_chat_idsInput | string[]
+    status?: boolean | null
+    total_spots?: number | null
+    free_period?: number | null
+    shift_start?: string | null
+    shift_end?: string | null
+    latitude?: number | null
+    longitude?: number | null
+    added_at?: Date | string
+    updated_at?: Date | string
+    cameras?: anpr_camerasUncheckedCreateNestedManyWithoutLocationInput
+    vehiclePasses?: vehicle_passesUncheckedCreateNestedManyWithoutLocationInput
+    locationTariffHistory?: location_tariff_historyUncheckedCreateNestedManyWithoutLocationInput
+  }
+
+  export type locationsCreateOrConnectWithoutGatesInput = {
+    where: locationsWhereUniqueInput
+    create: XOR<locationsCreateWithoutGatesInput, locationsUncheckedCreateWithoutGatesInput>
+  }
+
+  export type anpr_camerasCreateWithoutGateInput = {
+    name?: string | null
+    camera_ip: string
+    mac_address?: string | null
+    port?: number | null
+    direction?: string | null
+    username?: string | null
+    password?: string | null
+    serial_number?: string | null
+    is_local?: boolean | null
+    min_confidence?: number | null
+    movement_direction?: string | null
+    status?: boolean | null
+    is_online?: boolean | null
+    last_seen_at?: Date | string | null
+    added_at?: Date | string
+    updated_at?: Date | string
+    location: locationsCreateNestedOneWithoutCamerasInput
+    vehiclePasses?: vehicle_passesCreateNestedManyWithoutCameraInput
+  }
+
+  export type anpr_camerasUncheckedCreateWithoutGateInput = {
+    id?: number
+    name?: string | null
+    location_id: number
+    camera_ip: string
+    mac_address?: string | null
+    port?: number | null
+    direction?: string | null
+    username?: string | null
+    password?: string | null
+    serial_number?: string | null
+    is_local?: boolean | null
+    min_confidence?: number | null
+    movement_direction?: string | null
+    status?: boolean | null
+    is_online?: boolean | null
+    last_seen_at?: Date | string | null
+    added_at?: Date | string
+    updated_at?: Date | string
+    vehiclePasses?: vehicle_passesUncheckedCreateNestedManyWithoutCameraInput
+  }
+
+  export type anpr_camerasCreateOrConnectWithoutGateInput = {
+    where: anpr_camerasWhereUniqueInput
+    create: XOR<anpr_camerasCreateWithoutGateInput, anpr_camerasUncheckedCreateWithoutGateInput>
+  }
+
+  export type anpr_camerasCreateManyGateInputEnvelope = {
+    data: anpr_camerasCreateManyGateInput | anpr_camerasCreateManyGateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type gate_pending_eventsCreateWithoutGateInput = {
+    camera_id: number
+    location_id: number
+    camera_log_id?: number | null
+    plate_number: string
+    direction: string
+    event_date: Date | string
+    photo?: string | null
+    confidence?: number | null
+    due_at: Date | string
+    status?: string
+    drop_reason?: string | null
+    created_at?: Date | string
+  }
+
+  export type gate_pending_eventsUncheckedCreateWithoutGateInput = {
+    id?: number
+    camera_id: number
+    location_id: number
+    camera_log_id?: number | null
+    plate_number: string
+    direction: string
+    event_date: Date | string
+    photo?: string | null
+    confidence?: number | null
+    due_at: Date | string
+    status?: string
+    drop_reason?: string | null
+    created_at?: Date | string
+  }
+
+  export type gate_pending_eventsCreateOrConnectWithoutGateInput = {
+    where: gate_pending_eventsWhereUniqueInput
+    create: XOR<gate_pending_eventsCreateWithoutGateInput, gate_pending_eventsUncheckedCreateWithoutGateInput>
+  }
+
+  export type gate_pending_eventsCreateManyGateInputEnvelope = {
+    data: gate_pending_eventsCreateManyGateInput | gate_pending_eventsCreateManyGateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type locationsUpsertWithoutGatesInput = {
+    update: XOR<locationsUpdateWithoutGatesInput, locationsUncheckedUpdateWithoutGatesInput>
+    create: XOR<locationsCreateWithoutGatesInput, locationsUncheckedCreateWithoutGatesInput>
+    where?: locationsWhereInput
+  }
+
+  export type locationsUpdateToOneWithWhereWithoutGatesInput = {
+    where?: locationsWhereInput
+    data: XOR<locationsUpdateWithoutGatesInput, locationsUncheckedUpdateWithoutGatesInput>
+  }
+
+  export type locationsUpdateWithoutGatesInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    telegram_chat_ids?: locationsUpdatetelegram_chat_idsInput | string[]
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    total_spots?: NullableIntFieldUpdateOperationsInput | number | null
+    free_period?: NullableIntFieldUpdateOperationsInput | number | null
+    shift_start?: NullableStringFieldUpdateOperationsInput | string | null
+    shift_end?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    cameras?: anpr_camerasUpdateManyWithoutLocationNestedInput
+    vehiclePasses?: vehicle_passesUpdateManyWithoutLocationNestedInput
+    locationTariffHistory?: location_tariff_historyUpdateManyWithoutLocationNestedInput
+  }
+
+  export type locationsUncheckedUpdateWithoutGatesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    telegram_chat_ids?: locationsUpdatetelegram_chat_idsInput | string[]
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    total_spots?: NullableIntFieldUpdateOperationsInput | number | null
+    free_period?: NullableIntFieldUpdateOperationsInput | number | null
+    shift_start?: NullableStringFieldUpdateOperationsInput | string | null
+    shift_end?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    longitude?: NullableFloatFieldUpdateOperationsInput | number | null
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    cameras?: anpr_camerasUncheckedUpdateManyWithoutLocationNestedInput
+    vehiclePasses?: vehicle_passesUncheckedUpdateManyWithoutLocationNestedInput
+    locationTariffHistory?: location_tariff_historyUncheckedUpdateManyWithoutLocationNestedInput
+  }
+
+  export type anpr_camerasUpsertWithWhereUniqueWithoutGateInput = {
+    where: anpr_camerasWhereUniqueInput
+    update: XOR<anpr_camerasUpdateWithoutGateInput, anpr_camerasUncheckedUpdateWithoutGateInput>
+    create: XOR<anpr_camerasCreateWithoutGateInput, anpr_camerasUncheckedCreateWithoutGateInput>
+  }
+
+  export type anpr_camerasUpdateWithWhereUniqueWithoutGateInput = {
+    where: anpr_camerasWhereUniqueInput
+    data: XOR<anpr_camerasUpdateWithoutGateInput, anpr_camerasUncheckedUpdateWithoutGateInput>
+  }
+
+  export type anpr_camerasUpdateManyWithWhereWithoutGateInput = {
+    where: anpr_camerasScalarWhereInput
+    data: XOR<anpr_camerasUpdateManyMutationInput, anpr_camerasUncheckedUpdateManyWithoutGateInput>
+  }
+
+  export type gate_pending_eventsUpsertWithWhereUniqueWithoutGateInput = {
+    where: gate_pending_eventsWhereUniqueInput
+    update: XOR<gate_pending_eventsUpdateWithoutGateInput, gate_pending_eventsUncheckedUpdateWithoutGateInput>
+    create: XOR<gate_pending_eventsCreateWithoutGateInput, gate_pending_eventsUncheckedCreateWithoutGateInput>
+  }
+
+  export type gate_pending_eventsUpdateWithWhereUniqueWithoutGateInput = {
+    where: gate_pending_eventsWhereUniqueInput
+    data: XOR<gate_pending_eventsUpdateWithoutGateInput, gate_pending_eventsUncheckedUpdateWithoutGateInput>
+  }
+
+  export type gate_pending_eventsUpdateManyWithWhereWithoutGateInput = {
+    where: gate_pending_eventsScalarWhereInput
+    data: XOR<gate_pending_eventsUpdateManyMutationInput, gate_pending_eventsUncheckedUpdateManyWithoutGateInput>
+  }
+
+  export type gate_pending_eventsScalarWhereInput = {
+    AND?: gate_pending_eventsScalarWhereInput | gate_pending_eventsScalarWhereInput[]
+    OR?: gate_pending_eventsScalarWhereInput[]
+    NOT?: gate_pending_eventsScalarWhereInput | gate_pending_eventsScalarWhereInput[]
+    id?: IntFilter<"gate_pending_events"> | number
+    gate_id?: IntFilter<"gate_pending_events"> | number
+    camera_id?: IntFilter<"gate_pending_events"> | number
+    location_id?: IntFilter<"gate_pending_events"> | number
+    camera_log_id?: IntNullableFilter<"gate_pending_events"> | number | null
+    plate_number?: StringFilter<"gate_pending_events"> | string
+    direction?: StringFilter<"gate_pending_events"> | string
+    event_date?: DateTimeFilter<"gate_pending_events"> | Date | string
+    photo?: StringNullableFilter<"gate_pending_events"> | string | null
+    confidence?: IntNullableFilter<"gate_pending_events"> | number | null
+    due_at?: DateTimeFilter<"gate_pending_events"> | Date | string
+    status?: StringFilter<"gate_pending_events"> | string
+    drop_reason?: StringNullableFilter<"gate_pending_events"> | string | null
+    created_at?: DateTimeFilter<"gate_pending_events"> | Date | string
+  }
+
+  export type gatesCreateWithoutPendingEventsInput = {
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+    location: locationsCreateNestedOneWithoutGatesInput
+    cameras?: anpr_camerasCreateNestedManyWithoutGateInput
+  }
+
+  export type gatesUncheckedCreateWithoutPendingEventsInput = {
+    id?: number
+    location_id: number
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+    cameras?: anpr_camerasUncheckedCreateNestedManyWithoutGateInput
+  }
+
+  export type gatesCreateOrConnectWithoutPendingEventsInput = {
+    where: gatesWhereUniqueInput
+    create: XOR<gatesCreateWithoutPendingEventsInput, gatesUncheckedCreateWithoutPendingEventsInput>
+  }
+
+  export type gatesUpsertWithoutPendingEventsInput = {
+    update: XOR<gatesUpdateWithoutPendingEventsInput, gatesUncheckedUpdateWithoutPendingEventsInput>
+    create: XOR<gatesCreateWithoutPendingEventsInput, gatesUncheckedCreateWithoutPendingEventsInput>
+    where?: gatesWhereInput
+  }
+
+  export type gatesUpdateToOneWithWhereWithoutPendingEventsInput = {
+    where?: gatesWhereInput
+    data: XOR<gatesUpdateWithoutPendingEventsInput, gatesUncheckedUpdateWithoutPendingEventsInput>
+  }
+
+  export type gatesUpdateWithoutPendingEventsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: locationsUpdateOneRequiredWithoutGatesNestedInput
+    cameras?: anpr_camerasUpdateManyWithoutGateNestedInput
+  }
+
+  export type gatesUncheckedUpdateWithoutPendingEventsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    cameras?: anpr_camerasUncheckedUpdateManyWithoutGateNestedInput
+  }
+
   export type locationsCreateWithoutCamerasInput = {
     name?: string | null
     telegram_chat_ids?: locationsCreatetelegram_chat_idsInput | string[]
@@ -26588,6 +30956,7 @@ export namespace Prisma {
     longitude?: number | null
     added_at?: Date | string
     updated_at?: Date | string
+    gates?: gatesCreateNestedManyWithoutLocationInput
     vehiclePasses?: vehicle_passesCreateNestedManyWithoutLocationInput
     locationTariffHistory?: location_tariff_historyCreateNestedManyWithoutLocationInput
   }
@@ -26605,6 +30974,7 @@ export namespace Prisma {
     longitude?: number | null
     added_at?: Date | string
     updated_at?: Date | string
+    gates?: gatesUncheckedCreateNestedManyWithoutLocationInput
     vehiclePasses?: vehicle_passesUncheckedCreateNestedManyWithoutLocationInput
     locationTariffHistory?: location_tariff_historyUncheckedCreateNestedManyWithoutLocationInput
   }
@@ -26612,6 +30982,36 @@ export namespace Prisma {
   export type locationsCreateOrConnectWithoutCamerasInput = {
     where: locationsWhereUniqueInput
     create: XOR<locationsCreateWithoutCamerasInput, locationsUncheckedCreateWithoutCamerasInput>
+  }
+
+  export type gatesCreateWithoutCamerasInput = {
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+    location: locationsCreateNestedOneWithoutGatesInput
+    pendingEvents?: gate_pending_eventsCreateNestedManyWithoutGateInput
+  }
+
+  export type gatesUncheckedCreateWithoutCamerasInput = {
+    id?: number
+    location_id: number
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+    pendingEvents?: gate_pending_eventsUncheckedCreateNestedManyWithoutGateInput
+  }
+
+  export type gatesCreateOrConnectWithoutCamerasInput = {
+    where: gatesWhereUniqueInput
+    create: XOR<gatesCreateWithoutCamerasInput, gatesUncheckedCreateWithoutCamerasInput>
   }
 
   export type vehicle_passesCreateWithoutCameraInput = {
@@ -26622,6 +31022,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
     location: locationsCreateNestedOneWithoutVehiclePassesInput
   }
 
@@ -26635,6 +31044,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
   }
 
   export type vehicle_passesCreateOrConnectWithoutCameraInput = {
@@ -26670,6 +31088,7 @@ export namespace Prisma {
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    gates?: gatesUpdateManyWithoutLocationNestedInput
     vehiclePasses?: vehicle_passesUpdateManyWithoutLocationNestedInput
     locationTariffHistory?: location_tariff_historyUpdateManyWithoutLocationNestedInput
   }
@@ -26687,8 +31106,45 @@ export namespace Prisma {
     longitude?: NullableFloatFieldUpdateOperationsInput | number | null
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    gates?: gatesUncheckedUpdateManyWithoutLocationNestedInput
     vehiclePasses?: vehicle_passesUncheckedUpdateManyWithoutLocationNestedInput
     locationTariffHistory?: location_tariff_historyUncheckedUpdateManyWithoutLocationNestedInput
+  }
+
+  export type gatesUpsertWithoutCamerasInput = {
+    update: XOR<gatesUpdateWithoutCamerasInput, gatesUncheckedUpdateWithoutCamerasInput>
+    create: XOR<gatesCreateWithoutCamerasInput, gatesUncheckedCreateWithoutCamerasInput>
+    where?: gatesWhereInput
+  }
+
+  export type gatesUpdateToOneWithWhereWithoutCamerasInput = {
+    where?: gatesWhereInput
+    data: XOR<gatesUpdateWithoutCamerasInput, gatesUncheckedUpdateWithoutCamerasInput>
+  }
+
+  export type gatesUpdateWithoutCamerasInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: locationsUpdateOneRequiredWithoutGatesNestedInput
+    pendingEvents?: gate_pending_eventsUpdateManyWithoutGateNestedInput
+  }
+
+  export type gatesUncheckedUpdateWithoutCamerasInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    pendingEvents?: gate_pending_eventsUncheckedUpdateManyWithoutGateNestedInput
   }
 
   export type vehicle_passesUpsertWithWhereUniqueWithoutCameraInput = {
@@ -26720,6 +31176,7 @@ export namespace Prisma {
     added_at?: Date | string
     updated_at?: Date | string
     cameras?: anpr_camerasCreateNestedManyWithoutLocationInput
+    gates?: gatesCreateNestedManyWithoutLocationInput
     locationTariffHistory?: location_tariff_historyCreateNestedManyWithoutLocationInput
   }
 
@@ -26737,6 +31194,7 @@ export namespace Prisma {
     added_at?: Date | string
     updated_at?: Date | string
     cameras?: anpr_camerasUncheckedCreateNestedManyWithoutLocationInput
+    gates?: gatesUncheckedCreateNestedManyWithoutLocationInput
     locationTariffHistory?: location_tariff_historyUncheckedCreateNestedManyWithoutLocationInput
   }
 
@@ -26763,12 +31221,14 @@ export namespace Prisma {
     added_at?: Date | string
     updated_at?: Date | string
     location: locationsCreateNestedOneWithoutCamerasInput
+    gate?: gatesCreateNestedOneWithoutCamerasInput
   }
 
   export type anpr_camerasUncheckedCreateWithoutVehiclePassesInput = {
     id?: number
     name?: string | null
     location_id: number
+    gate_id?: number | null
     camera_ip: string
     mac_address?: string | null
     port?: number | null
@@ -26815,6 +31275,7 @@ export namespace Prisma {
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     cameras?: anpr_camerasUpdateManyWithoutLocationNestedInput
+    gates?: gatesUpdateManyWithoutLocationNestedInput
     locationTariffHistory?: location_tariff_historyUpdateManyWithoutLocationNestedInput
   }
 
@@ -26832,6 +31293,7 @@ export namespace Prisma {
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     cameras?: anpr_camerasUncheckedUpdateManyWithoutLocationNestedInput
+    gates?: gatesUncheckedUpdateManyWithoutLocationNestedInput
     locationTariffHistory?: location_tariff_historyUncheckedUpdateManyWithoutLocationNestedInput
   }
 
@@ -26864,12 +31326,14 @@ export namespace Prisma {
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     location?: locationsUpdateOneRequiredWithoutCamerasNestedInput
+    gate?: gatesUpdateOneWithoutCamerasNestedInput
   }
 
   export type anpr_camerasUncheckedUpdateWithoutVehiclePassesInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
     location_id?: IntFieldUpdateOperationsInput | number
+    gate_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_ip?: StringFieldUpdateOperationsInput | string
     mac_address?: NullableStringFieldUpdateOperationsInput | string | null
     port?: NullableIntFieldUpdateOperationsInput | number | null
@@ -27473,6 +31937,7 @@ export namespace Prisma {
     added_at?: Date | string
     updated_at?: Date | string
     cameras?: anpr_camerasCreateNestedManyWithoutLocationInput
+    gates?: gatesCreateNestedManyWithoutLocationInput
     vehiclePasses?: vehicle_passesCreateNestedManyWithoutLocationInput
   }
 
@@ -27490,6 +31955,7 @@ export namespace Prisma {
     added_at?: Date | string
     updated_at?: Date | string
     cameras?: anpr_camerasUncheckedCreateNestedManyWithoutLocationInput
+    gates?: gatesUncheckedCreateNestedManyWithoutLocationInput
     vehiclePasses?: vehicle_passesUncheckedCreateNestedManyWithoutLocationInput
   }
 
@@ -27602,6 +32068,7 @@ export namespace Prisma {
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     cameras?: anpr_camerasUpdateManyWithoutLocationNestedInput
+    gates?: gatesUpdateManyWithoutLocationNestedInput
     vehiclePasses?: vehicle_passesUpdateManyWithoutLocationNestedInput
   }
 
@@ -27619,6 +32086,7 @@ export namespace Prisma {
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     cameras?: anpr_camerasUncheckedUpdateManyWithoutLocationNestedInput
+    gates?: gatesUncheckedUpdateManyWithoutLocationNestedInput
     vehiclePasses?: vehicle_passesUncheckedUpdateManyWithoutLocationNestedInput
   }
 
@@ -28010,6 +32478,7 @@ export namespace Prisma {
   export type anpr_camerasCreateManyLocationInput = {
     id?: number
     name?: string | null
+    gate_id?: number | null
     camera_ip: string
     mac_address?: string | null
     port?: number | null
@@ -28027,6 +32496,17 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type gatesCreateManyLocationInput = {
+    id?: number
+    name: string
+    status?: boolean
+    coop_enabled?: boolean
+    coop_window_sec?: number
+    maneuver_window_sec?: number
+    added_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type vehicle_passesCreateManyLocationInput = {
     id?: number
     camera_id?: number | null
@@ -28037,6 +32517,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
   }
 
   export type location_tariff_historyCreateManyLocationInput = {
@@ -28063,12 +32552,14 @@ export namespace Prisma {
     last_seen_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     added_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    gate?: gatesUpdateOneWithoutCamerasNestedInput
     vehiclePasses?: vehicle_passesUpdateManyWithoutCameraNestedInput
   }
 
   export type anpr_camerasUncheckedUpdateWithoutLocationInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    gate_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_ip?: StringFieldUpdateOperationsInput | string
     mac_address?: NullableStringFieldUpdateOperationsInput | string | null
     port?: NullableIntFieldUpdateOperationsInput | number | null
@@ -28090,6 +32581,7 @@ export namespace Prisma {
   export type anpr_camerasUncheckedUpdateManyWithoutLocationInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    gate_id?: NullableIntFieldUpdateOperationsInput | number | null
     camera_ip?: StringFieldUpdateOperationsInput | string
     mac_address?: NullableStringFieldUpdateOperationsInput | string | null
     port?: NullableIntFieldUpdateOperationsInput | number | null
@@ -28107,6 +32599,42 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type gatesUpdateWithoutLocationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    cameras?: anpr_camerasUpdateManyWithoutGateNestedInput
+    pendingEvents?: gate_pending_eventsUpdateManyWithoutGateNestedInput
+  }
+
+  export type gatesUncheckedUpdateWithoutLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    cameras?: anpr_camerasUncheckedUpdateManyWithoutGateNestedInput
+    pendingEvents?: gate_pending_eventsUncheckedUpdateManyWithoutGateNestedInput
+  }
+
+  export type gatesUncheckedUpdateManyWithoutLocationInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    status?: BoolFieldUpdateOperationsInput | boolean
+    coop_enabled?: BoolFieldUpdateOperationsInput | boolean
+    coop_window_sec?: IntFieldUpdateOperationsInput | number
+    maneuver_window_sec?: IntFieldUpdateOperationsInput | number
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type vehicle_passesUpdateWithoutLocationInput = {
     plate_number?: StringFieldUpdateOperationsInput | string
     direction?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28115,6 +32643,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
     camera?: anpr_camerasUpdateOneWithoutVehiclePassesNestedInput
   }
 
@@ -28128,6 +32665,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type vehicle_passesUncheckedUpdateManyWithoutLocationInput = {
@@ -28140,6 +32686,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type location_tariff_historyUpdateWithoutLocationInput = {
@@ -28162,6 +32717,154 @@ export namespace Prisma {
     added_by?: IntFieldUpdateOperationsInput | number
   }
 
+  export type anpr_camerasCreateManyGateInput = {
+    id?: number
+    name?: string | null
+    location_id: number
+    camera_ip: string
+    mac_address?: string | null
+    port?: number | null
+    direction?: string | null
+    username?: string | null
+    password?: string | null
+    serial_number?: string | null
+    is_local?: boolean | null
+    min_confidence?: number | null
+    movement_direction?: string | null
+    status?: boolean | null
+    is_online?: boolean | null
+    last_seen_at?: Date | string | null
+    added_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type gate_pending_eventsCreateManyGateInput = {
+    id?: number
+    camera_id: number
+    location_id: number
+    camera_log_id?: number | null
+    plate_number: string
+    direction: string
+    event_date: Date | string
+    photo?: string | null
+    confidence?: number | null
+    due_at: Date | string
+    status?: string
+    drop_reason?: string | null
+    created_at?: Date | string
+  }
+
+  export type anpr_camerasUpdateWithoutGateInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    camera_ip?: StringFieldUpdateOperationsInput | string
+    mac_address?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    direction?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    serial_number?: NullableStringFieldUpdateOperationsInput | string | null
+    is_local?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    min_confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    movement_direction?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_seen_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    location?: locationsUpdateOneRequiredWithoutCamerasNestedInput
+    vehiclePasses?: vehicle_passesUpdateManyWithoutCameraNestedInput
+  }
+
+  export type anpr_camerasUncheckedUpdateWithoutGateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_ip?: StringFieldUpdateOperationsInput | string
+    mac_address?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    direction?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    serial_number?: NullableStringFieldUpdateOperationsInput | string | null
+    is_local?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    min_confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    movement_direction?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_seen_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    vehiclePasses?: vehicle_passesUncheckedUpdateManyWithoutCameraNestedInput
+  }
+
+  export type anpr_camerasUncheckedUpdateManyWithoutGateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_ip?: StringFieldUpdateOperationsInput | string
+    mac_address?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    direction?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    serial_number?: NullableStringFieldUpdateOperationsInput | string | null
+    is_local?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    min_confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    movement_direction?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    is_online?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    last_seen_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    added_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type gate_pending_eventsUpdateWithoutGateInput = {
+    camera_id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_log_id?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_number?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    event_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    due_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    drop_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type gate_pending_eventsUncheckedUpdateWithoutGateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    camera_id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_log_id?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_number?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    event_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    due_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    drop_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type gate_pending_eventsUncheckedUpdateManyWithoutGateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    camera_id?: IntFieldUpdateOperationsInput | number
+    location_id?: IntFieldUpdateOperationsInput | number
+    camera_log_id?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_number?: StringFieldUpdateOperationsInput | string
+    direction?: StringFieldUpdateOperationsInput | string
+    event_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    due_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    drop_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type vehicle_passesCreateManyCameraInput = {
     id?: number
     location_id: number
@@ -28172,6 +32875,15 @@ export namespace Prisma {
     created_at?: Date | string
     is_whitelisted?: boolean
     is_hidden?: boolean
+    inferred?: boolean
+    confidence?: number | null
+    gate_confirmed?: boolean
+    score?: number | null
+    plate_original?: string | null
+    plate_conflict?: boolean
+    direction_source?: string | null
+    direction_original?: string | null
+    history_conflict?: boolean
   }
 
   export type vehicle_passesUpdateWithoutCameraInput = {
@@ -28182,6 +32894,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
     location?: locationsUpdateOneRequiredWithoutVehiclePassesNestedInput
   }
 
@@ -28195,6 +32916,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type vehicle_passesUncheckedUpdateManyWithoutCameraInput = {
@@ -28207,6 +32937,15 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_whitelisted?: BoolFieldUpdateOperationsInput | boolean
     is_hidden?: BoolFieldUpdateOperationsInput | boolean
+    inferred?: BoolFieldUpdateOperationsInput | boolean
+    confidence?: NullableIntFieldUpdateOperationsInput | number | null
+    gate_confirmed?: BoolFieldUpdateOperationsInput | boolean
+    score?: NullableIntFieldUpdateOperationsInput | number | null
+    plate_original?: NullableStringFieldUpdateOperationsInput | string | null
+    plate_conflict?: BoolFieldUpdateOperationsInput | boolean
+    direction_source?: NullableStringFieldUpdateOperationsInput | string | null
+    direction_original?: NullableStringFieldUpdateOperationsInput | string | null
+    history_conflict?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type vehicle_whitelistCreateManyFolderInput = {

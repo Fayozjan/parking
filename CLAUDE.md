@@ -30,7 +30,7 @@ OnBase - Parking/
 └── docs/            — Документация
 ```
 
-## Модули сервера (8 штук)
+## Модули сервера (9 штук)
 
 | Маршрут | Модуль |
 |---------|--------|
@@ -39,6 +39,7 @@ OnBase - Parking/
 | `/api/menus` | menus |
 | `/api/parkings` | parkings |
 | `/api/anpr-cameras` | anprCameras |
+| `/api/gates` | gates |
 | `/api/vehicle-passes` | vehiclePasses |
 | `/api/parking-tariffs` | parkingTariffs |
 | `/api/audit-logs` | auditLogs |
@@ -47,4 +48,10 @@ OnBase - Parking/
 
 ```
 ANPR Камера → POST /api/anpr-cameras/events (без auth) → vehicle_passes + notifications_outbox
+                                                       └─ после ответа камере, в фоне: сверка с ai-service
+                                                          (номер и направление, голосование) → правка проезда
 ```
+
+Все события принимаются без фильтра по направлению; въезд/выезд определяют данные камеры и AI (`server/utils/passDirection.js`).
+AI (`ai-service/`, Python) путь события не замедляет: `AI_SERVICE_URL` пуст — отключён, сервис недоступен — работаем по камере.
+Подробности: `ai-service/README.md`, правила голосования `server/utils/plateConsensus.js`.

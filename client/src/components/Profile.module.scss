@@ -110,6 +110,13 @@
     padding: 6px;
   }
 
+  .popupVersion {
+    padding: 8px 12px;
+    font-size: 12px;
+    text-align: center;
+    color: var(--text-secondary, #9ca3af);
+  }
+
   .popupItem {
     display: flex;
     align-items: center;
@@ -213,6 +220,80 @@
     }
   }
 
+  // ─── Dock режим (круглая кнопка внизу слева) ──────────────
+  &.dock {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    padding: 0;
+    border-top: none;
+    border-radius: 50%;
+    background: transparent;
+    z-index: 120;
+
+    &:hover,
+    &.active {
+      background: transparent;
+    }
+
+    .profile {
+      padding: 0;
+      border-radius: 50%;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s;
+
+      &:hover {
+        transform: translateY(-3px);
+      }
+    }
+
+    // та же кнопка, что и остальные внизу: 52px, белая, круглая
+    .dockBtn {
+      box-sizing: border-box;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      background: var(--card-bg);
+      color: var(--text-secondary);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.16);
+      transition:
+        background 0.18s,
+        color 0.18s,
+        border-color 0.18s,
+        box-shadow 0.18s;
+    }
+
+    .profile:hover .dockBtn {
+      color: #6366f1;
+      border-color: #6366f1;
+      box-shadow: 0 10px 24px rgba(99, 102, 241, 0.3);
+    }
+
+    &.active .dockBtn {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(99, 102, 241, 0.45);
+    }
+
+    .profileInfo {
+      display: none;
+    }
+
+    // Попап открывается вверх от кнопки, выровнен по левому краю
+    .popup {
+      bottom: calc(100% + 12px);
+      left: 0;
+      right: auto;
+    }
+  }
+
   // ─── Mini режим ───────────────────────────────────────────
   &.mini {
     .profile {
@@ -233,6 +314,18 @@
       left: 10px;
       right: 8px;
       width: 240px;
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  .profileWrapper.dock {
+    left: 14px;
+    bottom: 14px;
+
+    .dockBtn {
+      width: 48px;
+      height: 48px;
     }
   }
 }

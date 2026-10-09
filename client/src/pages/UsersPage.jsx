@@ -19,7 +19,7 @@ import DownloadButton from "../components/DownloadButton";
 import Search from "../components/Search";
 import styles from "./UsersPage.module.scss";
 import { ActionCell } from "../components/ActionButtons";
-import PageHeader from "../components/PageHeader";
+import PageHero from "../components/PageHero";
 import { Users, UserCheck, UserX } from "lucide-react";
 import { Icons } from "../icons/icons";
 
@@ -192,8 +192,8 @@ const UsersPage = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className={styles.main}>
-          <PageHeader icon={Users} title={t("users")} subtitle={t("pageSubtitleUsers")} color="#6366f1" />
+        <div className={`${styles.main} settings-page`}>
+          <PageHero icon={Users} title={t("users")} />
           <div className={styles.statsGrid}>
             <StatWidget
               icon={Users}

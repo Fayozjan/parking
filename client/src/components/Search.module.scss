@@ -39,4 +39,27 @@
     top: 5px;
     right: 2px;
   }
+
+  // Страницы «Настройки»: как поиск на главной
+  :global(.settings-page) & {
+    width: 240px;
+    max-width: 260px;
+    height: 34px;
+    border-color: var(--border-color);
+    border-radius: 10px;
+    background: var(--card-bg);
+
+    &:hover,
+    &:focus-within {
+      border-color: var(--third-color);
+    }
+
+    &:focus-within {
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    .clearBtn {
+      top: 7px;
+    }
+  }
 }

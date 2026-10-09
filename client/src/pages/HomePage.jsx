@@ -1,12 +1,20 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Banknote, RefreshCw, LayoutGrid, CalendarDays } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Banknote,
+  RefreshCw,
+  LayoutGrid,
+  CalendarDays,
+  Tag,
+  Car,
+  ChevronDown,
+  Check,
+} from "lucide-react";
 import { getFinanceSummary } from "../api";
-import { usePermissions } from "../hooks/usePermissions";
-import { useAuthStore } from "../stores/authStore";
-import { PRESETS, getPresetRange, SessionsModal } from "./FinancePage";
+import { PRESETS, getPresetRange } from "./FinancePage";
 import Loading from "../components/Loading";
-import PageHeader from "../components/PageHeader";
+import ParkingHeroBg from "../components/ParkingHeroBg";
 import styles from "./HomePage.module.scss";
 
 const fmt = (n) => new Intl.NumberFormat("ru-RU").format(Math.round(n ?? 0));
@@ -26,23 +34,92 @@ const fmtDay = (iso, lang) => {
   }).format(d);
 };
 
+// День, месяц и день недели отдельно: для карточек «по дням»
+const fmtDayParts = (iso, lang) => {
+  const d = new Date(`${iso}T00:00:00`);
+  const loc = INTL_LOCALES[lang] ?? "ru-RU";
+  return {
+    day: iso.slice(8, 10),
+    month: new Intl.DateTimeFormat(loc, { month: "short" }).format(d),
+    weekday: new Intl.DateTimeFormat(loc, { weekday: "long" }).format(d),
+    weekend: d.getDay() === 0 || d.getDay() === 6,
+  };
+};
+
+// Выбор вида отображения: по локациям / по дням (выпадающий список)
+const ViewSelect = ({ value, onChange, options }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e) => {
+      if (!ref.current?.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const current = options.find((o) => o.key === value) ?? options[0];
+  const CurrentIcon = current.icon;
+
+  return (
+    <div className={styles.viewSelect} ref={ref}>
+      <button
+        type="button"
+        className={`${styles.viewTrigger} ${open ? styles.viewTriggerOpen : ""}`}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <CurrentIcon size={15} className={styles.viewIcon} />
+        <span>{current.label}</span>
+        <ChevronDown size={14} className={styles.viewChevron} />
+      </button>
+      {open && (
+        <ul className={styles.viewMenu}>
+          {options.map(({ key, label, icon: Icon }) => (
+            <li key={key}>
+              <button
+                type="button"
+                className={`${styles.viewOption} ${key === value ? styles.viewOptionActive : ""}`}
+                onClick={() => {
+                  onChange(key);
+                  setOpen(false);
+                }}
+              >
+                <Icon size={15} />
+                <span>{label}</span>
+                {key === value && <Check size={14} className={styles.viewCheck} />}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
 const HomePage = () => {
   const { t, i18n } = useTranslation();
-  const currentPath = window.location.pathname;
-  const { canDelete, canEdit } = usePermissions(currentPath);
-  const canViewOpenParkings = useAuthStore(
-    (s) => !!s.access?.can_view_open_parkings,
-  );
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const currency = t("currencySymbol");
 
   const [loading, setLoading] = useState(true);
   const [locations, setLocations] = useState([]);
   const [dailyStats, setDailyStats] = useState([]);
-  const [preset, setPreset] = useState("today");
-  const [range, setRange] = useState(getPresetRange("today"));
+  const initialRange = useMemo(() => {
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+    return from && to ? { from, to } : null;
+  }, []);
+  const [preset, setPreset] = useState(initialRange ? null : "today");
+  const [range, setRange] = useState(initialRange ?? getPresetRange("today"));
   const [view, setView] = useState("locations");
-  const [modalParking, setModalParking] = useState(null);
-  const [modalRange, setModalRange] = useState(null);
 
   const fetchData = useCallback(async (r) => {
     if (!r.from || !r.to) return;
@@ -85,6 +162,11 @@ const HomePage = () => {
   const hasDays = range.from !== range.to && dailyStats.length > 0;
   const activeView = hasDays ? view : "locations";
 
+  const maxDayRevenue = useMemo(
+    () => dailyStats.reduce((m, d) => Math.max(m, d.revenue ?? 0), 0),
+    [dailyStats],
+  );
+
   const locationsById = useMemo(
     () => Object.fromEntries(locations.map((l) => [l.id, l])),
     [locations],
@@ -92,21 +174,49 @@ const HomePage = () => {
 
   const openParking = (loc, r) => {
     if (!loc) return;
-    setModalParking(loc);
-    setModalRange(r ?? range);
+    const { from, to } = r ?? range;
+    // Локацию передаём в состоянии роутера: странице не нужен отдельный запрос summary
+    navigate(`/home/location/${loc.id}?from=${from}&to=${to}`, {
+      state: { parking: loc },
+    });
   };
-
-  // С доступом открытые парковки видны за любой период,
-  // без доступа — только закрытые (выезд)
-  const closedOnly = !canViewOpenParkings;
 
   if (loading) return <Loading />;
 
   return (
     <div className={styles.page}>
-      <PageHeader icon={Banknote} title={t("home")} subtitle={t("dashFinancialReport")} color="#6366f1" />
+      <div className={styles.hero}>
+        <ParkingHeroBg className={styles.heroBg} />
+        <div className={styles.heroIcon}>
+          <Banknote size={22} strokeWidth={2} />
+        </div>
+        <div className={styles.heroText}>
+          <div className={styles.heroCrumb}>{t("home")}</div>
+          <h1 className={styles.heroTitle}>{t("dashFinancialReport")}</h1>
+        </div>
+        {locations.length > 0 && (
+          <div className={styles.heroTotal}>
+            <span className={styles.heroTotalLabel}>
+              {t("totalRevenue")}
+            </span>
+            <span className={styles.heroTotalValue}>
+              {fmt(totalRevenue)} <small>{currency}</small>
+            </span>
+          </div>
+        )}
+      </div>
 
       <div className={styles.controls}>
+        {hasDays && (
+          <ViewSelect
+            value={activeView}
+            onChange={setView}
+            options={[
+              { key: "locations", label: t("viewByLocations"), icon: LayoutGrid },
+              { key: "days", label: t("viewByDays"), icon: CalendarDays },
+            ]}
+          />
+        )}
         <div className={styles.presets}>
           {PRESETS.map((p) => (
             <button
@@ -143,79 +253,68 @@ const HomePage = () => {
         </div>
       </div>
 
-      {(hasDays || locations.length > 0) && (
-        <div className={styles.viewRow}>
-          {hasDays && (
-            <div className={styles.periodToggle}>
-              <button
-                className={`${styles.periodBtn} ${activeView === "locations" ? styles.periodBtnActive : ""}`}
-                onClick={() => setView("locations")}
-              >
-                <LayoutGrid size={13} />
-                {t("viewByLocations")}
-              </button>
-              <button
-                className={`${styles.periodBtn} ${activeView === "days" ? styles.periodBtnActive : ""}`}
-                onClick={() => setView("days")}
-              >
-                <CalendarDays size={13} />
-                {t("viewByDays")}
-              </button>
-            </div>
-          )}
-          {locations.length > 0 && (
-            <div className={styles.totalBar}>
-              <span className={styles.totalLabel}>{t("totalRevenue")}</span>
-              <span className={styles.totalValue}>
-                {fmt(totalRevenue)} {currency}
-              </span>
-              <span className={styles.totalDot} />
-              <span className={styles.totalMeta}>
-                {activeView === "days"
-                  ? `${dailyStats.length} ${t("days").toLowerCase()}`
-                  : `${locations.length} ${t("locations").toLowerCase()}`}
-              </span>
-            </div>
-          )}
-        </div>
-      )}
-
       {activeView === "days" ? (
-        <div className={styles.weekGrid}>
-          {dailyStats.map((d) => (
-            <div key={d.date} className={styles.dayCell}>
-              <div className={styles.dayCellHead}>
-                <span className={styles.dayCellDate} title={fmtDay(d.date, i18n.language)}>
-                  {fmtDayShort(d.date)}
-                </span>
-                <span className={styles.dayCellCount} title={t("financeParkings")}>
-                  {fmt(d.parkings)}
-                </span>
+        <div className={styles.dayGrid}>
+          {dailyStats.map((d) => {
+            const parts = fmtDayParts(d.date, i18n.language);
+            const share = maxDayRevenue > 0 ? (d.revenue / maxDayRevenue) * 100 : 0;
+            const rows = [...(d.locations ?? [])].sort(
+              (a, b) => (b.revenue ?? 0) - (a.revenue ?? 0),
+            );
+            return (
+              <div
+                key={d.date}
+                className={`${styles.dayCard} ${parts.weekend ? styles.dayCardWeekend : ""}`}
+              >
+                <div className={styles.dayHead}>
+                  <div className={styles.dayDate} title={fmtDay(d.date, i18n.language)}>
+                    <span className={styles.dayNum}>{parts.day}</span>
+                    <span className={styles.dayMeta}>
+                      <b>{parts.month}</b>
+                      <span>{parts.weekday}</span>
+                    </span>
+                  </div>
+                  <span className={styles.dayCount} title={t("financeParkings")}>
+                    <Car size={13} />
+                    {fmt(d.parkings)}
+                  </span>
+                </div>
+
+                <div className={styles.dayRevenue}>
+                  {fmt(d.revenue)} <small>{currency}</small>
+                </div>
+                <div className={styles.dayShare}>
+                  <span style={{ width: `${share}%` }} />
+                </div>
+
+                <div className={styles.dayRows}>
+                  {rows.length > 0 ? (
+                    rows.map((l) => (
+                      <button
+                        key={l.id}
+                        className={styles.dayRow}
+                        title={`${l.name} — ${fmt(l.revenue)} ${currency} · ${fmt(l.parkings)}`}
+                        onClick={() =>
+                          openParking(locationsById[l.id], { from: d.date, to: d.date })
+                        }
+                      >
+                        <span
+                          className={styles.dayRowBar}
+                          style={{
+                            width: `${d.revenue > 0 ? ((l.revenue ?? 0) / d.revenue) * 100 : 0}%`,
+                          }}
+                        />
+                        <span className={styles.dayRowName}>{l.name}</span>
+                        <span className={styles.dayRowVal}>{fmt(l.revenue)}</span>
+                      </button>
+                    ))
+                  ) : (
+                    <div className={styles.dayEmpty}>—</div>
+                  )}
+                </div>
               </div>
-              <div className={styles.dayCellRevenue}>
-                {fmt(d.revenue)} <span className={styles.dayCellCur}>{currency}</span>
-              </div>
-              <div className={styles.dayCellRows}>
-                {(d.locations ?? []).length > 0 ? (
-                  d.locations.map((l) => (
-                    <button
-                      key={l.id}
-                      className={styles.dayCellRow}
-                      title={`${l.name} — ${fmt(l.revenue)} ${currency} · ${fmt(l.parkings)}`}
-                      onClick={() =>
-                        openParking(locationsById[l.id], { from: d.date, to: d.date })
-                      }
-                    >
-                      <span className={styles.dayCellRowName}>{l.name}</span>
-                      <span className={styles.dayCellRowVal}>{fmt(l.revenue)}</span>
-                    </button>
-                  ))
-                ) : (
-                  <div className={styles.dayEmpty}>—</div>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : locations.length === 0 ? (
         <div className={styles.empty}>
@@ -227,39 +326,46 @@ const HomePage = () => {
           {locations.map((loc) => (
             <div
               key={loc.id}
-              className={styles.card}
-              style={{ cursor: "pointer" }}
+              className={styles.locCard}
               onClick={() => openParking(loc)}
             >
-              <div className={styles.cardHeader}>
-                <div className={styles.cardTitleRow}>
-                  <h3 className={styles.cardTitle}>{loc.name}</h3>
-                  {loc.camerasOnline !== null && (
-                    <span
-                      className={`${styles.onlineDot} ${loc.camerasOnline ? styles.onlineDotOnline : styles.onlineDotOffline}`}
-                      title={loc.camerasOnline ? t("online") : t("offline")}
-                    />
-                  )}
-                </div>
+              <div className={styles.locHead}>
+                <h3 className={styles.locName} title={loc.name}>
+                  {loc.name}
+                </h3>
+                {loc.camerasOnline !== null && (
+                  <span
+                    className={`${styles.locStatus} ${loc.camerasOnline ? styles.locStatusOn : styles.locStatusOff}`}
+                    title={loc.camerasOnline ? t("online") : t("offline")}
+                  >
+                    <span className={styles.locStatusDot} />
+                  </span>
+                )}
               </div>
-              <div className={styles.cardBody}>
-                <div className={styles.statContent} style={{ marginBottom: 12 }}>
-                  <span className={styles.statLabel}>{t("dashRevenue")}</span>
-                  <span className={styles.statValue} style={{ color: "#6366f1" }}>
-                    {fmt(loc.revenue)} {currency}
-                  </span>
+
+              <div className={styles.locBig}>
+                <span className={styles.locBigLabel}>{t("dashRevenue")}</span>
+                <span className={styles.locBigValue}>
+                  {fmt(loc.revenue)} <small>{currency}</small>
+                </span>
+              </div>
+
+              <div className={styles.locStats}>
+                <div className={styles.locStat}>
+                  <Tag size={15} className={styles.locStatIcon} />
+                  <div>
+                    <span className={styles.locStatLabel}>{t("dashTariff")}</span>
+                    <span className={styles.locStatVal}>
+                      {loc.tariff ? `${fmt(loc.tariff.base_price)} ${currency}` : "—"}
+                    </span>
+                  </div>
                 </div>
-                <div className={styles.occHeader}>
-                  <span className={styles.occLabel}>{t("dashTariff")}</span>
-                  <span className={styles.occSpots}>
-                    <b>{loc.tariff ? `${fmt(loc.tariff.base_price)} ${currency}` : "—"}</b>
-                  </span>
-                </div>
-                <div className={styles.occHeader} style={{ marginTop: 6 }}>
-                  <span className={styles.occLabel}>{t("dashParkings")}</span>
-                  <span className={styles.occSpots}>
-                    <b>{loc.parkings}</b>
-                  </span>
+                <div className={styles.locStat}>
+                  <Car size={15} className={styles.locStatIcon} />
+                  <div>
+                    <span className={styles.locStatLabel}>{t("dashParkings")}</span>
+                    <span className={styles.locStatVal}>{fmt(loc.parkings)}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -267,20 +373,6 @@ const HomePage = () => {
         </div>
       )}
 
-      {modalParking && (
-        <SessionsModal
-          parking={modalParking}
-          range={modalRange ?? range}
-          currency={currency}
-          onClose={() => {
-            setModalParking(null);
-            setModalRange(null);
-          }}
-          canDelete={canDelete}
-          canEdit={canEdit}
-          closedOnly={closedOnly}
-        />
-      )}
     </div>
   );
 };

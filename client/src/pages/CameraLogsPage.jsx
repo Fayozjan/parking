@@ -4,9 +4,11 @@ import { usePermissions } from "../hooks/usePermissions";
 import { getCameraLogs, getCamerasList, getActiveLocations } from "../api";
 import Loading from "../components/Loading";
 import Pagination from "../components/Pagination";
-import PageHeader from "../components/PageHeader";
+import PageHero from "../components/PageHero";
 import { Icons } from "../icons/icons";
-import { Camera, X } from "lucide-react";
+import { Camera, FilterX, X } from "lucide-react";
+import UzPlate from "../components/UzPlate";
+import Dropdown from "../components/Dropdown";
 import styles from "./CameraLogsPage.module.scss";
 
 const CameraLogsPage = () => {
@@ -128,12 +130,10 @@ const CameraLogsPage = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className={styles.main}>
-          <PageHeader
+        <div className={`${styles.main} settings-page`}>
+          <PageHero
             icon={Camera}
             title={t("camera-logs")}
-            subtitle={t("pageSubtitleCameraLogs")}
-            color="#0ea5e9"
           />
           <div className={styles.mainHeader}>
             <div className={styles.filters}>
@@ -147,44 +147,45 @@ const CameraLogsPage = () => {
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
 
-              <select
+              <Dropdown
+                className={styles.filterDropdown}
+                minWidth={150}
                 value={filters.location_id}
-                onChange={(e) =>
-                  setFilters((f) => ({ ...f, location_id: e.target.value }))
+                options={[
+                  { value: "", label: t("allLocations") },
+                  ...locations.map((loc) => ({ value: String(loc.id), label: loc.name })),
+                ]}
+                onChange={(location_id) =>
+                  setFilters((f) => ({ ...f, location_id }))
                 }
-              >
-                <option value="">{t("allLocations")}</option>
-                {locations.map((loc) => (
-                  <option key={loc.id} value={loc.id}>
-                    {loc.name}
-                  </option>
-                ))}
-              </select>
+              />
 
-              <select
+              <Dropdown
+                className={styles.filterDropdown}
+                minWidth={150}
                 value={filters.camera_id}
-                onChange={(e) =>
-                  setFilters((f) => ({ ...f, camera_id: e.target.value }))
+                options={[
+                  { value: "", label: `${t("cameraLogCamera")} — ${t("filterAll")}` },
+                  ...cameras.map((cam) => ({ value: String(cam.id), label: cam.name })),
+                ]}
+                onChange={(camera_id) =>
+                  setFilters((f) => ({ ...f, camera_id }))
                 }
-              >
-                <option value="">{t("cameraLogCamera")} — {t("filterAll")}</option>
-                {cameras.map((cam) => (
-                  <option key={cam.id} value={cam.id}>
-                    {cam.name}
-                  </option>
-                ))}
-              </select>
+              />
 
-              <select
+              <Dropdown
+                className={styles.filterDropdown}
+                minWidth={150}
                 value={filters.was_processed}
-                onChange={(e) =>
-                  setFilters((f) => ({ ...f, was_processed: e.target.value }))
+                options={[
+                  { value: "", label: `${t("cameraLogStatus")} — ${t("filterAll")}` },
+                  { value: "true", label: t("cameraLogProcessed") },
+                  { value: "false", label: t("cameraLogSkipped") },
+                ]}
+                onChange={(was_processed) =>
+                  setFilters((f) => ({ ...f, was_processed }))
                 }
-              >
-                <option value="">{t("cameraLogStatus")} — {t("filterAll")}</option>
-                <option value="true">{t("cameraLogProcessed")}</option>
-                <option value="false">{t("cameraLogSkipped")}</option>
-              </select>
+              />
 
               <input
                 type="date"
@@ -209,8 +210,13 @@ const CameraLogsPage = () => {
               <button className={styles.searchBtn} onClick={handleSearch}>
                 {t("search")}
               </button>
-              <button className={styles.resetBtn} onClick={handleReset}>
-                {t("resetAllFilters")}
+              <button
+                className={styles.resetBtn}
+                onClick={handleReset}
+                title={t("resetAllFilters")}
+                aria-label={t("resetAllFilters")}
+              >
+                <FilterX size={16} />
               </button>
             </div>
 
@@ -240,6 +246,7 @@ const CameraLogsPage = () => {
                   <th>{t("photo")}</th>
                   <th>{t("cameraLogPlate")}</th>
                   <th>{t("cameraLogConfidence")}</th>
+                  <th>{t("cameraLogAi")}</th>
                   <th>{t("cameraLogCamera")}</th>
                   <th>{t("cameraLogMac")}</th>
                   <th>{t("cameraLogStatus")}</th>
@@ -267,7 +274,9 @@ const CameraLogsPage = () => {
                           <span className={styles.noPhoto}>—</span>
                         )}
                       </td>
-                      <td className={styles.plate}>{row.license_plate}</td>
+                      <td className={styles.plate}>
+                        <UzPlate plate={row.license_plate} size="sm" />
+                      </td>
                       <td>
                         <span
                           className={`${styles.confidenceBadge} ${
@@ -278,6 +287,30 @@ const CameraLogsPage = () => {
                         >
                           {row.confidence_level}%
                         </span>
+                      </td>
+                      <td>
+                        {row.plate_consensus ? (
+                          <div className={styles.aiCell}>
+                            {row.ai_plate && (
+                              <span
+                                className={`${styles.aiPlate} ${
+                                  row.ai_plate === row.license_plate ? styles.aiMatch : styles.aiDiff
+                                }`}
+                              >
+                                {row.ai_plate}
+                                {row.ai_confidence != null && <small> {row.ai_confidence}%</small>}
+                              </span>
+                            )}
+                            <span className={styles.aiMeta}>
+                              {t(`aiConsensus_${row.plate_consensus}`)}
+                              {row.ai_direction &&
+                                ` · ${row.ai_direction === "forward" ? t("aiMoveForward") : t("aiMoveReverse")}`}
+                              {row.direction_consensus === "ai" && " · ⇄"}
+                            </span>
+                          </div>
+                        ) : (
+                          "—"
+                        )}
                       </td>
                       <td>{row.camera_name ?? "—"}</td>
                       <td className={styles.mac}>{row.mac_address}</td>
@@ -305,7 +338,7 @@ const CameraLogsPage = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="10">{t("noData")}</td>
+                    <td colSpan="11">{t("noData")}</td>
                   </tr>
                 )}
               </tbody>

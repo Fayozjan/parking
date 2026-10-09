@@ -63,26 +63,26 @@
 .statGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
 }
 
 .statCard {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 9px;
   background: var(--card-bg);
   border: 0.5px solid var(--tg-separator);
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 12px;
+  padding: 8px 10px;
   min-width: 0;
   overflow: hidden;
 }
 
 .statIconWrap {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,7 +92,7 @@
 .statContent {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 1px;
   min-width: 0;
 }
 

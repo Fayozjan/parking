@@ -35,6 +35,18 @@
   }
 }
 
+// Страницы «Настройки»
+:global(.settings-page) .downloadBtn {
+  width: 44px;
+  height: 34px;
+  border-color: var(--border-color);
+  border-radius: 10px;
+
+  &:hover {
+    border-color: var(--third-color);
+  }
+}
+
 .spinner {
   display: inline-block;
   width: 15px;

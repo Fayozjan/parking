@@ -40,16 +40,12 @@ export async function seedData(prisma) {
     create: { name: "home", path: "/home", sort_order: 1 },
   });
 
-  await prisma.menus.upsert({
-    where: { name: "finance" },
-    update: {},
-    create: {
-      name: "finance",
-      path: "/finance",
-      sort_order: 2,
-      module: "finance",
-    },
-  });
+  // Меню "Финансы" убрано из меню — чистим из БД, если осталось от прошлых сидов
+  const financeMenu = await prisma.menus.findUnique({ where: { name: "finance" } });
+  if (financeMenu) {
+    await prisma.user_menu_access.deleteMany({ where: { menu_id: financeMenu.id } });
+    await prisma.menus.delete({ where: { id: financeMenu.id } });
+  }
 
   await prisma.menus.upsert({
     where: { name: "vehicle-passes" },
@@ -71,6 +67,7 @@ export async function seedData(prisma) {
   const settingsChildren = [
     { name: "users", path: "/users", sort_order: 1 },
     { name: "locations", path: "/locations", sort_order: 2 },
+    { name: "gates", path: "/gates", sort_order: 3 },
     { name: "vehicle-cameras", path: "/vehicle-cameras", sort_order: 4 },
     { name: "vehicle-whitelist", path: "/vehicle-whitelist", sort_order: 5 },
     { name: "camera-logs", path: "/camera-logs", sort_order: 6 },

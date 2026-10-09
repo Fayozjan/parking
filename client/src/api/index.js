@@ -9,3 +9,4 @@ export * from "./locationTariffs";
 export * from "./finance";
 export * from "./vehicleWhitelist";
 export * from "./cameraLogs";
+export * from "./gates";

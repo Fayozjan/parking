@@ -116,14 +116,66 @@ model locations {
   updated_at        DateTime @default(now()) @db.Timestamptz(6)
 
   cameras               anpr_cameras[]
+  gates                 gates[]
   vehiclePasses         vehicle_passes[]
   locationTariffHistory location_tariff_history[]
+}
+
+// Ворота локации. Камеры въезда и выезда в одних воротах работают совместно:
+// если «своя» камера не зафиксировала проезд, но парная увидела машину в обратную сторону,
+// проезд сохраняется по событию парной камеры (см. gateCooperation.service.js)
+model gates {
+  id                  Int      @id @default(autoincrement())
+  location_id         Int
+  name                String   @db.VarChar(100)
+  status              Boolean  @default(true)
+  // Совместная работа камер ворот
+  coop_enabled        Boolean  @default(true)
+  // Сколько секунд ждём событие «своей» камеры, прежде чем принять событие парной
+  coop_window_sec     Int      @default(15)
+  // Сколько секунд после проезда в нормальную сторону обратное движение считается манёвром, а не проездом
+  maneuver_window_sec Int      @default(60)
+  added_at            DateTime @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime @default(now()) @db.Timestamptz(6)
+
+  location      locations             @relation(fields: [location_id], references: [id], onDelete: Cascade)
+  cameras       anpr_cameras[]
+  pendingEvents gate_pending_events[]
+
+  @@unique([location_id, name])
+  @@index([location_id])
+}
+
+// Событие камеры, которое может оказаться проездом в обратную сторону. Решение принимает воркер
+// после coop_window_sec: за это время парная камера могла записать тот же проезд сама.
+model gate_pending_events {
+  id            Int      @id @default(autoincrement())
+  gate_id       Int
+  camera_id     Int
+  location_id   Int
+  camera_log_id Int?
+  plate_number  String   @db.VarChar(20)
+  // Направление, которое получит проезд: у камеры входа обратное движение = exit, и наоборот
+  direction     String   @db.VarChar(10)
+  event_date    DateTime @db.Timestamptz(6)
+  photo         String?
+  confidence    Int?
+  due_at        DateTime @db.Timestamptz(6)
+  // pending → saved | dropped
+  status        String   @default("pending") @db.VarChar(20)
+  drop_reason   String?  @db.VarChar(50)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  gate gates @relation(fields: [gate_id], references: [id], onDelete: Cascade)
+
+  @@index([status, due_at])
 }
 
 model anpr_cameras {
   id                 Int       @id @default(autoincrement())
   name               String?   @db.VarChar(100)
   location_id        Int
+  gate_id            Int?
   camera_ip          String    @unique @db.VarChar(50)
   mac_address        String?   @unique @db.VarChar(17)
   port               Int?      @default(80)
@@ -141,20 +193,41 @@ model anpr_cameras {
   updated_at         DateTime  @default(now()) @db.Timestamptz(6)
 
   location      locations        @relation(fields: [location_id], references: [id], onDelete: Cascade)
+  gate          gates?           @relation(fields: [gate_id], references: [id], onDelete: SetNull)
   vehiclePasses vehicle_passes[]
+
+  @@index([gate_id])
 }
 
 model vehicle_passes {
-  id             Int      @id @default(autoincrement())
-  location_id    Int
-  camera_id      Int?
-  plate_number   String   @db.VarChar(20)
-  direction      String?  @db.VarChar(10)
-  photo          String?
-  date           DateTime @db.Timestamptz(6)
-  created_at     DateTime @default(now()) @db.Timestamptz(6)
-  is_whitelisted Boolean  @default(false)
-  is_hidden      Boolean  @default(false)
+  id                 Int      @id @default(autoincrement())
+  location_id        Int
+  camera_id          Int?
+  plate_number       String   @db.VarChar(20)
+  direction          String?  @db.VarChar(10)
+  photo              String?
+  date               DateTime @db.Timestamptz(6)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  is_whitelisted     Boolean  @default(false)
+  is_hidden          Boolean  @default(false)
+  // Проезд сохранён по событию парной камеры ворот, а не «своей» (совместная работа камер)
+  inferred           Boolean  @default(false)
+  // Уверенность камеры (0–100) на момент фиксации; null у старых записей
+  confidence         Int?
+  // Тот же номер увидела и вторая камера ворот
+  gate_confirmed     Boolean  @default(false)
+  // Рейтинг достоверности 0–100: confidence + бонус за подтверждение второй камерой
+  score              Int?
+  // Номер камеры до исправления по AI (null — номер не менялся)
+  plate_original     String?  @db.VarChar(20)
+  // Камера и AI прочитали разные номера, решить не удалось — нужна ручная проверка
+  plate_conflict     Boolean  @default(false)
+  // Откуда взято направление проезда: camera | ai | default (камера не сообщила движение — принято направление камеры)
+  direction_source   String?  @db.VarChar(10)
+  // Направление до исправления по AI (null — не менялось)
+  direction_original String?  @db.VarChar(10)
+  // Проезд противоречит истории номера: выезд без въезда или въезд для машины, которая уже внутри
+  history_conflict   Boolean  @default(false)
 
   location locations     @relation(fields: [location_id], references: [id])
   camera   anpr_cameras? @relation(fields: [camera_id], references: [id])
@@ -186,18 +259,28 @@ model vehicle_whitelist {
 }
 
 model camera_logs {
-  id               Int      @id @default(autoincrement())
-  mac_address      String   @db.VarChar(17)
-  license_plate    String   @db.VarChar(30)
-  confidence_level Int
-  event_date       DateTime @db.Timestamptz(6)
-  camera_id        Int?
-  camera_name      String?  @db.VarChar(100)
-  location_id      Int?
-  photo            String?
-  was_processed    Boolean  @default(false)
-  skip_reason      String?  @db.VarChar(50)
-  created_at       DateTime @default(now()) @db.Timestamptz(6)
+  id                  Int      @id @default(autoincrement())
+  mac_address         String   @db.VarChar(17)
+  license_plate       String   @db.VarChar(30)
+  confidence_level    Int
+  // Движение относительно камеры (forward/reverse), null — камера не сообщила
+  movement_direction  String?  @db.VarChar(10)
+  event_date          DateTime @db.Timestamptz(6)
+  camera_id           Int?
+  camera_name         String?  @db.VarChar(100)
+  location_id         Int?
+  photo               String?
+  was_processed       Boolean  @default(false)
+  skip_reason         String?  @db.VarChar(50)
+  // Сверка с AI после сохранения (ai-service): что прочитал AI и чем закончилось голосование
+  ai_plate            String?  @db.VarChar(30)
+  ai_confidence       Int?
+  ai_direction        String?  @db.VarChar(10)
+  // agree | camera | ai | known | conflict | ai_no_plate | ai_unavailable
+  plate_consensus     String?  @db.VarChar(20)
+  // agree | camera | ai | none
+  direction_consensus String?  @db.VarChar(20)
+  created_at          DateTime @default(now()) @db.Timestamptz(6)
 
   @@index([mac_address])
   @@index([camera_id])

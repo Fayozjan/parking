@@ -19,7 +19,7 @@ import DownloadButton from "../components/DownloadButton";
 import Search from "../components/Search";
 
 import { ActionCell } from "../components/ActionButtons";
-import PageHeader from "../components/PageHeader";
+import PageHero from "../components/PageHero";
 import { Car, CheckCircle, XCircle, MapPin } from "lucide-react";
 import { Icons } from "../icons/icons";
 import styles from "./LocationsPage.module.scss";
@@ -152,8 +152,8 @@ const LocationsPage = () => {
       {loading ? (
         <Loading />
       ) : (
-        <div className={styles.main}>
-          <PageHeader icon={MapPin} title={t("locations")} subtitle={t("pageSubtitleLocations")} color="#6366f1" />
+        <div className={`${styles.main} settings-page`}>
+          <PageHero icon={MapPin} title={t("locations")} />
           <div className={styles.statsGrid}>
             <StatWidget icon={Car} color="#6366f1" label={t("locations")} value={totalItems} />
             <StatWidget

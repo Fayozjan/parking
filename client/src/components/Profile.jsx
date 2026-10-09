@@ -5,6 +5,8 @@ import styles from "./Profile.module.scss";
 import CenterModal from "./CenterModal";
 import OverlaySidebar from "./OverlaySidebar";
 import ProfileSettings from "./ProfileSettings";
+import UserAvatar from "./UserAvatar";
+import { UserRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 // Иконки (можно заменить на свою библиотеку)
@@ -19,6 +21,20 @@ const IconSettings = () => (
   >
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+  </svg>
+);
+
+const IconHome = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M3 10.5 12 3l9 7.5" />
+    <path d="M5 9.5V21h14V9.5" />
   </svg>
 );
 
@@ -59,6 +75,7 @@ const Profile = ({ type = "full" }) => {
   const logout = useAuthStore((state) => state.logout);
   const isMini = type === "mini";
   const isTop = type === "top";
+  const isDock = type === "dock";
   const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -100,16 +117,12 @@ const Profile = ({ type = "full" }) => {
   return (
     <div
       ref={wrapperRef}
-      className={`${styles.profileWrapper} ${isMini ? styles.mini : ""} ${isTop ? styles.top : ""} ${isOpen ? styles.active : ""}`}
+      className={`${styles.profileWrapper} ${isMini ? styles.mini : ""} ${isTop ? styles.top : ""} ${isDock ? styles.dock : ""} ${isOpen ? styles.active : ""}`}
     >
       <div className={`${styles.popup} ${isOpen ? styles.popupVisible : ""}`}>
         <div className={styles.popupHeader}>
           <div className={styles.popupAvatar}>
-            {user?.photo ? (
-              <img src={`/api/users/image/${user.photo}`} />
-            ) : (
-              <span>{user?.first_name?.[0] || "U"}</span>
-            )}
+            <UserAvatar user={user} />
           </div>
           <div className={styles.popupUserInfo}>
             <div className={styles.popupName}>
@@ -121,6 +134,18 @@ const Profile = ({ type = "full" }) => {
         <div className={styles.popupDivider} />
 
         <div className={styles.popupMenu}>
+          {isDock && (
+            <button
+              className={styles.popupItem}
+              onClick={() => {
+                setIsOpen(false);
+                navigate("/home");
+              }}
+            >
+              <IconHome />
+              <span>{t("home")}</span>
+            </button>
+          )}
           <button className={styles.popupItem} onClick={() => handleSettings()}>
             <IconSettings />
             <span>{t("settings")}</span>
@@ -145,23 +170,32 @@ const Profile = ({ type = "full" }) => {
             <span>{t("logout")}</span>
           </button>
         </div>
+
+        <div className={styles.popupDivider} />
+
+        <div className={styles.popupVersion}>v{__APP_VERSION__}</div>
       </div>
 
       {/* Триггер */}
       <div className={styles.profile} onClick={handleToggle}>
-        <div className={styles.profileAvatar}>
-          {user?.photo ? (
-            <img src={`/api/users/image/${user.photo}`} />
-          ) : (
-            <span>{user?.first_name?.[0] || "U"}</span>
-          )}
-        </div>
-        <div className={styles.profileInfo}>
-          <div className={styles.profileName}>{user?.first_name || "User"}</div>
-          <div className={styles.profileRole}>
-            {user?.last_name || "Employee"}
+        {isDock ? (
+          // Нижняя панель: круглая кнопка с иконкой, как остальные кнопки
+          <div className={styles.dockBtn}>
+            <UserRound size={22} />
           </div>
-        </div>
+        ) : (
+          <>
+            <div className={styles.profileAvatar}>
+              <UserAvatar user={user} />
+            </div>
+            <div className={styles.profileInfo}>
+              <div className={styles.profileName}>{user?.first_name || "User"}</div>
+              <div className={styles.profileRole}>
+                {user?.last_name || "Employee"}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <CenterModal

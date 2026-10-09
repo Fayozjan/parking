@@ -12,6 +12,7 @@ import financeRoutes from "../modules/finance/finance.routes.js";
 import dashboardRoutes from "../modules/dashboard/dashboard.routes.js";
 import vehicleWhitelistRoutes from "../modules/vehicleWhitelist/vehicleWhitelist.routes.js";
 import cameraLogsRoutes from "../modules/cameraLogs/cameraLogs.routes.js";
+import gatesRoutes from "../modules/gates/gates.routes.js";
 
 const router = Router();
 
@@ -31,5 +32,6 @@ router.use("/finance", financeRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/vehicle-whitelist", vehicleWhitelistRoutes);
 router.use("/camera-logs", cameraLogsRoutes);
+router.use("/gates", gatesRoutes);
 
 export default router;
