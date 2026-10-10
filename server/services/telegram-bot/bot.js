@@ -7,7 +7,9 @@ import { setupCommands } from "./src/handlers/commandHandler.js";
 import { sendDatabaseBackup } from "./src/services/backupService.js";
 import { notificationsOutboxService } from "../../modules/notificationsOutbox/notificationsOutbox.service.js";
 
-const bot = new Bot(process.env.BOT_TOKEN);
+// Без BOT_TOKEN бот не создаётся (иначе grammy падает "Empty token!" при импорте);
+// startTelegramBot вызывается из server.js только если токен задан.
+const bot = process.env.BOT_TOKEN ? new Bot(process.env.BOT_TOKEN) : null;
 
 function initBackUpScheduler() {
   cron.schedule(

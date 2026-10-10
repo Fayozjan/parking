@@ -141,6 +141,19 @@
         text-align: center;
       }
 
+      .checkCol {
+        width: 36px;
+        padding-left: 10px;
+        padding-right: 0;
+      }
+
+      .rowCheck {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: var(--third-color, #6366f1);
+      }
+
       .clickableRow {
         cursor: pointer;
         transition: background 0.1s;

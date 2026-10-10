@@ -6,58 +6,36 @@ import { usePermissions } from "../hooks/usePermissions";
 import { vehicleWhitelistApi, getActiveLocations } from "../api";
 import { useAlertStore } from "../stores/alertStore";
 
-import Button from "../components/Button";
 import Badge from "../components/Badge";
 import Pagination from "../components/Pagination";
 import Loading from "../components/Loading";
 import SortArrow from "../components/SortArrow";
 import CenterModal from "../components/CenterModal";
 import OverlaySidebar from "../components/OverlaySidebar";
-import Search from "../components/Search";
-import DownloadButton from "../components/DownloadButton";
 import AddVehicleWhitelist from "../components/AddVehicleWhitelist";
 import WhitelistFolderBar, { FOLDER_ICON_COLOR } from "../components/WhitelistFolderBar";
 
 import styles from "./VehicleWhitelistPage.module.scss";
 import { ActionCell } from "../components/ActionButtons";
-import PageHero from "../components/PageHero";
+import ListHero, {
+  FilterField,
+  FilterSegment,
+  FilterGrid,
+  StatsLine,
+  heroControlStyles as hc,
+} from "../components/ListHero";
 import {
   ShieldCheck,
   ShieldOff,
   List,
   FileDown,
+  Upload,
   FolderTree,
   ChevronDown,
   ChevronRight,
   Folder,
   FolderOpen,
 } from "lucide-react";
-import { Icons } from "../icons/icons";
-
-const StatWidget = ({ icon: Icon, color, label, value, sub, progress }) => (
-  <div className={styles.statWidget}>
-    <div className={styles.statWidgetInner}>
-      <div className={styles.statWidgetIcon} style={{ background: color + "18" }}>
-        <Icon size={15} color={color} strokeWidth={2} />
-      </div>
-      <div className={styles.statWidgetContent}>
-        <span className={styles.statWidgetLabel}>{label}</span>
-        <span className={styles.statWidgetValue} style={{ color }}>
-          {value}
-          {sub && <span className={styles.statWidgetSub}> {sub}</span>}
-        </span>
-      </div>
-    </div>
-    {progress != null && (
-      <div className={styles.statWidgetProgressTrack}>
-        <div
-          className={styles.statWidgetProgressFill}
-          style={{ width: `${Math.min(100, Math.max(0, progress))}%`, background: color }}
-        />
-      </div>
-    )}
-  </div>
-);
 
 const VehicleWhitelistPage = () => {
   const [data, setData] = useState([]);
@@ -379,36 +357,90 @@ const VehicleWhitelistPage = () => {
 
   return (
     <div className={styles.whitelistPage}>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className={`${styles.main} settings-page`}>
-          <PageHero icon={ShieldCheck} title={t("vehicle-whitelist")} />
-          <div className={styles.statsGrid}>
-              <StatWidget
-                icon={List}
-                color="#6366f1"
-                label={t("vehicle-whitelist")}
-                value={totalItems}
+      <div className={`${styles.main} settings-page`}>
+        <ListHero
+          icon={ShieldCheck}
+          title={t("vehicle-whitelist")}
+          pagination={!groupByFolder ? (
+            <Pagination
+              currentPage={currentPage}
+              pageSize={pageSize}
+              totalItems={totalItems}
+              totalPages={totalPages}
+              handleChangePageSize={handleChangePageSize}
+              handlePageChange={handlePageChange}
+            />
+          ) : null}
+          searchValue={formData.search}
+          onSearchInput={(v) => setFormData((f) => ({ ...f, search: v }))}
+          onSearch={() => handleSearch()}
+          filterContent={
+            <FilterField label={t("status")}>
+              <FilterSegment
+                value={formData.status}
+                options={[
+                  { value: "", label: t("all") },
+                  { value: "true", label: t("enabled") },
+                  { value: "false", label: t("disabled") },
+                ]}
+                onChange={(status) => setFormData((f) => ({ ...f, status }))}
               />
-              <StatWidget
-                icon={ShieldCheck}
-                color="#10b981"
-                label={t("whitelistModeNoTariff")}
-                value={noTariffCount}
-                sub={`/ ${data.length}`}
-                progress={data.length > 0 ? (noTariffCount / data.length) * 100 : 0}
+            </FilterField>
+          }
+          activeFilters={formData.status ? 1 : 0}
+          onApplyFilters={() => handleSearch()}
+          onResetFilters={() => {
+            const next = { ...formData, status: "" };
+            setFormData(next);
+            handleSearch(next);
+          }}
+          onAdd={canAdd ? () => setModalType("add") : undefined}
+          onRefresh={refreshAll}
+        >
+          <button
+            type="button"
+            className={`${hc.heroBtn} ${groupByFolder ? hc.heroBtnOn : ""}`}
+            title={t("groupByFolder")}
+            onClick={() => {
+              setGroupByFolder((prev) => !prev);
+              setCurrentPage(1);
+            }}
+          >
+            <FolderTree size={15} />
+            <span>{t("groupByFolder")}</span>
+          </button>
+          {canAdd && (
+            <>
+              <button
+                type="button"
+                className={hc.heroBtn}
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importing}
+              >
+                <Upload size={15} />
+                <span>{importing ? t("importing") : t("importExcel")}</span>
+              </button>
+              <button
+                type="button"
+                className={hc.heroIconBtn}
+                title={t("downloadTemplate")}
+                aria-label={t("downloadTemplate")}
+                onClick={handleDownloadTemplate}
+              >
+                <FileDown size={16} />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".xlsx,.xls"
+                style={{ display: "none" }}
+                onChange={handleImportExcel}
               />
-              <StatWidget
-                icon={ShieldOff}
-                color="#ef4444"
-                label={t("whitelistModeHidden")}
-                value={hiddenCount}
-                sub={`/ ${data.length}`}
-              />
-            </div>
+            </>
+          )}
+        </ListHero>
 
-          <WhitelistFolderBar
+        <WhitelistFolderBar
             folders={folders}
             activeFolder={formData.folder_id}
             onSelect={handleSelectFolder}
@@ -419,89 +451,10 @@ const VehicleWhitelistPage = () => {
             canEdit={canEdit}
             canDelete={canDelete}
           />
-
-          <div className={styles.mainHeader}>
-            <div className={styles.filterWrapper}>
-              <Search formData={formData} setFormData={setFormData} onSearch={handleSearch} />
-
-              <div className={styles.statusFilter}>
-                {[
-                  { value: "", label: t("all") },
-                  { value: "true", label: t("enabled") },
-                  { value: "false", label: t("disabled") },
-                ].map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={`${styles.statusBtn} ${formData.status === value ? (value === "false" ? styles.statusBtnActiveDanger : value === "true" ? styles.statusBtnActiveSuccess : styles.statusBtnActive) : ""}`}
-                    onClick={() => {
-                      const updated = { ...formData, status: value };
-                      setFormData(updated);
-                      handleSearch(updated);
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {!groupByFolder && (
-              <Pagination
-                currentPage={currentPage}
-                pageSize={pageSize}
-                totalItems={totalItems}
-                totalPages={totalPages}
-                handleChangePageSize={handleChangePageSize}
-                handlePageChange={handlePageChange}
-              />
-            )}
-
-            <div className={styles.buttonsWrapper}>
-              <button
-                type="button"
-                className={`${styles.refreshBtn} ${groupByFolder ? styles.refreshBtnActive : ""}`}
-                title={t("groupByFolder")}
-                onClick={() => {
-                  setGroupByFolder((prev) => !prev);
-                  setCurrentPage(1);
-                }}
-              >
-                <FolderTree size={16} />
-                <span>{t("groupByFolder")}</span>
-              </button>
-              {canAdd && (
-                <>
-                  <Button text={t("add")} onClick={() => setModalType("add")} />
-                  <Button
-                    text={importing ? t("importing") : t("importExcel")}
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={importing}
-                  />
-                  <button
-                    className={styles.refreshBtn}
-                    title={t("downloadTemplate")}
-                    onClick={handleDownloadTemplate}
-                  >
-                    <FileDown size={16} />
-                    <span>{t("downloadTemplate")}</span>
-                  </button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".xlsx,.xls"
-                    style={{ display: "none" }}
-                    onChange={handleImportExcel}
-                  />
-                </>
-              )}
-              <div className={styles.refreshBtn} onClick={refreshAll}>
-                {Icons.refresh}
-              </div>
-              {data.length > 0 && <DownloadButton text={t("save")} />}
-            </div>
-          </div>
-
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
           <div className={styles.tableContainer}>
             <table className={styles.table}>
               <thead>
@@ -534,8 +487,16 @@ const VehicleWhitelistPage = () => {
               {renderBody()}
             </table>
           </div>
-        </div>
-      )}
+          </>
+        )}
+        <StatsLine
+          items={[
+            { label: t("vehicle-whitelist"), value: totalItems },
+            { label: t("whitelistModeNoTariff"), value: noTariffCount, sub: data.length, tone: "ok" },
+            { label: t("whitelistModeHidden"), value: hiddenCount, sub: data.length, tone: "bad" },
+          ]}
+        />
+      </div>
 
       <CenterModal
         isOpen={showModal}

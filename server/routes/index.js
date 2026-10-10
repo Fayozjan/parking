@@ -13,6 +13,7 @@ import dashboardRoutes from "../modules/dashboard/dashboard.routes.js";
 import vehicleWhitelistRoutes from "../modules/vehicleWhitelist/vehicleWhitelist.routes.js";
 import cameraLogsRoutes from "../modules/cameraLogs/cameraLogs.routes.js";
 import gatesRoutes from "../modules/gates/gates.routes.js";
+import aiTrainingRoutes from "../modules/aiTraining/aiTraining.routes.js";
 
 const router = Router();
 
@@ -33,5 +34,6 @@ router.use("/dashboard", dashboardRoutes);
 router.use("/vehicle-whitelist", vehicleWhitelistRoutes);
 router.use("/camera-logs", cameraLogsRoutes);
 router.use("/gates", gatesRoutes);
+router.use("/ai-training", aiTrainingRoutes);
 
 export default router;

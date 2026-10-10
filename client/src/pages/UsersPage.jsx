@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { usePermissions } from "../hooks/usePermissions";
 
 import { deleteUserById, getUsers } from "../api";
 
-import Button from "../components/Button";
 import Badge from "../components/Badge";
 import AddUser from "../components/AddUser";
 import EditUser from "../components/EditUser";
@@ -14,45 +13,12 @@ import Loading from "../components/Loading";
 import SortArrow from "../components/SortArrow";
 import OverlaySidebar from "../components/OverlaySidebar";
 import CenterModal from "../components/CenterModal";
-import DownloadButton from "../components/DownloadButton";
 
-import Search from "../components/Search";
 import styles from "./UsersPage.module.scss";
+import hc from "../styles/heroControls.module.scss";
 import { ActionCell } from "../components/ActionButtons";
 import PageHero from "../components/PageHero";
-import { Users, UserCheck, UserX } from "lucide-react";
-import { Icons } from "../icons/icons";
-
-const StatWidget = ({ icon: Icon, color, label, value, sub, progress }) => (
-  <div className={styles.statWidget}>
-    <div className={styles.statWidgetInner}>
-      <div
-        className={styles.statWidgetIcon}
-        style={{ background: color + "18" }}
-      >
-        <Icon size={15} color={color} strokeWidth={2} />
-      </div>
-      <div className={styles.statWidgetContent}>
-        <span className={styles.statWidgetLabel}>{label}</span>
-        <span className={styles.statWidgetValue} style={{ color }}>
-          {value}
-          {sub && <span className={styles.statWidgetSub}> {sub}</span>}
-        </span>
-      </div>
-    </div>
-    {progress != null && (
-      <div className={styles.statWidgetProgressTrack}>
-        <div
-          className={styles.statWidgetProgressFill}
-          style={{
-            width: `${Math.min(100, Math.max(0, progress))}%`,
-            background: color,
-          }}
-        />
-      </div>
-    )}
-  </div>
-);
+import { Users, Filter, Plus, RefreshCw, Download, Search } from "lucide-react";
 
 const accessLevelMap = {
   absolute: "access_absolute",
@@ -72,6 +38,10 @@ const UsersPage = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [sortField, setSortField] = useState("username");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef(null);
+  const filterBtnRef = useRef(null);
+  const searchTimer = useRef(null);
   const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
@@ -187,95 +157,157 @@ const UsersPage = () => {
     fetchData(1, data, pageSize);
   };
 
+  const onSearchChange = (e) => {
+    const next = { ...formData, search: e.target.value };
+    setFormData(next);
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => handleSearch(next), 1000);
+  };
+
+  const onSearchKey = (e) => {
+    if (e.key !== "Enter") return;
+    clearTimeout(searchTimer.current);
+    handleSearch(formData);
+  };
+
+  // Окно фильтров: закрытие по клику вне и Escape
+  useEffect(() => {
+    if (!filterOpen) return;
+    const onDown = (e) => {
+      const el = e.target;
+      if (filterRef.current?.contains(el) || filterBtnRef.current?.contains(el)) return;
+      setFilterOpen(false);
+    };
+    const onKey = (e) => e.key === "Escape" && setFilterOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [filterOpen]);
+
+  const activeFilters = formData.status ? 1 : 0;
+  const activeCount = data.filter((x) => x.status === "active").length;
+
   return (
     <div className={styles.usersPage}>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className={`${styles.main} settings-page`}>
-          <PageHero icon={Users} title={t("users")} />
-          <div className={styles.statsGrid}>
-            <StatWidget
-              icon={Users}
-              color="#6366f1"
-              label={t("users")}
-              value={totalItems}
-            />
-            <StatWidget
-              icon={UserCheck}
-              color="#10b981"
-              label={t("activeCount")}
-              value={data.filter((x) => x.status === "active").length}
-              sub={`/ ${data.length}`}
-              progress={
-                data.length > 0
-                  ? (data.filter((x) => x.status === "active").length /
-                      data.length) *
-                    100
-                  : 0
-              }
-            />
-            <StatWidget
-              icon={UserX}
-              color="#ef4444"
-              label={t("inactiveCount")}
-              value={data.filter((x) => x.status !== "active").length}
-              sub={`/ ${data.length}`}
-            />
-          </div>
-          <div className={styles.mainHeader}>
-            <div className={styles.filterWrapper}>
-              <Search formData={formData} setFormData={setFormData} onSearch={handleSearch} />
+      <div className={`${styles.main} settings-page`}>
+        <div className={hc.heroWrap}>
+          <PageHero
+            icon={Users}
+            title={t("users")}
+            center={
+              <Pagination
+                currentPage={currentPage}
+                pageSize={pageSize}
+                totalItems={totalItems}
+                totalPages={totalPages}
+                handleChangePageSize={handleChangePageSize}
+                handlePageChange={handlePageChange}
+              />
+            }
+          >
+            <div className={hc.heroSearch}>
+              <Search size={15} />
+              <input
+                type="text"
+                placeholder={t("search")}
+                value={formData.search || ""}
+                onChange={onSearchChange}
+                onKeyDown={onSearchKey}
+              />
+            </div>
+            <button
+              type="button"
+              ref={filterBtnRef}
+              className={`${hc.heroBtn} ${filterOpen ? hc.heroBtnOn : ""}`}
+              onClick={() => setFilterOpen((v) => !v)}
+            >
+              <Filter size={15} />
+              <span>{t("filters")}</span>
+              {activeFilters > 0 && <span className={hc.filterCount}>{activeFilters}</span>}
+            </button>
+            {canAdd && (
+              <button type="button" className={hc.heroBtn} onClick={() => setModalType("add")}>
+                <Plus size={15} />
+                <span>{t("add")}</span>
+              </button>
+            )}
+            <button
+              type="button"
+              className={hc.heroIconBtn}
+              onClick={() => fetchData()}
+              title={t("refresh")}
+              aria-label={t("refresh")}
+            >
+              <RefreshCw size={16} />
+            </button>
+            {data.length > 0 && (
+              <button
+                type="button"
+                className={hc.heroIconBtn}
+                title={t("save")}
+                aria-label={t("save")}
+              >
+                <Download size={16} />
+              </button>
+            )}
+          </PageHero>
 
-              <div className={styles.statusFilter}>
-                {[
-                  { value: "", label: t("all") },
-                  { value: "true", label: t("enabled") },
-                  { value: "false", label: t("disabled") },
-                ].map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={`${styles.statusBtn} ${formData.status === value ? (value === "false" ? styles.statusBtnActiveDanger : value === "true" ? styles.statusBtnActiveSuccess : styles.statusBtnActive) : ""}`}
-                    onClick={() => {
-                      const updated = { ...formData, status: value };
-                      setFormData(updated);
-                      handleSearch(updated);
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
+          {filterOpen && (
+            <div className={hc.filterPopover} ref={filterRef}>
+              <div className={hc.field}>
+                <span>{t("status")}</span>
+                <div className={hc.segment}>
+                  {[
+                    { value: "", label: t("all") },
+                    { value: "true", label: t("enabled") },
+                    { value: "false", label: t("disabled") },
+                  ].map(({ value, label }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={formData.status === value ? hc.segmentOn : ""}
+                      onClick={() => setFormData((f) => ({ ...f, status: value }))}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className={hc.filterFoot}>
+                <button
+                  type="button"
+                  className={hc.filterReset}
+                  onClick={() => {
+                    const next = { ...formData, status: "" };
+                    setFormData(next);
+                    setFilterOpen(false);
+                    handleSearch(next);
+                  }}
+                >
+                  {t("resetAllFilters")}
+                </button>
+                <button
+                  type="button"
+                  className={hc.filterApply}
+                  onClick={() => {
+                    setFilterOpen(false);
+                    handleSearch(formData);
+                  }}
+                >
+                  {t("apply")}
+                </button>
               </div>
             </div>
+          )}
+        </div>
 
-            <Pagination
-              currentPage={currentPage}
-              pageSize={pageSize}
-              totalItems={totalItems}
-              totalPages={totalPages}
-              handleChangePageSize={handleChangePageSize}
-              handlePageChange={handlePageChange}
-            />
-
-            <div className={styles.buttonsWrapper}>
-              {canAdd && (
-                <Button text={t("add")} onClick={() => setModalType("add")} />
-              )}
-
-              <div className={styles.refreshBtn} onClick={() => fetchData()}>
-                {Icons.refresh}
-              </div>
-
-              {data.length > 0 && (
-                <DownloadButton
-                  text={t("save")}
-                  // onClick={() => exportEmployeesToExcel(data)}
-                />
-              )}
-            </div>
-          </div>
-
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
           <div className={styles.tableContainer}>
             <table className={styles.table}>
               <thead>
@@ -357,8 +389,23 @@ const UsersPage = () => {
               </tbody>
             </table>
           </div>
+          </>
+        )}
+
+        <div className={hc.statsLine}>
+          <span>
+            {t("users")} <b>{totalItems}</b>
+          </span>
+          <i />
+          <span className={hc.statOk}>
+            {t("activeCount")} <b>{activeCount}</b> / {data.length}
+          </span>
+          <i />
+          <span className={hc.statBad}>
+            {t("inactiveCount")} <b>{data.length - activeCount}</b> / {data.length}
+          </span>
         </div>
-      )}
+      </div>
       <CenterModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

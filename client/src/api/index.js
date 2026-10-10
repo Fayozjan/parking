@@ -10,3 +10,4 @@ export * from "./finance";
 export * from "./vehicleWhitelist";
 export * from "./cameraLogs";
 export * from "./gates";
+export * from "./aiTraining";

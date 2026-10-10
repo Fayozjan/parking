@@ -127,159 +127,6 @@
       transition: opacity 0.15s;
     }
 
-    // ── Controls bar (как панель периода на главной) ─
-    .controls {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 10px 0 8px;
-      padding: 10px 14px;
-      flex-shrink: 0;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color, rgba(162, 161, 168, 0.25));
-      border-radius: 14px;
-      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
-
-      // равные боковые колонки → пагинация строго по центру
-      .leftControls,
-      .rightControls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex: 1 1 0;
-        flex-wrap: wrap;
-      }
-
-      .rightControls {
-        justify-content: flex-end;
-      }
-
-      // поиск (корневой элемент компонента Search)
-      .leftControls > :first-child {
-        height: 34px;
-        border-radius: 999px;
-        padding: 0 14px;
-        border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
-        background: var(--card-bg);
-        box-shadow: none;
-
-        &:hover,
-        &:focus-within {
-          border-color: var(--third-color);
-          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-        }
-      }
-
-      // мультивыбор локаций
-      .locationGroup {
-        min-width: 190px;
-        max-width: 260px;
-
-        input {
-          height: 34px;
-          border-radius: 10px;
-          border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
-          background: var(--card-bg);
-          transition:
-            border-color 0.15s,
-            box-shadow 0.15s;
-
-          &:hover,
-          &:focus {
-            outline: none;
-            border-color: var(--third-color);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-          }
-        }
-      }
-
-      .filterGroup {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-
-      .dateInput {
-        height: 34px;
-        padding: 0 10px;
-        font-size: var(--font-small);
-        border-radius: 10px;
-        border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
-        background: var(--card-bg);
-        color: var(--text-color);
-        cursor: pointer;
-        box-sizing: border-box;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-
-        &:hover,
-        &:focus {
-          outline: none;
-          border-color: var(--third-color);
-          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-        }
-      }
-
-      .applyBtn {
-        height: 34px;
-        padding: 0 20px;
-        font-size: var(--font-small);
-        font-weight: 700;
-        border-radius: 999px;
-        border: none;
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
-        color: #fff;
-        cursor: pointer;
-        font-family: inherit;
-        white-space: nowrap;
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        transition:
-          transform 0.15s,
-          box-shadow 0.15s;
-
-        &:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
-        }
-      }
-
-      // кнопка «Добавить» (компонент Button)
-      .rightControls > button:not(.refreshBtn) {
-        height: 34px;
-        border-radius: 999px;
-        padding: 0 18px;
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-      }
-
-      .refreshBtn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
-        background: var(--card-bg);
-        cursor: pointer;
-        color: var(--text-secondary);
-        transition:
-          border-color 0.15s,
-          color 0.15s,
-          box-shadow 0.15s;
-
-        &:hover {
-          border-color: var(--third-color);
-          color: var(--third-color);
-          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-        }
-      }
-    }
-
     // ── View dropdown ──────────────────────────────
     .customDropdown {
       position: relative;
@@ -528,5 +375,244 @@
 @media (max-width: 720px) {
   .heroStatLabel {
     display: none;
+  }
+}
+
+// ── Поиск и фильтры в шапке (как на странице «Логи камер») ─────────────
+.heroWrap {
+  position: relative;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+.heroSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  width: 200px;
+  padding: 0 12px;
+  border-radius: 999px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid #fff;
+  color: #4338ca;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:focus-within {
+    background: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #1e1b4b;
+    font-size: var(--font-small);
+
+    &::placeholder {
+      color: #6b7280;
+    }
+  }
+}
+
+.heroBtn,
+.heroIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  box-sizing: border-box;
+  border: 1px solid #fff;
+  background: #fff;
+  color: #4338ca;
+  font-size: var(--font-small);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: #eef2ff;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.heroIconBtn {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+}
+
+.heroBtn.heroBtnOn {
+  background: #3730a3;
+  border-color: #3730a3;
+  color: #fff;
+}
+
+.filterCount {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+
+  .heroBtnOn & {
+    background: #fff;
+    color: #4338ca;
+  }
+}
+
+.filterPopover {
+  position: absolute;
+  top: 74px;
+  right: 0;
+  z-index: 50;
+  width: 400px;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.2);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 12px;
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .fieldWide {
+    grid-column: 1 / -1;
+  }
+
+  input[type="datetime-local"] {
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+    border-radius: 999px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+    width: 100%;
+    font-size: var(--font-small);
+
+    &:focus {
+      outline: none;
+      border-color: var(--third-color);
+    }
+  }
+
+  .locationGroup input[type="text"],
+  .locationGroup input:not([type]) {
+    height: 36px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+    background: var(--card-bg);
+  }
+}
+
+.modalDropdown {
+  width: 100%;
+
+  button {
+    height: 36px;
+    border-radius: 999px;
+    width: 100%;
+  }
+}
+
+.filterFoot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.filterReset,
+.filterApply {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: var(--font-small);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+.filterApply {
+  background: var(--third-color);
+  border-color: var(--third-color);
+  color: #fff;
+}
+
+// Итоги внизу одной строкой
+.statsLine {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 6px 0 8px;
+  font-size: calc(12px * var(--font-scale));
+  color: var(--text-secondary);
+
+  b {
+    margin-left: 3px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-color);
+  }
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  i {
+    width: 1px;
+    height: 12px;
+    background: var(--border-color, rgba(162, 161, 168, 0.4));
+  }
+
+  .statIn svg {
+    color: #059669;
+  }
+
+  .statOut svg {
+    color: #dc2626;
   }
 }

@@ -7,17 +7,20 @@ import { useAlertStore } from "../stores/alertStore";
 import { gatesApi, getActiveLocations } from "../api/index";
 
 import GateForm from "../components/GateForm";
-import Button from "../components/Button";
 import Badge from "../components/Badge";
 import Pagination from "../components/Pagination";
 import Loading from "../components/Loading";
-import Search from "../components/Search";
 import SelectWithSearch from "../components/SelectWithSearch";
 import CenterModal from "../components/CenterModal";
 import OverlaySidebar from "../components/OverlaySidebar";
-import PageHero from "../components/PageHero";
+import ListHero, {
+  FilterField,
+  FilterSegment,
+  FilterGrid,
+  StatsLine,
+  heroControlStyles as hc,
+} from "../components/ListHero";
 import { ActionCell } from "../components/ActionButtons";
-import { Icons } from "../icons/icons";
 
 import styles from "./AnprCamerasPage.module.scss";
 
@@ -95,44 +98,49 @@ const GatesPage = () => {
 
   return (
     <div className={styles.anprCamerasPage}>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className={`${styles.main} settings-page`}>
-          <PageHero icon={DoorOpen} title={t("gates")} />
-
-          <div className={styles.mainHeader}>
-            <div className={styles.filterWrapper}>
-              <Search formData={formData} setFormData={setFormData} onSearch={handleSearch} />
-              <div className={styles.locationSelect}>
-                <SelectWithSearch
-                  value={formData.location_id}
-                  options={locations}
-                  data="location"
-                  placeholder={t("selectLocations")}
-                  setFormData={setLocationAndSearch}
-                  noMatches={t("noMatches")}
-                />
-              </div>
-            </div>
-
-            <Pagination
+      <div className={`${styles.main} settings-page`}>
+        <ListHero
+          icon={DoorOpen}
+          title={t("gates")}
+          pagination={<Pagination
               currentPage={currentPage}
               pageSize={pageSize}
               totalItems={totalItems}
               totalPages={totalPages}
               handleChangePageSize={handleChangePageSize}
               handlePageChange={(page) => page >= 1 && page <= totalPages && setCurrentPage(page)}
-            />
+            />}
+          searchValue={formData.search}
+          onSearchInput={(v) => setFormData((f) => ({ ...f, search: v }))}
+          onSearch={() => handleSearch()}
+          filterContent={
+            <FilterField label={t("location")}>
+              <SelectWithSearch
+                value={formData.location_id}
+                options={locations}
+                data="location"
+                placeholder={t("selectLocations")}
+                setFormData={setLocationAndSearch}
+                noMatches={t("noMatches")}
+              />
+            </FilterField>
+          }
+          activeFilters={formData.location_id ? 1 : 0}
+          onApplyFilters={() => handleSearch()}
+          onResetFilters={() => {
+            const next = { ...formData, location_id: "" };
+            setFormData(next);
+            handleSearch(next);
+          }}
+          onAdd={canAdd ? () => setModalType("add") : undefined}
+          onRefresh={() => fetchData()}
+        >
+        </ListHero>
 
-            <div className={styles.buttonsWrapper}>
-              {canAdd && <Button text={t("add")} onClick={() => setModalType("add")} />}
-              <div className={styles.refreshBtn} onClick={() => fetchData()}>
-                {Icons.refresh}
-              </div>
-            </div>
-          </div>
-
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
           <div className={styles.tableContainer}>
             <table className={styles.table}>
               <thead>
@@ -191,8 +199,9 @@ const GatesPage = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
 
       <CenterModal
         isOpen={showModal}

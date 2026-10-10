@@ -6,7 +6,6 @@ import { useAlertStore } from "../stores/alertStore";
 
 import { deleteLocationById, getLocations } from "../api";
 
-import Button from "../components/Button";
 import Badge from "../components/Badge";
 import AddLocation from "../components/AddLocation";
 import EditLocation from "../components/EditLocation";
@@ -15,39 +14,17 @@ import Loading from "../components/Loading";
 import SortArrow from "../components/SortArrow";
 import OverlaySidebar from "../components/OverlaySidebar";
 import CenterModal from "../components/CenterModal";
-import DownloadButton from "../components/DownloadButton";
-import Search from "../components/Search";
 
 import { ActionCell } from "../components/ActionButtons";
-import PageHero from "../components/PageHero";
+import ListHero, {
+  FilterField,
+  FilterSegment,
+  FilterGrid,
+  StatsLine,
+  heroControlStyles as hc,
+} from "../components/ListHero";
 import { Car, CheckCircle, XCircle, MapPin } from "lucide-react";
-import { Icons } from "../icons/icons";
 import styles from "./LocationsPage.module.scss";
-
-const StatWidget = ({ icon: Icon, color, label, value, sub, progress }) => (
-  <div className={styles.statWidget}>
-    <div className={styles.statWidgetInner}>
-      <div className={styles.statWidgetIcon} style={{ background: color + "18" }}>
-        <Icon size={15} color={color} strokeWidth={2} />
-      </div>
-      <div className={styles.statWidgetContent}>
-        <span className={styles.statWidgetLabel}>{label}</span>
-        <span className={styles.statWidgetValue} style={{ color }}>
-          {value}
-          {sub && <span className={styles.statWidgetSub}> {sub}</span>}
-        </span>
-      </div>
-    </div>
-    {progress != null && (
-      <div className={styles.statWidgetProgressTrack}>
-        <div
-          className={styles.statWidgetProgressFill}
-          style={{ width: `${Math.min(100, Math.max(0, progress))}%`, background: color }}
-        />
-      </div>
-    )}
-  </div>
-);
 
 const LocationsPage = () => {
   const [data, setData] = useState([]);
@@ -149,73 +126,50 @@ const LocationsPage = () => {
 
   return (
     <div className={styles.locationsPage}>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className={`${styles.main} settings-page`}>
-          <PageHero icon={MapPin} title={t("locations")} />
-          <div className={styles.statsGrid}>
-            <StatWidget icon={Car} color="#6366f1" label={t("locations")} value={totalItems} />
-            <StatWidget
-              icon={CheckCircle}
-              color="#10b981"
-              label={t("activeCount")}
-              value={activeCount}
-              sub={`/ ${data.length}`}
-              progress={data.length > 0 ? (activeCount / data.length) * 100 : 0}
-            />
-            <StatWidget
-              icon={XCircle}
-              color="#ef4444"
-              label={t("inactiveCount")}
-              value={inactiveCount}
-              sub={`/ ${data.length}`}
-            />
-          </div>
-
-          <div className={styles.mainHeader}>
-            <div className={styles.filterWrapper}>
-              <Search formData={formData} setFormData={setFormData} onSearch={handleSearch} />
-              <div className={styles.statusFilter}>
-                {[
-                  { value: "", label: t("all") },
-                  { value: "true", label: t("enabled") },
-                  { value: "false", label: t("disabled") },
-                ].map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={`${styles.statusBtn} ${formData.status === value ? (value === "false" ? styles.statusBtnActiveDanger : value === "true" ? styles.statusBtnActiveSuccess : styles.statusBtnActive) : ""}`}
-                    onClick={() => {
-                      const updated = { ...formData, status: value };
-                      setFormData(updated);
-                      handleSearch(updated);
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <Pagination
+      <div className={`${styles.main} settings-page`}>
+        <ListHero
+          icon={MapPin}
+          title={t("locations")}
+          pagination={<Pagination
               currentPage={currentPage}
               pageSize={pageSize}
               totalItems={totalItems}
               totalPages={totalPages}
               handleChangePageSize={handleChangePageSize}
               handlePageChange={handlePageChange}
-            />
+            />}
+          searchValue={formData.search}
+          onSearchInput={(v) => setFormData((f) => ({ ...f, search: v }))}
+          onSearch={() => handleSearch()}
+          filterContent={
+            <FilterField label={t("status")}>
+              <FilterSegment
+                value={formData.status}
+                options={[
+                  { value: "", label: t("all") },
+                  { value: "true", label: t("enabled") },
+                  { value: "false", label: t("disabled") },
+                ]}
+                onChange={(status) => setFormData((f) => ({ ...f, status }))}
+              />
+            </FilterField>
+          }
+          activeFilters={formData.status ? 1 : 0}
+          onApplyFilters={() => handleSearch()}
+          onResetFilters={() => {
+            const next = { ...formData, status: "" };
+            setFormData(next);
+            handleSearch(next);
+          }}
+          onAdd={canAdd ? () => setModalType("add") : undefined}
+          onRefresh={() => fetchData()}
+        >
+        </ListHero>
 
-            <div className={styles.buttonsWrapper}>
-              {canAdd && <Button text={t("add")} onClick={() => setModalType("add")} />}
-              <div className={styles.refreshBtn} onClick={() => fetchData()}>
-                {Icons.refresh}
-              </div>
-              {data.length > 0 && <DownloadButton text={t("save")} />}
-            </div>
-          </div>
-
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
           <div className={styles.tableContainer}>
             <table className={styles.table}>
               <thead>
@@ -272,8 +226,16 @@ const LocationsPage = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+          </>
+        )}
+        <StatsLine
+          items={[
+            { label: t("locations"), value: totalItems },
+            { label: t("activeCount"), value: activeCount, sub: data.length, tone: "ok" },
+            { label: t("inactiveCount"), value: inactiveCount, sub: data.length, tone: "bad" },
+          ]}
+        />
+      </div>
 
       <CenterModal
         isOpen={showModal}

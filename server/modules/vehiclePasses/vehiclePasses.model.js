@@ -116,6 +116,11 @@ export const VehiclePassesModel = {
               name: true,
             },
           },
+          camera: {
+            select: {
+              name: true,
+            },
+          },
         },
       }),
 
@@ -177,6 +182,22 @@ export const VehiclePassesModel = {
       distinct: ["plate_number"],
     });
     return new Set(rows.map((r) => r.plate_number));
+  },
+
+  // Известные номера (белый список / недавние проезды), в которых содержится обрывок plate
+  findKnownPlatesContaining: async (plate, excludeId, since) => {
+    const prisma = prismaContext.get();
+    const rows = await prisma.vehicle_passes.findMany({
+      where: {
+        plate_number: { contains: plate },
+        id: { not: Number(excludeId) },
+        OR: [{ is_whitelisted: true }, { date: { gte: since } }],
+      },
+      select: { plate_number: true },
+      distinct: ["plate_number"],
+      take: 20,
+    });
+    return rows.map((r) => r.plate_number);
   },
 
   updateById: async (id, data, tx = null) => {

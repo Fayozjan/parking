@@ -1,0 +1,266 @@
+// Общие элементы управления в шапке страницы (PageHero):
+// поиск, кнопка «Фильтры», выпадающее окно фильтров, строка итогов внизу.
+
+.heroWrap {
+  position: relative;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+.heroSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  width: 200px;
+  padding: 0 12px;
+  border-radius: 999px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid #fff;
+  color: #4338ca;
+  transition: box-shadow 0.15s;
+
+  &:focus-within {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #1e1b4b;
+    font-size: var(--font-small);
+
+    &::placeholder {
+      color: #6b7280;
+    }
+  }
+}
+
+.heroBtn,
+.heroIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  box-sizing: border-box;
+  border: 1px solid #fff;
+  background: #fff;
+  color: #4338ca;
+  font-size: var(--font-small);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #eef2ff;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.heroIconBtn {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+}
+
+.heroBtn.heroBtnOn {
+  background: #3730a3;
+  border-color: #3730a3;
+  color: #fff;
+}
+
+.filterCount {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+
+  .heroBtnOn & {
+    background: #fff;
+    color: #4338ca;
+  }
+}
+
+.filterPopover {
+  position: absolute;
+  top: 74px;
+  right: 0;
+  z-index: 50;
+  width: 340px;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.2);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.segment {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+
+  button {
+    flex: 1;
+    height: 28px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-color);
+    font-size: var(--font-small);
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.1);
+    }
+  }
+
+  .segmentOn {
+    background: var(--third-color);
+    color: #fff;
+    font-weight: 600;
+
+    &:hover {
+      background: var(--third-color);
+    }
+  }
+}
+
+.filterFoot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.filterReset,
+.filterApply {
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: var(--font-small);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+.filterApply {
+  background: var(--third-color);
+  border-color: var(--third-color);
+  color: #fff;
+}
+
+// Итоги внизу страницы одной строкой текста
+.statsLine {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 6px 0 8px;
+  font-size: calc(12px * var(--font-scale));
+  color: var(--text-secondary);
+
+  b {
+    margin-left: 3px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-color);
+  }
+
+  i {
+    width: 1px;
+    height: 12px;
+    background: var(--border-color, rgba(162, 161, 168, 0.4));
+  }
+
+  .statOk b {
+    color: #059669;
+  }
+
+  .statBad b {
+    color: #dc2626;
+  }
+}
+
+// Поля внутри окна фильтров
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 12px;
+
+  .field {
+    min-width: 0;
+  }
+
+  .wide {
+    grid-column: 1 / -1;
+  }
+
+  input[type="date"],
+  input[type="datetime-local"],
+  select {
+    height: 36px;
+    padding: 0 12px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+    border-radius: 999px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-size: var(--font-small);
+
+    &:focus {
+      outline: none;
+      border-color: var(--third-color);
+    }
+  }
+}
+
+.fullDropdown {
+  width: 100%;
+
+  button {
+    height: 36px;
+    border-radius: 999px;
+    width: 100%;
+  }
+}

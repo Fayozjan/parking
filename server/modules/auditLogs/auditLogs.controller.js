@@ -23,10 +23,30 @@ export const AuditLogsController = {
     }
   },
 
+  getUsers: async (req, res) => {
+    try {
+      const users = await AuditLogsService.getUsers();
+      res.json({ success: true, data: users });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Ошибка" });
+    }
+  },
+
   restore: async (req, res) => {
     try {
       const restored = await AuditLogsService.restore(req.params.id, req.user?.id);
       res.json({ success: true, data: restored });
+    } catch (err) {
+      console.error(err);
+      res.status(400).json({ error: err.message || "Ошибка при восстановлении" });
+    }
+  },
+
+  restoreMany: async (req, res) => {
+    try {
+      const result = await AuditLogsService.restoreMany(req.body?.ids, req.user?.id);
+      res.json({ success: true, data: result });
     } catch (err) {
       console.error(err);
       res.status(400).json({ error: err.message || "Ошибка при восстановлении" });

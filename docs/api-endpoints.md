@@ -84,6 +84,23 @@ Auth: JWT в httpOnly cookie `access_token`. Маршруты без `*` тре�
 - Сохраняет запись в `vehicle_passes`
 - Добавляет уведомление в `notifications_outbox` (для Telegram chat_ids парковки)
 
+
+---
+
+## AI Training — `/api/ai-training`
+
+Выгрузка кадров для дообучения AI на локальном компьютере (`ai-service/ft pull`). Доступ: вход пользователя (страница админки «Дообучение AI», `/ai-training`) **или** токен
+`AI_TRAINING_TOKEN` из `server/.env` (`Authorization: Bearer <token>`, для скрипта `ft pull`, у которого нет сессии).
+Кадры сохраняет `utils/trainingFrames.js` (оригинал без сжатия + json) в `uploads/ai-training/<дата>/`, наружу статикой не отдаются.
+
+| Метод | Путь | Auth | Описание |
+|-------|------|------|----------|
+| GET | `/ai-training/summary` | вход/токен | Сколько кадров накоплено по дням |
+| GET | `/ai-training/plan?after=&until=&from=&to=&limit=` | вход/токен | Что скачается: `{count, first_id, last_id, has_more}`, без скачивания |
+| GET | `/ai-training/export?after=<id>&until=<id>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>&limit=200` | вход/токен | zip `frames/<id>.jpg` + `frames/<id>.json`, кадры строго после курсора `after` (макс. 500). Заголовки `X-Last-Id` (новый курсор), `X-Has-More`, `X-Count`; `204` — новых нет |
+
+Что сохраняется (`reasons` в json): `side_conflict`, `plate_conflict`, `low_confidence`, `ai_missed`, `random_control` (случайные согласованные).
+Настройки: `AI_TRAINING_DIR` (`off` — не сохранять), `AI_TRAINING_RANDOM_RATE` (0.05), `AI_TRAINING_LOW_CONF` (70), `AI_TRAINING_LOW_SIDE` (0.7), `AI_TRAINING_MAX_PER_DAY` (1000).
 ---
 
 ## Vehicle Passes — `/api/vehicle-passes`
@@ -91,7 +108,7 @@ Auth: JWT в httpOnly cookie `access_token`. Маршруты без `*` тре�
 | Method | Path | Auth | Описание |
 |--------|------|------|---------|
 | GET | `/vehicle-passes/image/*` | photo | Фото проезда (облегчённая auth) |
-| GET | `/vehicle-passes` | да | Список проездов (фильтры: date_from, date_to, parking_id, plate_number, direction) |
+| GET | `/vehicle-passes` | да | Список проездов (фильтры: date_from, date_to, parking_id, plate_number, direction, history_conflict=true — только проезды с конфликтом истории номера; страница `/history-conflicts`) |
 | GET | `/vehicle-passes/:id` | да | Проезд по ID |
 | PUT | `/vehicle-passes/:id` | да | Обновить запись |
 | DELETE | `/vehicle-passes/:id` | да | Удалить запись |

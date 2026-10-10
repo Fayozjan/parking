@@ -72,6 +72,8 @@ export async function seedData(prisma) {
     { name: "vehicle-whitelist", path: "/vehicle-whitelist", sort_order: 5 },
     { name: "camera-logs", path: "/camera-logs", sort_order: 6 },
     { name: "audit-logs", path: "/audit-logs", sort_order: 7 },
+    { name: "history-conflicts", path: "/history-conflicts", sort_order: 8 },
+    { name: "ai-training", path: "/ai-training", sort_order: 9 },
   ];
 
   for (const item of settingsChildren) {

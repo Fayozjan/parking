@@ -2,6 +2,7 @@
 //
 // Номер: голосуют двое (камера, AI), при расхождении решают «судьи» по порядку:
 //   1) формат номера; 2) известный номер из БД; 3) отрыв по уверенности; иначе — конфликт.
+// Если номер камеры победил, но не по формату (потеряла «50» → S702SS), его правит repairPlateByKnown по известным номерам.
 // Направление: камера и AI; при расхождении AI верим, если он уверен.
 
 import { isValidPlate } from "./plateCorrection.js";
@@ -59,6 +60,30 @@ export function decidePlate(camera, ai, known = new Set()) {
 
   // Не решить: оставляем номер камеры (как было до AI), снижаем рейтинг и просим проверить вручную
   return keep("conflict", { confidence: clamp(Math.min(camConf, ai.confidence)), conflict: true });
+}
+
+export const REPAIR_MIN_LENGTH = 5; // короче — под обрывок подойдёт слишком много номеров
+export const REPAIR_MAX_MISSING = 3; // сколько символов камера могла потерять
+
+/**
+ * Номер не по формату (камера потеряла символы) достраиваем до известного номера из БД.
+ * Исправляем только когда подходит ровно один известный номер, иначе угадывать нельзя.
+ * @param {string} plate  номер камеры не по формату
+ * @param {Iterable<string>} candidates  известные номера, содержащие plate
+ * @returns {string|null}  исправленный номер или null — оставить как есть
+ */
+export function repairPlateByKnown(plate, candidates) {
+  if (!plate || plate.length < REPAIR_MIN_LENGTH || isValidPlate(plate)) return null;
+  const fits = new Set(
+    [...candidates].filter(
+      (c) =>
+        c !== plate &&
+        isValidPlate(c) &&
+        c.includes(plate) &&
+        c.length - plate.length <= REPAIR_MAX_MISSING,
+    ),
+  );
+  return fits.size === 1 ? [...fits][0] : null;
 }
 
 /**

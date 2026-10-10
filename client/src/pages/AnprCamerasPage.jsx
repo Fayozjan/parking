@@ -6,7 +6,6 @@ import { anprCamerasApi, getActiveLocations } from "../api/index";
 
 import AddAnprCamera from "../components/AddAnprCamera";
 import EditAnprCamera from "../components/EditAnprCamera";
-import Button from "../components/Button";
 import Badge from "../components/Badge";
 import Pagination from "../components/Pagination";
 import Loading from "../components/Loading";
@@ -14,46 +13,18 @@ import SortArrow from "../components/SortArrow";
 import SelectWithSearch from "../components/SelectWithSearch";
 import CenterModal from "../components/CenterModal";
 import OverlaySidebar from "../components/OverlaySidebar";
-import DownloadButton from "../components/DownloadButton";
 import TableIcons from "../icons/tableIcons";
 
-import Search from "../components/Search";
 import styles from "./AnprCamerasPage.module.scss";
 import { ActionCell } from "../components/ActionButtons";
-import PageHero from "../components/PageHero";
+import ListHero, {
+  FilterField,
+  FilterSegment,
+  FilterGrid,
+  StatsLine,
+  heroControlStyles as hc,
+} from "../components/ListHero";
 import { Camera, CheckCircle, XCircle } from "lucide-react";
-import { Icons } from "../icons/icons";
-
-const StatWidget = ({ icon: Icon, color, label, value, sub, progress }) => (
-  <div className={styles.statWidget}>
-    <div className={styles.statWidgetInner}>
-      <div
-        className={styles.statWidgetIcon}
-        style={{ background: color + "18" }}
-      >
-        <Icon size={15} color={color} strokeWidth={2} />
-      </div>
-      <div className={styles.statWidgetContent}>
-        <span className={styles.statWidgetLabel}>{label}</span>
-        <span className={styles.statWidgetValue} style={{ color }}>
-          {value}
-          {sub && <span className={styles.statWidgetSub}> {sub}</span>}
-        </span>
-      </div>
-    </div>
-    {progress != null && (
-      <div className={styles.statWidgetProgressTrack}>
-        <div
-          className={styles.statWidgetProgressFill}
-          style={{
-            width: `${Math.min(100, Math.max(0, progress))}%`,
-            background: color,
-          }}
-        />
-      </div>
-    )}
-  </div>
-);
 
 const AnprCamerasPage = () => {
   const [data, setData] = useState([]);
@@ -221,37 +192,24 @@ const AnprCamerasPage = () => {
 
   return (
     <div className={styles.anprCamerasPage}>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className={`${styles.main} settings-page`}>
-          <PageHero icon={Camera} title={t("vehicle-cameras")} />
-          <div className={styles.statsGrid}>
-              <StatWidget
-                icon={Camera}
-                color="#6366f1"
-                label={t("totalCamerasLabel")}
-                value={totalItems}
-              />
-              <StatWidget
-                icon={CheckCircle}
-                color="#10b981"
-                label={t("activeCount")}
-                value={data.filter((x) => x.status === "active").length}
-                sub={`/ ${data.length}`}
-              />
-              <StatWidget
-                icon={XCircle}
-                color="#ef4444"
-                label={t("inactiveCount")}
-                value={data.filter((x) => x.status !== "active").length}
-              />
-            </div>
-          <div className={styles.mainHeader}>
-            <div className={styles.filterWrapper}>
-              <Search formData={formData} setFormData={setFormData} onSearch={handleSearch} />
-
-              <div className={styles.locationSelect}>
+      <div className={`${styles.main} settings-page`}>
+        <ListHero
+          icon={Camera}
+          title={t("vehicle-cameras")}
+          pagination={<Pagination
+              currentPage={currentPage}
+              pageSize={pageSize}
+              totalItems={totalItems}
+              totalPages={totalPages}
+              handleChangePageSize={handleChangePageSize}
+              handlePageChange={handlePageChange}
+            />}
+          searchValue={formData.search}
+          onSearchInput={(v) => setFormData((f) => ({ ...f, search: v }))}
+          onSearch={() => handleSearch()}
+          filterContent={
+            <FilterGrid>
+              <FilterField label={t("location")} wide>
                 <SelectWithSearch
                   value={formData.location_id}
                   options={locations}
@@ -260,77 +218,47 @@ const AnprCamerasPage = () => {
                   setFormData={setLocationAndSearch}
                   noMatches={t("noMatches")}
                 />
-              </div>
-
-              <div className={styles.statusFilter}>
-                {[
-                  { value: "", label: t("all") },
-                  { value: "entry", label: t("entry") },
-                  { value: "exit", label: t("exit") },
-                ].map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={`${styles.statusBtn} ${formData.direction === value ? styles.statusBtnActive : ""}`}
-                    onClick={() => {
-                      const updated = { ...formData, direction: value };
-                      setFormData(updated);
-                      handleSearch(updated);
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-
-              <div className={styles.statusFilter}>
-                {[
-                  { value: "", label: t("all") },
-                  { value: "active", label: t("enabled") },
-                  { value: "inactive", label: t("disabled") },
-                ].map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={`${styles.statusBtn} ${formData.status === value ? (value === "inactive" ? styles.statusBtnActiveDanger : value === "active" ? styles.statusBtnActiveSuccess : styles.statusBtnActive) : ""}`}
-                    onClick={() => {
-                      const updated = { ...formData, status: value };
-                      setFormData(updated);
-                      handleSearch(updated);
-                    }}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <Pagination
-              currentPage={currentPage}
-              pageSize={pageSize}
-              totalItems={totalItems}
-              totalPages={totalPages}
-              handleChangePageSize={handleChangePageSize}
-              handlePageChange={handlePageChange}
-            />
-
-            <div className={styles.buttonsWrapper}>
-              {canAdd && (
-                <Button text={t("add")} onClick={() => setModalType("add")} />
-              )}
-
-              <div className={styles.refreshBtn} onClick={() => fetchData()}>
-                {Icons.refresh}
-              </div>
-
-              {data.length > 0 && (
-                <DownloadButton
-                  text={t("save")}
-                  // onClick={() => exportEmployeesToExcel(data)}
+              </FilterField>
+              <FilterField label={t("direction")} wide>
+                <FilterSegment
+                  value={formData.direction}
+                  options={[
+                    { value: "", label: t("all") },
+                    { value: "entry", label: t("entry") },
+                    { value: "exit", label: t("exit") },
+                  ]}
+                  onChange={(direction) => setFormData((f) => ({ ...f, direction }))}
                 />
-              )}
-            </div>
-          </div>
+              </FilterField>
+              <FilterField label={t("status")} wide>
+                <FilterSegment
+                  value={formData.status}
+                  options={[
+                    { value: "", label: t("all") },
+                    { value: "active", label: t("enabled") },
+                    { value: "inactive", label: t("disabled") },
+                  ]}
+                  onChange={(status) => setFormData((f) => ({ ...f, status }))}
+                />
+              </FilterField>
+            </FilterGrid>
+          }
+          activeFilters={[formData.location_id, formData.direction, formData.status].filter(Boolean).length}
+          onApplyFilters={() => handleSearch()}
+          onResetFilters={() => {
+            const next = { ...formData, location_id: "", direction: "", status: "" };
+            setFormData(next);
+            handleSearch(next);
+          }}
+          onAdd={canAdd ? () => setModalType("add") : undefined}
+          onRefresh={() => fetchData()}
+        >
+        </ListHero>
+
+        {loading ? (
+          <Loading />
+        ) : (
+          <>
           <div className={styles.tableContainer}>
             <table className={styles.table}>
               <thead>
@@ -480,8 +408,16 @@ const AnprCamerasPage = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+          </>
+        )}
+        <StatsLine
+          items={[
+            { label: t("totalCamerasLabel"), value: totalItems },
+            { label: t("activeCount"), value: data.filter((x) => x.status === "active").length, sub: data.length, tone: "ok" },
+            { label: t("inactiveCount"), value: data.filter((x) => x.status !== "active").length, sub: data.length, tone: "bad" },
+          ]}
+        />
+      </div>
 
       <CenterModal
         isOpen={showModal}

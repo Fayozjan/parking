@@ -8,6 +8,8 @@ router.use(authMiddleware);
 
 router.get("/", AuditLogsController.list);
 router.get("/entities", AuditLogsController.getEntities);
+router.get("/users", AuditLogsController.getUsers);
+router.post("/restore-bulk", AuditLogsController.restoreMany);
 router.post("/:id/restore", AuditLogsController.restore);
 
 export default router;

@@ -1,0 +1,335 @@
+@use "../styles/settingsTheme" as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+
+  .main {
+    padding: 2px 20px;
+    background-color: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    height: 100%;
+    min-height: 0;
+
+    @include settings-theme;
+
+    .mainHeader {
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .filters {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+
+        input[type="text"],
+        select,
+        .dateInput {
+          height: 34px;
+          padding: 0 14px;
+          border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+          // единое скругление всех контролов ряда фильтров
+          border-radius: 999px;
+          background-color: var(--card-bg);
+          color: var(--text-color);
+          font-size: var(--font-small);
+          cursor: pointer;
+          box-sizing: border-box;
+
+          &:focus {
+            outline: none;
+            border-color: var(--third-color);
+          }
+        }
+
+        // Dropdown в одну линию с инпутами (34px, скругление как у инпутов)
+        .filterDropdown {
+          width: 190px;
+          flex-shrink: 0;
+        }
+
+        .filterDropdown button {
+          height: 34px;
+          border-radius: 999px;
+          padding: 0 12px 0 14px;
+          font-weight: 500;
+          border-color: var(--border-color, rgba(162, 161, 168, 0.4));
+          box-shadow: none;
+
+          &:hover,
+          &:focus-visible {
+            border-color: var(--third-color);
+          }
+        }
+
+        .searchBtn,
+        .resetBtn {
+          height: 34px;
+          padding: 0 16px;
+          border-radius: 999px;
+          font-size: var(--font-small);
+          font-weight: 600;
+          cursor: pointer;
+          box-sizing: border-box;
+          border: 1px solid rgba(162, 161, 168, 0.4);
+          background-color: var(--card-bg);
+          color: var(--text-color);
+
+          &:hover {
+            border-color: var(--third-color);
+          }
+        }
+
+        // сброс — только иконка, круглая кнопка
+        // (.resetBtn.resetBtn — перебиваем padding 0 16px из темы настроек)
+        .resetBtn.resetBtn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          width: 34px;
+          min-width: 34px;
+          padding: 0;
+          color: var(--text-secondary);
+
+          svg {
+            flex-shrink: 0;
+          }
+
+          &:hover {
+            color: var(--third-color);
+          }
+        }
+
+        .searchBtn {
+          background-color: var(--third-color);
+          color: #fff;
+          border-color: var(--third-color);
+        }
+      }
+
+      .rightActions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .refreshBtn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 34px;
+          padding: 0 12px;
+          font-size: var(--font-small);
+          font-weight: 600;
+          border-radius: 999px;
+          border: 1px solid var(--border-color, rgba(162, 161, 168, 0.4));
+          cursor: pointer;
+          box-sizing: border-box;
+          background-color: var(--card-bg);
+
+          svg {
+            width: 18px;
+            height: 18px;
+          }
+
+          &:hover {
+            border-color: var(--third-color);
+          }
+        }
+      }
+    }
+
+    .tableContainer {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-small);
+
+      thead {
+        position: sticky;
+        top: 0;
+        background: var(--card-bg);
+        z-index: 10;
+      }
+
+      th {
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: calc(11px * var(--font-scale));
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      th,
+      td {
+        padding: 4px 6px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+      }
+
+      .plate {
+        font-family: "Courier New", Courier, monospace;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
+
+      .mac {
+        font-family: "Courier New", Courier, monospace;
+        font-size: calc(11px * var(--font-scale));
+        color: var(--text-secondary);
+      }
+
+      .photoCell {
+        width: 60px;
+        padding: 2px 4px;
+      }
+
+      .photoThumb {
+        width: 54px;
+        height: 36px;
+        object-fit: cover;
+        border-radius: 6px;
+        display: block;
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.15s;
+
+        // как в «Списке парковок»: фото чуть увеличивается при наведении
+        &:hover {
+          transform: scale(1.12);
+          z-index: 2;
+        }
+      }
+
+      .noPhoto {
+        color: var(--placeholder-color);
+        font-style: italic;
+      }
+    }
+  }
+}
+
+.lightboxOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightboxImg {
+  max-width: 90vw;
+  max-height: 88vh;
+  border-radius: 6px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  object-fit: contain;
+}
+
+.lightboxClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.scoreBadge {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 700;
+
+  &.scoreHigh {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  &.scoreMedium {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  &.scoreLow {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+}
+
+.dirBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+
+  &.entry {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  &.exit {
+    background: #e0e7ff;
+    color: #3730a3;
+  }
+}
+
+.problemBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: calc(11px * var(--font-scale));
+  font-weight: 600;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.correction {
+  font-size: calc(11px * var(--font-scale));
+  color: #6b7280;
+}
+
+.countBadge {
+  display: inline-block;
+  min-width: 28px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: var(--font-small);
+  font-weight: 700;
+  background: #fef3c7;
+  color: #92400e;
+}

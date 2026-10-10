@@ -57,6 +57,21 @@ export const CameraLogsController = {
     }
   },
 
+  getStats: async (req, res) => {
+    try {
+      const filters =
+        typeof req.query.filters === "string"
+          ? JSON.parse(req.query.filters)
+          : req.query.filters || {};
+
+      const result = await CameraLogsService.stats({ filters });
+      res.json({ success: true, data: result });
+    } catch (err) {
+      console.error("cameraLogs stats error:", err);
+      res.status(500).json({ error: "Ошибка при получении статистики логов камер" });
+    }
+  },
+
   getAll: async (req, res) => {
     try {
       const filters =

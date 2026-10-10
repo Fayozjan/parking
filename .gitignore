@@ -36,6 +36,8 @@ ai-service/dataset/
 ai-service/runs/
 ai-service/models/*.onnx
 !ai-service/models/plate_side.onnx
+ai-service/models/versions/
+ai-service/models/candidates/
 ai-service/.venv-train/
 /runs/
 ai-service/*.pt

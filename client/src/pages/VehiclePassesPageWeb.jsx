@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Car,
@@ -6,6 +6,9 @@ import {
   ArrowUpFromLine,
   RefreshCw,
   Download,
+  Filter,
+  Plus,
+  Search as SearchIcon,
 } from "lucide-react";
 
 import { getVehiclePasses, exportVehiclePasses, deleteVehiclePass } from "../api/vehiclePasses";
@@ -19,8 +22,6 @@ import PageHero from "../components/PageHero";
 import VehiclePassesTable from "../components/VehiclePassesTable";
 import MultiSelectDoors from "../components/MultiSelectDoors";
 import Dropdown from "../components/Dropdown";
-import Search from "../components/Search";
-import Button from "../components/Button";
 import OverlaySidebar from "../components/OverlaySidebar";
 import AddVehiclePass from "../components/AddVehiclePass";
 import AddVehiclePassBulk from "../components/AddVehiclePassBulk";
@@ -72,19 +73,7 @@ const getPresetDates = (key) => {
   return {};
 };
 
-const HeroStat = ({ icon: Icon, tone, label, value }) => (
-  <div className={`${styles.heroStat} ${styles[tone]}`}>
-    <span className={styles.heroStatIcon}>
-      <Icon size={16} strokeWidth={2.2} />
-    </span>
-    <span className={styles.heroStatBody}>
-      <span className={styles.heroStatValue}>
-        {new Intl.NumberFormat("ru-RU").format(value ?? 0)}
-      </span>
-      <span className={styles.heroStatLabel}>{label}</span>
-    </span>
-  </div>
-);
+const fmtNum = (n) => new Intl.NumberFormat("ru-RU").format(n ?? 0);
 
 const VehiclePassesPage = () => {
   const [data, setData] = useState([]);
@@ -101,6 +90,10 @@ const VehiclePassesPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [addMode, setAddMode] = useState("single");
   const [editId, setEditId] = useState(null);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const filterRef = useRef(null);
+  const filterBtnRef = useRef(null);
+  const searchTimer = useRef(null);
   const { t } = useTranslation();
   const currentPath = window.location.pathname;
   const { canAdd, canDelete, canEdit } = usePermissions(currentPath);
@@ -165,7 +158,7 @@ const VehiclePassesPage = () => {
   };
 
   const handleApply = () => {
-    setActivePreset(null);
+    setFilterOpen(false);
     applyFilters(formData);
   };
 
@@ -183,6 +176,54 @@ const VehiclePassesPage = () => {
   }, []);
 
   const handleSearch = (d = formData) => applyFilters(d);
+
+  const onSearchChange = (e) => {
+    const next = { ...formData, search: e.target.value };
+    setFormData(next);
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => applyFilters(next), 1000);
+  };
+
+  const onSearchKey = (e) => {
+    if (e.key !== "Enter") return;
+    clearTimeout(searchTimer.current);
+    applyFilters(formData);
+  };
+
+  const resetFilters = () => {
+    const next = {
+      ...formData,
+      ...getPresetDates("today"),
+      direction: "",
+      selectedLocationIds: [],
+    };
+    setActivePreset("today");
+    setFilterOpen(false);
+    applyFilters(next);
+  };
+
+  // Окно фильтров: закрытие по клику вне и Escape
+  useEffect(() => {
+    if (!filterOpen) return;
+    const onDown = (e) => {
+      const el = e.target;
+      if (filterRef.current?.contains(el) || filterBtnRef.current?.contains(el)) return;
+      setFilterOpen(false);
+    };
+    const onKey = (e) => e.key === "Escape" && setFilterOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [filterOpen]);
+
+  const activeFilters = [
+    (formData.selectedLocationIds || []).length > 0,
+    !!formData.direction,
+    activePreset !== "today",
+  ].filter(Boolean).length;
 
   const handleExport = async () => {
     setExportLoading(true);
@@ -227,31 +268,65 @@ const VehiclePassesPage = () => {
   return (
     <div className={styles.vehiclePassesPages}>
       <div className={styles.main}>
+        <div className={styles.heroWrap}>
         <PageHero
           icon={Car}
           title={t("vehicle-passes")}
           subtitle={t("pageSubtitleVehiclePasses")}
+          center={
+            <Pagination
+              currentPage={currentPage}
+              pageSize={pageSize}
+              totalItems={totalItems}
+              totalPages={totalPages}
+              handleChangePageSize={handleChangePageSize}
+              handlePageChange={handlePageChange}
+            />
+          }
         >
-          <div className={styles.heroStats}>
-            <HeroStat
-              icon={Car}
-              tone="toneAll"
-              label={t("totalPassesLabel")}
-              value={totalItems}
-            />
-            <HeroStat
-              icon={ArrowDownToLine}
-              tone="toneIn"
-              label={t("entry")}
-              value={totalEntries}
-            />
-            <HeroStat
-              icon={ArrowUpFromLine}
-              tone="toneOut"
-              label={t("exit")}
-              value={totalExits}
+          <div className={styles.heroSearch}>
+            <SearchIcon size={15} />
+            <input
+              type="text"
+              placeholder={t("search")}
+              value={formData.search || ""}
+              onChange={onSearchChange}
+              onKeyDown={onSearchKey}
             />
           </div>
+          <button
+            type="button"
+            ref={filterBtnRef}
+            className={`${styles.heroBtn} ${filterOpen ? styles.heroBtnOn : ""}`}
+            onClick={() => setFilterOpen((v) => !v)}
+          >
+            <Filter size={15} />
+            <span>{t("filters")}</span>
+            {activeFilters > 0 && <span className={styles.filterCount}>{activeFilters}</span>}
+          </button>
+          {canAdd && (
+            <button
+              type="button"
+              className={styles.heroBtn}
+              onClick={() => {
+                setEditId(null);
+                setAddMode("single");
+                setShowAddModal(true);
+              }}
+            >
+              <Plus size={15} />
+              <span>{t("add")}</span>
+            </button>
+          )}
+          <button
+            type="button"
+            className={styles.heroIconBtn}
+            onClick={() => fetchData()}
+            title={t("refresh")}
+            aria-label={t("refresh")}
+          >
+            <RefreshCw size={16} />
+          </button>
           {data.length > 0 && (
             <button
               type="button"
@@ -268,117 +343,83 @@ const VehiclePassesPage = () => {
             </button>
           )}
         </PageHero>
-        {/* Controls bar */}
-        <div className={styles.controls}>
-          <div className={styles.leftControls}>
-            <Search
-              formData={formData}
-              setFormData={setFormData}
-              onSearch={handleSearch}
-            />
-            <div className={styles.locationGroup}>
-              <MultiSelectDoors
-                options={parkings}
-                selected={formData.selectedLocationIds || []}
-                placeholder={t("selectLocations")}
-                onChange={(ids) =>
-                  applyFilters({ ...formData, selectedLocationIds: ids })
-                }
-              />
+
+        {filterOpen && (
+          <div className={styles.filterPopover} ref={filterRef}>
+            <div className={styles.filterGrid}>
+              <div className={`${styles.field} ${styles.fieldWide}`}>
+                <span>{t("period")}</span>
+                <Dropdown
+                  className={styles.modalDropdown}
+                  minWidth={130}
+                  value={activePreset ?? ""}
+                  options={[
+                    ...(activePreset ? [] : [{ value: "", label: t("financeCustom") }]),
+                    ...PRESETS.map((p) => ({ value: p.key, label: t(p.labelKey) })),
+                  ]}
+                  onChange={(key) => {
+                    if (!key) return;
+                    setActivePreset(key);
+                    setFormData((prev) => ({ ...prev, ...getPresetDates(key) }));
+                  }}
+                />
+              </div>
+              <div className={styles.field}>
+                <span>{t("dateFrom")}</span>
+                <input
+                  type="datetime-local"
+                  value={formData.start_date}
+                  onChange={(e) => {
+                    setFormData((prev) => ({ ...prev, start_date: e.target.value }));
+                    setActivePreset(null);
+                  }}
+                />
+              </div>
+              <div className={styles.field}>
+                <span>{t("dateTo")}</span>
+                <input
+                  type="datetime-local"
+                  value={formData.end_date}
+                  onChange={(e) => {
+                    setFormData((prev) => ({ ...prev, end_date: e.target.value }));
+                    setActivePreset(null);
+                  }}
+                />
+              </div>
+              <div className={`${styles.field} ${styles.fieldWide} ${styles.locationGroup}`}>
+                <span>{t("locations")}</span>
+                <MultiSelectDoors
+                  options={parkings}
+                  selected={formData.selectedLocationIds || []}
+                  placeholder={t("selectLocations")}
+                  onChange={(ids) => setFormData((prev) => ({ ...prev, selectedLocationIds: ids }))}
+                />
+              </div>
+              <div className={`${styles.field} ${styles.fieldWide}`}>
+                <span>{t("direction")}</span>
+                <Dropdown
+                  className={styles.modalDropdown}
+                  minWidth={120}
+                  value={formData.direction}
+                  options={[
+                    { value: "", label: t("all") },
+                    { value: "entry", label: t("entry") },
+                    { value: "exit", label: t("exit") },
+                  ]}
+                  onChange={(direction) => setFormData((prev) => ({ ...prev, direction }))}
+                />
+              </div>
             </div>
-
-            <Dropdown
-              minWidth={120}
-              value={formData.direction}
-              options={[
-                { value: "", label: t("all") },
-                { value: "entry", label: t("entry") },
-                { value: "exit", label: t("exit") },
-              ]}
-              onChange={(direction) => applyFilters({ ...formData, direction })}
-            />
-          </div>
-
-          <Pagination
-            currentPage={currentPage}
-            pageSize={pageSize}
-            totalItems={totalItems}
-            totalPages={totalPages}
-            handleChangePageSize={handleChangePageSize}
-            handlePageChange={handlePageChange}
-          />
-
-          <div className={styles.rightControls}>
-            <div className={styles.filterGroup}>
-              <Dropdown
-                minWidth={130}
-                title={t("period")}
-                value={activePreset ?? ""}
-                options={[
-                  ...(activePreset
-                    ? []
-                    : [{ value: "", label: t("financeCustom") }]),
-                  ...PRESETS.map((p) => ({
-                    value: p.key,
-                    label: t(p.labelKey),
-                  })),
-                ]}
-                onChange={(key) => {
-                  if (key) handlePreset(key);
-                }}
-              />
-              <input
-                className={styles.dateInput}
-                type="datetime-local"
-                name="start_date"
-                value={formData.start_date}
-                onChange={(e) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    start_date: e.target.value,
-                  }));
-                  setActivePreset(null);
-                }}
-                onFocus={(e) => e.target.showPicker?.()}
-              />
-              <input
-                className={styles.dateInput}
-                type="datetime-local"
-                name="end_date"
-                value={formData.end_date}
-                onChange={(e) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    end_date: e.target.value,
-                  }));
-                  setActivePreset(null);
-                }}
-                onFocus={(e) => e.target.showPicker?.()}
-              />
-              <button className={styles.applyBtn} onClick={handleApply}>
+            <div className={styles.filterFoot}>
+              <button type="button" className={styles.filterReset} onClick={resetFilters}>
+                {t("resetAllFilters")}
+              </button>
+              <button type="button" className={styles.filterApply} onClick={handleApply}>
                 {t("apply")}
               </button>
             </div>
-
-            {canAdd && (
-              <Button
-                text={t("add")}
-                onClick={() => {
-                  setEditId(null);
-                  setAddMode("single");
-                  setShowAddModal(true);
-                }}
-              />
-            )}
-
-            <button
-              className={styles.refreshBtn}
-              onClick={() => fetchData()}
-              title={t("refresh")}
-            >
-              <RefreshCw size={15} />
-            </button>
           </div>
+        )}
         </div>
 
         {loading && data.length === 0 ? (
@@ -399,6 +440,22 @@ const VehiclePassesPage = () => {
           />
           </div>
         )}
+
+        <div className={styles.statsLine}>
+          <span>
+            {t("totalPassesLabel")} <b>{fmtNum(totalItems)}</b>
+          </span>
+          <i />
+          <span className={styles.statIn}>
+            <ArrowDownToLine size={13} strokeWidth={2.4} />
+            {t("entry")} <b>{fmtNum(totalEntries)}</b>
+          </span>
+          <i />
+          <span className={styles.statOut}>
+            <ArrowUpFromLine size={13} strokeWidth={2.4} />
+            {t("exit")} <b>{fmtNum(totalExits)}</b>
+          </span>
+        </div>
       </div>
 
       <OverlaySidebar

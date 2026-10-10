@@ -265,6 +265,7 @@ export const VehiclePassesService = {
       direction,
       selectedLocationIds,
       search,
+      history_conflict,
     } = filters;
 
     // --- пользователь и скрытые номера белого списка — независимые запросы ---
@@ -306,6 +307,11 @@ export const VehiclePassesService = {
       where.location_id = {
         in: selectedLocationIds.map(Number),
       };
+    }
+
+    // Только проезды с конфликтом истории номера (страница «Конфликты истории»)
+    if (history_conflict === true || history_conflict === "true") {
+      where.history_conflict = true;
     }
 
     // Поиск по номеру транспорта

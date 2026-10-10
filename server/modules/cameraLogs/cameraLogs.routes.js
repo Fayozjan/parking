@@ -8,6 +8,7 @@ const router = Router();
 router.get("/image/*", authPhotoMiddleware, CameraLogsController.getImage);
 
 router.use(authMiddleware);
+router.get("/stats", CameraLogsController.getStats);
 router.get("/", CameraLogsController.getAll);
 
 export default router;

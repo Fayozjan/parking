@@ -1,6 +1,8 @@
 // Шапка как на главной (HomePage.module.scss → .hero)
 .hero {
   position: relative;
+  // выше контента страницы: выпадающие меню из шапки не перекрываются карточками
+  z-index: 20;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -11,30 +13,13 @@
   padding: 0 18px;
   border-radius: 14px;
   color: #fff;
-  overflow: hidden;
-  background: linear-gradient(120deg, #4338ca 0%, #4f46e5 50%, #6366f1 100%);
+  // круги — слоями фона (клипуются скруглением), чтобы выпадающие меню
+  // внутри шапки не обрезались overflow: hidden
+  background:
+    radial-gradient(circle at calc(100% - 70px) -50px, rgba(255, 255, 255, 0.1) 130px, transparent 131px),
+    radial-gradient(circle at calc(100% - 280px) calc(100% + 20px), rgba(255, 255, 255, 0.1) 80px, transparent 81px),
+    linear-gradient(120deg, #4338ca 0%, #4f46e5 50%, #6366f1 100%);
   box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    pointer-events: none;
-  }
-  &::before {
-    width: 260px;
-    height: 260px;
-    top: -180px;
-    right: -60px;
-  }
-  &::after {
-    width: 160px;
-    height: 160px;
-    bottom: -100px;
-    right: 200px;
-  }
 }
 
 .heroIcon {
@@ -47,7 +32,7 @@
   height: 38px;
   flex-shrink: 0;
   border-radius: 11px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
 }
@@ -83,4 +68,42 @@
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+}
+
+// Центр шапки (пагинация): по центру шапки на широких экранах
+.heroCenter {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+
+  @media (min-width: 1280px) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// Кнопка «Назад» — слева в шапке, круглая
+.heroBack {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  background: #fff;
+  color: #4338ca;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+
+  &:hover {
+    background: #eef2ff;
+    transform: translateX(-2px);
+  }
 }

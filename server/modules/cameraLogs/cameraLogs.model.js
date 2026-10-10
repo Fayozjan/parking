@@ -43,4 +43,19 @@ export const CameraLogsModel = {
     const prisma = prismaContext.get();
     return prisma.camera_logs.count({ where });
   },
+
+  countBy: async (where, field) => {
+    const prisma = prismaContext.get();
+    return prisma.camera_logs.groupBy({ by: [field], where, _count: { _all: true } });
+  },
+
+  // Средняя уверенность камеры и AI по событиям, которые AI прочитал
+  avgConfidence: async (where) => {
+    const prisma = prismaContext.get();
+    return prisma.camera_logs.aggregate({
+      where: { ...where, ai_confidence: { not: null } },
+      _avg: { confidence_level: true, ai_confidence: true },
+      _count: { _all: true },
+    });
+  },
 };

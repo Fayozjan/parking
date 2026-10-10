@@ -1884,11 +1884,26 @@
 }
 
 // ─── Главная в стиле страницы локации ────────────────────────────────────────
-.hero {
-  // закреплён вверху при прокрутке
+// Шапка + панель дат закреплены вверху: фильтры не уезжают под заголовок
+.stickyHead {
   position: sticky;
   top: 0;
   z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  // перекрываем отступ страницы, чтобы контент не просвечивал сверху
+  margin: -10px -10px 0;
+  padding: 10px 10px 8px;
+  background: #fff;
+
+  :global(html.dark) & {
+    background: var(--bg-color);
+  }
+}
+
+.hero {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;

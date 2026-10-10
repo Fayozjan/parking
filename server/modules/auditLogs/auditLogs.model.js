@@ -40,4 +40,19 @@ export const AuditLogsModel = {
     });
     return rows.map((r) => r.entity);
   },
+
+  // Пользователи, которые есть в истории операций (для фильтра)
+  findDistinctUsers: async () => {
+    const prisma = prismaContext.get();
+    const rows = await prisma.audit_logs.findMany({
+      where: { user_id: { not: null } },
+      select: {
+        user: {
+          select: { id: true, username: true, first_name: true, last_name: true },
+        },
+      },
+      distinct: ["user_id"],
+    });
+    return rows.map((r) => r.user).filter(Boolean);
+  },
 };

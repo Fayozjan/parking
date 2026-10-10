@@ -185,6 +185,7 @@ const HomePage = () => {
 
   return (
     <div className={styles.page}>
+      <div className={styles.stickyHead}>
       <div className={styles.hero}>
         <ParkingHeroBg className={styles.heroBg} />
         <div className={styles.heroIcon}>
@@ -251,6 +252,7 @@ const HomePage = () => {
             <RefreshCw size={15} />
           </button>
         </div>
+      </div>
       </div>
 
       {activeView === "days" ? (

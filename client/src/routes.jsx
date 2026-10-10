@@ -12,6 +12,8 @@ import VehicleWhitelistPage from "./pages/VehicleWhitelistPage";
 import CameraLogsPage from "./pages/CameraLogsPage";
 import GatesPage from "./pages/GatesPage";
 import LocationSessionsPage from "./pages/LocationSessionsPage";
+import HistoryConflictsPage from "./pages/HistoryConflictsPage";
+import AiTrainingPage from "./pages/AiTrainingPage";
 // import LocationTariffPage from "./pages/LocationTariffPage";
 
 const Routes = [
@@ -37,6 +39,8 @@ const Routes = [
   <Route path="audit-logs" element={<AuditLogsPage />} key="audit-logs" />,
   <Route path="vehicle-whitelist" element={<VehicleWhitelistPage />} key="vehicle-whitelist" />,
   <Route path="camera-logs" element={<CameraLogsPage />} key="camera-logs" />,
+  <Route path="history-conflicts" element={<HistoryConflictsPage />} key="history-conflicts" />,
+  <Route path="ai-training" element={<AiTrainingPage />} key="ai-training" />,
   <Route path="finance" element={<FinancePage />} key="finance" />,
   // <Route
   //   path="location-tariffs"

@@ -6,6 +6,7 @@
 Кадры уменьшаются до 1280 px по ширине, почти одинаковые кадры (один проезд подряд) отбрасываются.
 Дальше: python train/labeler.py — выбрать сторону (спереди/сзади).
 """
+import json
 import re
 import sys
 from pathlib import Path
@@ -17,6 +18,7 @@ from open_image_models import create_detector
 ROOT = Path(__file__).resolve().parent.parent
 INBOX = ROOT / "dataset" / "inbox"
 OUT = ROOT / "dataset" / "prelabeled"
+SEEN = ROOT / "dataset" / "prelabel_seen.json"
 EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 DEFAULT_CLASS = 0  # plate_front
 MIN_CONF = 0.3
@@ -34,19 +36,35 @@ def dhash(img: np.ndarray) -> int:
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
-    files = sorted(p for p in INBOX.rglob("*") if p.suffix.lower() in EXTS)
-    if not files:
+    all_files = sorted(p for p in INBOX.rglob("*") if p.suffix.lower() in EXTS)
+    if not all_files:
         sys.exit(f"В {INBOX} нет фото. Положите туда файлы jpg/png и запустите снова.")
+
+    # Инкрементально: уже разобранные кадры (взяты, дубли, без номера) пропускаем — повторный запуск
+    # обрабатывает только новые. Чтобы разобрать всё заново, удалите dataset/prelabel_seen.json.
+    seen = set(json.loads(SEEN.read_text(encoding="utf-8"))) if SEEN.exists() else set()
+    rel = lambda p: p.relative_to(INBOX).as_posix()  # noqa: E731
+    files = [p for p in all_files if rel(p) not in seen]
+    if not files:
+        print(f"Новых кадров нет (в inbox {len(all_files)}, все уже разобраны).")
+        return
 
     detector = create_detector("yolo-v9-t-640-license-plate-end2end", conf_thresh=MIN_CONF)
     (OUT / "images").mkdir(parents=True, exist_ok=True)
     (OUT / "labels").mkdir(parents=True, exist_ok=True)
 
     stats = {"total": len(files), "kept": 0, "no_plate": 0, "duplicate": 0, "unreadable": 0}
+    # Дубли ищем и среди уже взятых кадров, иначе новый проезд повторит старый
     hashes: list[int] = []
     used: set[str] = set()
+    for old in (OUT / "images").glob("*.jpg"):
+        used.add(old.stem)
+        img = cv2.imdecode(np.fromfile(str(old), dtype=np.uint8), cv2.IMREAD_COLOR)
+        if img is not None:
+            hashes.append(dhash(img))
 
     for path in files:
+        seen.add(rel(path))
         # imdecode + fromfile — cv2.imread не читает пути с кириллицей на Windows
         frame = cv2.imdecode(np.fromfile(str(path), dtype=np.uint8), cv2.IMREAD_COLOR)
         if frame is None:
@@ -92,9 +110,8 @@ def main():
         (OUT / "labels" / f"{name}.txt").write_text("\n".join(lines) + "\n")
         stats["kept"] += 1
 
+    SEEN.write_text(json.dumps(sorted(seen)), encoding="utf-8")
     print(stats, "->", OUT)
-    if stats["kept"] < 200:
-        print("ВНИМАНИЕ: для обучения нужно хотя бы 200–300 разных кадров, сейчас", stats["kept"])
 
 
 if __name__ == "__main__":

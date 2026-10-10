@@ -8,6 +8,13 @@ export const getAuditLogs = async (params = {}) => {
   };
 };
 
+export const getAuditUsers = async () => {
+  const res = await api.get("/audit-logs/users");
+  return {
+    data: res.data.data,
+  };
+};
+
 export const getAuditEntities = async () => {
   const res = await api.get("/audit-logs/entities");
   return {
@@ -17,6 +24,13 @@ export const getAuditEntities = async () => {
 
 export const restoreAuditLog = async (id) => {
   const res = await api.post(`/audit-logs/${id}/restore`);
+  return {
+    data: res.data.data,
+  };
+};
+
+export const restoreAuditLogs = async (ids) => {
+  const res = await api.post("/audit-logs/restore-bulk", { ids });
   return {
     data: res.data.data,
   };

@@ -21,6 +21,7 @@ from urllib.parse import unquote
 ROOT = Path(__file__).resolve().parent.parent
 PRE = ROOT / "dataset" / "prelabeled"
 STATE = ROOT / "dataset" / "labels.json"
+META = ROOT / "dataset" / "meta"  # подсказки сервера: что сказали камера и AI (ft pull / ft import)
 YOLO = ROOT / "dataset" / "yolo"
 CLASS_ID = {"front": 0, "rear": 1}
 PORT = 8765
@@ -61,9 +62,11 @@ PAGE = """<!doctype html><meta charset=utf-8><title>Разметка</title>
  button{font:600 17px system-ui;padding:14px 26px;border:0;border-radius:8px;color:#fff;cursor:pointer}
  .f{background:#2e7d32}.r{background:#c62828}.s{background:#555}.b{background:#37474f}
  #tag{position:absolute;top:12px;left:12px;padding:6px 12px;border-radius:6px;font-weight:700;display:none}
+ #hint{position:absolute;bottom:10px;left:12px;right:12px;padding:8px 12px;border-radius:6px;background:#000b;font-size:15px;line-height:1.5;display:none}
+ #hint b{color:#ffeb3b}
 </style>
 <header><b id=cnt></b><span id=err style=color:#ff8a80></span><div class=bar><i id=bar></i></div><span id=st></span></header>
-<main><canvas id=cv></canvas><div id=tag></div></main>
+<main><canvas id=cv></canvas><div id=tag></div><div id=hint></div></main>
 <footer>
  <button class=b onclick=back()>⌫ Назад</button>
  <button class=f onclick=mark('front')>← Спереди</button>
@@ -86,14 +89,24 @@ function stats(){
 }
 async function show(){
   stats(); const s=items[i]; if(!s) return;
-  const [img,boxes]=await Promise.all([
+  const [img,boxes,meta]=await Promise.all([
     new Promise(r=>{const m=new Image(); m.onload=()=>r(m); m.onerror=()=>r(m); m.src='/img/'+s+'.jpg';}),
-    fetch('/api/box/'+s).then(r=>r.json())]);
+    fetch('/api/box/'+s).then(r=>r.json()),
+    fetch('/api/meta/'+s).then(r=>r.json())]);
+  showHint(meta);
   cv.width=img.width; cv.height=img.height; ctx.drawImage(img,0,0);
   const lab=done[s]; ctx.lineWidth=Math.max(3,img.width/300); ctx.strokeStyle=COL[lab]||'#ffeb3b';
   for(const [cx,cy,w,h] of boxes) ctx.strokeRect((cx-w/2)*img.width,(cy-h/2)*img.height,w*img.width,h*img.height);
   tag.style.display=lab?'block':'none'; if(lab){tag.textContent=NAME[lab]; tag.style.background=COL[lab];}
   new Image().src='/img/'+(items[i+1]||s)+'.jpg';
+}
+const SIDE={forward:'спереди',reverse:'сзади',front:'спереди',rear:'сзади'};
+function showHint(m){
+  if(!m||!m.camera){hint.style.display='none';return;}
+  const ai=m.ai&&m.ai.found?`AI: <b>${SIDE[m.ai.side]||'?'}</b> (${Math.round((m.ai.side_confidence||0)*100)}%), номер ${m.ai.plate||'-'} (${m.ai.confidence}%)`:'AI: номер не найден';
+  hint.innerHTML=`Камера: <b>${SIDE[m.camera.movement]||'не сообщила'}</b>, номер ${m.camera.plate||'-'} (${m.camera.confidence}%) &nbsp;·&nbsp; ${ai}`
+    +`<br>Причины: ${(m.reasons||[]).join(', ')}${m.camera_name?' &nbsp;·&nbsp; '+m.camera_name:''}${m.captured_at?' &nbsp;·&nbsp; '+m.captured_at.slice(0,16).replace('T',' '):''}`;
+  hint.style.display='block';
 }
 async function mark(label){
   if(busy) return; busy=true; const s=items[i];
@@ -136,6 +149,9 @@ class Handler(BaseHTTPRequestHandler):
             self.send(body.encode(), "application/json")
         elif path.startswith("/api/box/"):
             self.send(json.dumps(read_boxes(Path(path).name)).encode(), "application/json")
+        elif path.startswith("/api/meta/"):
+            f = META / f"{Path(path).name}.json"
+            self.send(f.read_bytes() if f.is_file() else b"{}", "application/json")
         elif path.startswith("/img/"):
             f = PRE / "images" / Path(path).name  # Path(...).name — защита от выхода за каталог
             if f.is_file():

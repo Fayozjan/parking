@@ -60,6 +60,19 @@ export const AuditLogsService = {
 
   getEntities: async () => AuditLogsModel.findDistinctEntities(),
 
+  getUsers: async () => {
+    const users = await AuditLogsModel.findDistinctUsers();
+    return users
+      .map((u) => ({
+        id: u.id,
+        name:
+          u.last_name || u.first_name
+            ? `${u.last_name || ""} ${u.first_name || ""}`.trim()
+            : u.username,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  },
+
   restore: async (id, userId) => {
     const log = await AuditLogsModel.findById(id);
     if (!log) throw new Error("Запись истории не найдена");
@@ -72,5 +85,24 @@ export const AuditLogsService = {
 
     await createAuditLog({ userId, action: "restore", entity: log.entity, recordId: restored.id, newData: restored });
     return restored;
+  },
+
+  // Массовое восстановление: каждая запись отдельно, ошибки не прерывают остальные
+  restoreMany: async (ids, userId) => {
+    const list = [...new Set((ids || []).map((x) => parseInt(x, 10)).filter(Number.isInteger))];
+    if (!list.length) throw new Error("Не выбрано ни одной записи");
+    if (list.length > 500) throw new Error("За раз можно восстановить не более 500 записей");
+
+    let restored = 0;
+    const failed = [];
+    for (const id of list) {
+      try {
+        await AuditLogsService.restore(id, userId);
+        restored += 1;
+      } catch (err) {
+        failed.push({ id, error: err.message || "Ошибка" });
+      }
+    }
+    return { restored, failed };
   },
 };

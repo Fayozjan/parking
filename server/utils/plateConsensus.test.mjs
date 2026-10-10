@@ -1,7 +1,7 @@
 // node --test utils/plateConsensus.test.mjs
 import test from "node:test";
 import assert from "node:assert/strict";
-import { decidePlate, decideDirection } from "./plateConsensus.js";
+import { decidePlate, decideDirection, repairPlateByKnown } from "./plateConsensus.js";
 
 const cam = (plate, confidence) => ({ plate, confidence });
 const ai = (plate, confidence) => ({ plate, confidence });
@@ -67,4 +67,12 @@ test("направление: совпало / AI уверен / AI неувер
   assert.deepEqual(decideDirection(null, side("reverse", 0.6)), { direction: "reverse", decision: "ai" });
   assert.deepEqual(decideDirection("forward", side(null, 0.3)), { direction: "forward", decision: "camera" });
   assert.deepEqual(decideDirection(null, null), { direction: null, decision: "none" });
+});
+
+test("repairPlateByKnown: единственный известный номер достраивает обрывок", () => {
+  assert.equal(repairPlateByKnown("S702SS", ["50S702SS"]), "50S702SS");
+  assert.equal(repairPlateByKnown("S702SS", ["50S702SS", "01S702SS"]), null); // неоднозначно
+  assert.equal(repairPlateByKnown("S702SS", ["50A123BC"]), null); // не содержит
+  assert.equal(repairPlateByKnown("50S702SS", ["50S702SS"]), null); // уже по формату
+  assert.equal(repairPlateByKnown("S70", ["50S702SS"]), null); // слишком короткий обрывок
 });

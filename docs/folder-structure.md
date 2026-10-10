@@ -76,6 +76,7 @@ src/
 │   ├── VehiclePassesPageTelegram.jsx — Журнал проездов (Telegram)
 │   ├── UsersPage.jsx           — Управление пользователями
 │   ├── AuditLogsPage.jsx       — Журнал аудита (read-only)
+│   ├── HistoryConflictsPage.jsx — Проезды с конфликтом истории номера (выезд без въезда / повторный въезд)
 │   ├── NoAccessPage.jsx        — Страница "Нет доступа"
 │   └── NotFoundPage.jsx        — 404
 │
@@ -109,6 +110,7 @@ server/
 │   ├── menus/                  — RBAC меню (иерархия, права доступа)
 │   ├── parkings/               — Парковки + тарифная история
 │   ├── anprCameras/            — ANPR-камеры + webhook событий
+│   ├── aiTraining/             — Выгрузка кадров для дообучения AI (zip по токену AI_TRAINING_TOKEN)
 │   ├── vehiclePasses/          — Журнал проездов (+ фото)
 │   ├── parkingTariffs/         — Тарифы и слоты ценообразования
 │   └── auditLogs/              — Лог изменений (read-only)
@@ -149,8 +151,10 @@ ai-service/
 ├── app/main.py        — FastAPI: POST /recognize, GET /health
 ├── app/detector.py    — YOLOv8n ONNX: bbox номера + класс plate_front / plate_rear
 ├── app/ocr.py         — fast-plate-ocr: текст номера по кропу
-├── train/             — обучение (train.py, data.yaml, export_dataset.mjs)
-└── models/            — plate_side.onnx (обученные веса, не в git)
+├── studio.bat         — веб-кабинет дообучения на своём компе (кнопки: импорт zip, разметка, обучение, версии)
+├── ft.bat             — то же командами (ft pull / label / train / promote), см. README
+├── train/             — studio.py, pipeline.py (ft), prelabel.py, labeler.py, finetune.py, ocr_eval.py
+└── models/            — plate_side.onnx (боевая), versions/ (все обученные версии, локально, не в git)
 ```
 
 Node-клиент: `server/utils/aiPlate.js`. Включается переменной `AI_SERVICE_URL` (например `http://127.0.0.1:8000`).
